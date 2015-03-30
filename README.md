@@ -16,9 +16,9 @@ This will make the `skivvy` command globally available. See the list of [availab
 
 ## Why Skivvy?
 
-- Skivvy provides a simple CLI tool that **replaces sprawling, unmanageable Gulpfiles/Gruntfiles/Makefiles**.
+- Skivvy provides a simple CLI tool that **eliminates the need for Gulpfiles/Gruntfiles/Makefiles**.
 - Build tasks are **packaged into modules** called Skivvy packages – these can either be installed from the public npm registry or developed locally within the project. As soon as a package is added, its tasks are immediately available to the project.
-- Skivvy is **framework-agnostic**, allowing you to write your tasks using any combination of [Gulp](http://gulpjs.com/)/[Grunt](http://gruntjs.com/)/Node/etc.
+- Skivvy is **framework-agnostic**, allowing you to write your tasks using any combination of [Gulp](http://gulpjs.com/)/[Grunt](http://gruntjs.com/)/Node/etc, without the fear of getting locked into a plugin ecosystem.
 
 
 ## How it works
@@ -29,7 +29,14 @@ There are 3 steps in the Skivvy workflow:
 2. Install Skivvy packages: `skivvy install [package]`
 3. Run tasks from the installed Skivvy packages: `skivvy [task]`
 
-Within a Skivvy package, all its tasks are exposed to the Skivvy project as plain JavaScript functions. None of the implementation details are exposed outside the Skivvy package.
+...all without having to write a single line of JavaScript.
+
+
+### How does Skivvy differ from other task runners (e.g. Gulp)?
+
+Projects that use Gulp require you to write a project-specific Gulpfile, where you first have to manually `require()` your Gulp plugins, and then write custom code to configure those tasks. This process is fairly trivial for a project that only contains a couple of tasks, but as the project grows, the Gulpfile can easily sprawl into hundreds of lines of hard-to-maintain code.
+
+Skivvy, on the other hand, is much simpler. The lightweight CLI tool automatically loads tasks from any Skivvy packages that have been installed within the current Skivvy project, as well as automatically loading any relevant configuration for those tasks. This eliminates the need for a Gulpfile: the build system is now abstracted into reusable modules that can be seamlessly dropped into other projects.
 
 In practice, this allows you to take a [Docker](https://www.docker.com/)-like approach to creating a build system, where all the inner workings of the helper modules are completely isolated from the main application. This allows you to spend less time worrying about tooling, and more time coding.
 
@@ -109,7 +116,28 @@ Project-specific Skivvy packages can be placed in the project's local Skivvy pac
 Local Skivvy packages use exactly the same structure as external Skivvy packages. If any Skivvy packages are present within a Skivvy project's local package folder, their tasks will be automatically loaded by the CLI tool in addition to any external packages.
 
 
-### Passing custom configuration variables to Skivvy packages (TODO)
+## Running Skivvy tasks
+
+To run a Skivvy task, use the `skivvy [task]` command as follows:
+
+```bash
+skivvy my-custom-task
+```
+
+This will search the installed Skivvy packages for a task named `my-custom-task`, and run that task if it finds a match.
+
+If multiple tasks across different packages are registered with the same name, Skivvy will prompt the user to determine which task should be run.
+
+Alternatively, the task name can be prefixed with the package name followed by a colon to prevent collisions:
+
+```bash
+skivvy my-custom-package:my-custom-task
+```
+
+> _The top-level tasks `init`, `install`, `uninstall` and `list` always take priority over tasks defined with the same name in other packages. The only way to run a task named `init`, `install`, `uninstall` or `list` from another Skivvy package is via this colon-prefixed syntax._
+
+
+### Passing custom configuration variables to Skivvy tasks (TODO)
 
 
 #### Setting project configuration via the `skivvy.json` file (TODO)
@@ -121,10 +149,9 @@ Local Skivvy packages use exactly the same structure as external Skivvy packages
 #### Passing configuration via command-line flags (TODO)
 
 
-### Preventing naming collisions across multiple packages (TODO)
-
-
 ## Writing custom Skivvy packages (TODO)
+
+Under the hood, a Skivvy package exposes all its tasks as plain JavaScript functions. This means that you can use any combination of Gulp/Grunt/etc within a Skivvy project, even mixing multiple task runners in the same Skivvy package.
 
 
 ### Skivvy package folder structure (TODO)
