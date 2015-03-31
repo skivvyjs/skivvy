@@ -18,7 +18,7 @@ This will make the `skivvy` command globally available. See the list of [availab
 
 - Skivvy provides a simple CLI tool that **eliminates the need for Gulpfiles/Gruntfiles/Makefiles**.
 - Build tasks are **packaged into modules** called Skivvy packages – these can either be installed from the public npm registry or developed locally within the project. As soon as a package is added, its tasks are immediately available to the project.
-- Skivvy is **framework-agnostic**, allowing you to write your tasks using any combination of [Gulp](http://gulpjs.com/)/[Grunt](http://gruntjs.com/)/Node/etc, without the fear of getting locked into a plugin ecosystem.
+- Skivvy is **framework-agnostic**, allowing you to write your tasks using any combination of [Gulp](http://gulpjs.com/)/[Grunt](http://gruntjs.com/)/Node/etc, without having to worry about getting locked into a plugin ecosystem.
 
 
 ## How it works
@@ -134,7 +134,7 @@ Alternatively, the task name can be prefixed with the package name followed by a
 skivvy my-custom-package:my-custom-task
 ```
 
-> _The top-level tasks `init`, `install`, `uninstall` and `list` always take priority over tasks defined with the same name in other packages. The only way to run a task named `init`, `install`, `uninstall` or `list` from another Skivvy package is via this colon-prefixed syntax._
+The top-level tasks `init`, `install`, `uninstall` and `list` always take priority over tasks defined with the same name in other packages. The only way to run a task named `init`, `install`, `uninstall` or `list` from another Skivvy package is via this colon-prefixed syntax.
 
 
 ### Passing custom configuration variables to Skivvy tasks (TODO)
