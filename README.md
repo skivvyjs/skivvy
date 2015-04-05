@@ -18,7 +18,7 @@ This will make the `skivvy` command globally available. See the list of [availab
 
 - Skivvy provides a simple tool that **autoloads tasks and exposes them to the command-line** without you having to write a single line of code.
 - Tasks are **packaged into reusable modules** – these can either be installed from the public npm registry or developed locally within the project. As soon as a package is added, its tasks are immediately available to the project.
-- Skivvy is **a task runner, not a build tool**. You can write your tasks however you want, Skivvy just provides a means of launching them instantly from the command-line. This means you're free to use any combination of [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, all in the same project.
+- Skivvy is **a task runner, not a build tool**. You can write your tasks however you want, Skivvy just provides a means of launching them instantly from the command-line with the correct configuration. This means you're free to use any combination of [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, all in the same project.
 
 
 ## How it works
