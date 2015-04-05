@@ -171,10 +171,44 @@ If multiple tasks across different packages are registered with the same name, t
 
 ## Writing custom Skivvy tasks (TODO)
 
-Under the hood, a Skivvy package exposes all its tasks as plain JavaScript functions. This means that you can use any combination of Gulp/Broccoli/etc within a Skivvy project, even mixing multiple build systems in the same Skivvy package.
+- Under the hood, a Skivvy task is just a plain JavaScript function that takes a single `config` argument. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/etc within the same Skivvy project.
+
+- The `config` argument is automatically supplied to the task. It is a plain JavaScript object containing all the relevant task configuration, as discussed in [Passing custom configuration to Skivvy tasks](#passing-custom-configuration-to-skivvy-tasks).
+
+- Skivvy task functions can also have a `description` property. This is used by the `skivvy list` command to describe the task in a user-friendly form.
+
+### Example Skivvy task
+
+Save the following file as `skivvy_tasks/greet.js` to create a new local task:
+
+```javascript
+module.exports.task = function(config) {
+	console.log('Hello, ' + config.user + '!');
+};
+
+module.exports.description = 'Greet the user';
+```
+
+Now you are able to run the task:
+
+```bash
+skivvy greet --config.user="world" # Outputs: "Hello, world!"
+```
+
+
+### Synchronous vs asynchronous tasks (TODO)
+
+
+#### Asynchronous Skivvy task examples (TODO)
+
+
+## Creating custom Skivvy packages (TODO)
 
 
 ### Skivvy package folder structure (TODO)
 
 
 ### Skivvy package manifest file (TODO)
+
+
+### Publishing a Skivvy package to npm (TODO)
