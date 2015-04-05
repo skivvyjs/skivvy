@@ -83,7 +83,7 @@ module.exports.description = 'Wait a second';
 
 ## Combining existing tasks to form composite tasks
 
-The [Skivvy API methods](docs/api.md) make it easy to compose individual tasks into larger sequences of tasks:
+The [Skivvy API methods](api.md) make it easy to compose individual tasks into larger sequences of tasks:
 
 ```javascript
 var skivvy = require('skivvy');
@@ -104,7 +104,7 @@ module.exports = function(config, callback) {
 				callback(error);
 				return;
 			}
-			
+
 			// Both tasks have completed successfully
 			callback(null);
 		});
@@ -143,4 +143,4 @@ Skivvy is intended to help create modular build systems that can be reused from 
 
 For this reason, tasks can be grouped together into **packages** and published to npm for reuse in other projects.
 
-See the documentation on [creating Skivvy packages](docs/creating-skivvy-packages.md) for more information.
+See the documentation on [creating Skivvy packages](creating-skivvy-packages.md) for more information.
