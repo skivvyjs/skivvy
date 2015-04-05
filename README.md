@@ -14,9 +14,46 @@ npm install -g skivvy
 This will make the `skivvy` command globally available. See the list of [available commands](#available-commands) below.
 
 
+## Usage instructions: Hello World app
+
+1. Initialize a Skivvy project in a new folder:
+
+	```bash
+	mkdir example-app && cd example-app
+	skivvy init
+	```
+
+2. Add the `hello` package to the current project:
+
+	```bash
+	skivvy install hello
+	```
+
+3. List the tasks installed by the `hello` package:
+
+	```bash
+	skivvy list
+	```
+
+	> _This will output something like the following:_
+	```bash
+	example-app@0.0.1
+	└─┬ hello@1.0.0
+	  └── start - Greet the user
+	```
+	_This means that within our project we are now able to use the `hello:start` task, as it was included in the `hello` package._
+
+4. Run the `hello:start` task:
+
+	```bash
+	skivvy hello:start # Outputs: "Hello, world!"
+	```
+	> _N.B. In the example above, the `hello:` package prefix is optional – `skivvy start` would also work._
+
+
 ## Why Skivvy?
 
-- Skivvy provides a simple tool that **autoloads tasks and exposes them to the command-line** without you having to write a single line of code.
+- Skivvy provides a simple tool that **autoloads tasks and exposes them to the command-line** without you having to write a single line of "plumbing" code.
 - Tasks are **packaged into reusable modules** – these can either be installed from the public npm registry or developed locally within the project. As soon as a package is added, its tasks are immediately available to the project.
 - Skivvy is **a task runner, not a build tool**. You can write your tasks however you want, Skivvy just provides a means of launching them instantly from the command-line with the correct configuration. This means you're free to use any combination of [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, all in the same project.
 
@@ -34,66 +71,25 @@ The`skivvy` CLI tool automatically detects tasks from the packages that have bee
 In practice, this allows you to take a [Docker](https://www.docker.com/)-like approach to creating a build system, where all the inner workings of the helper modules are completely isolated from the main application. This allows you to spend less time worrying about tooling, and more time coding.
 
 
-## Usage instructions: Hello World app
-
-1. Initialize a Skivvy project in a new folder:
-
-    ```bash
-    mkdir example-app && cd example-app
-    skivvy init
-    ```
-
-2. Add the `hello` package to the current project:
-
-    ```bash
-    skivvy install hello
-    ```
-
-3. List the tasks installed by the `hello` package:
-
-    ```bash
-    skivvy list
-    ```
-
-    > _This will output something like the following:_
-    ```bash
-    example-app@0.0.1
-    └─┬ hello@1.0.0
-      └── start - Greet the user
-    ```
-    _This means that within our project we are now able to use the `hello:start` task, as it was included in the `hello` package._
-
-4. Run the `hello:start` task:
-
-    ```bash
-    skivvy hello:start # Outputs: "Hello, world!"
-    ```
-    > _N.B. In the example above, the `hello:` package prefix is optional – `skivvy start` would also work._
-
-
 ## Available commands
 
 - `skivvy init` create a Skivvy project in the current directory
 - `skivvy install [package]` Add a package to the current project
 - `skivvy uninstall [package]` Remove a package from the current project
-- `skivvy list [package]` List this project's installed packages and tasks
+- `skivvy list` List this project's installed packages and tasks
 - `skivvy [task]` Run a task within the current project
 
-All additional functionality is provided by the tasks themselves. See the list of [existing Skivvy packages](#) for some common pre-made build tasks.
+All additional functionality is provided by the tasks themselves. See the list of [public Skivvy packages](docs/public-skivvy-packages.md) for some common pre-packaged build tasks.
 
 
-## Adding tasks to a Skivvy project
+## Adding tasks to a project
 
-Skivvy tasks come in two flavors: **external tasks**, which come from packages that are published to the npm registry, and **local tasks**, which exist as source files within the current project.
-
-Once they have been added to the project, external tasks and local tasks are both invoked from the command-line the same way: `skivvy [task]`
+Skivvy tasks come in two flavors: **external tasks**, which come from packages that have been installed as dependencies of the current project, and **local tasks**, which exist as source files within the current project.
 
 
-### Adding tasks from an external package
+### Adding external tasks via npm
 
-Skivvy packages contain tasks. Multiple packages can be installed into a single project, extending the project's build system in a modular fashion.
-
-Skivvy packages can be installed via npm using the `skivvy install` command, as follows:
+Pre-published packages can be installed using the `skivvy install` command:
 
 ```bash
 skivvy install my-custom-package
@@ -106,14 +102,14 @@ After running this command, any tasks defined in `my-custom-package` will automa
 
 ### Creating project-specific local tasks
 
-Local tasks can be placed in the project's local Skivvy tasks directory (`skivvy_tasks` by default). These are developed in-situ and are intended to contain custom behaviour that cannot be reused across projects.
+Local tasks are placed in the project's local Skivvy tasks directory (`./skivvy_tasks` by default). These are developed in-situ and contain custom behaviour that is not intended to be be reused across different projects.
 
-Any tasks that are present within a project's local tasks folder will automatically be available to the `skivvy` command-line tool when it is run from within the project.
+Any tasks that are present within a project's local tasks folder will automatically be available to the `skivvy` command-line tool. The name of the tasks is taken from the filename of the local task: a task located at `./skivvy_tasks/build.js` can be launched by running `skivvy build` from within the project folder.
 
-See the section below on [writing custom Skivvy tasks](#writing-custom-skivvy-tasks) to learn how to write a task. It's easier than you might think!
+See the documentation on [writing Skivvy tasks](docs/writing-skivvy-tasks.md) to learn how to write a task. It's easier than you might think!
 
 
-## Running Skivvy tasks
+## Running tasks
 
 To run a task, use the `skivvy [task]` command as follows:
 
@@ -124,91 +120,45 @@ skivvy my-custom-task
 This will search all the installed packages and local tasks for a task named `my-custom-task`, and run that task if it finds a match.
 
 
-### Preventing naming collisions
+### Avoiding naming conflicts
 
-If multiple tasks across different packages are registered with the same name, the task name can be prefixed with the package name followed by a colon to avoid naming collisions:
+Multiple tasks can be registered with the same name across different packages. If there is more than one match for the specified task name, Skivvy prioritizes tasks in the following order:
 
-- **External tasks**
+1. **Top-level tasks**: the top-level tasks `init`, `install`, `uninstall` and `list` take priority over all other tasks defined with the same name.
+
+	> _For this reason, it's best to avoid naming your tasks `init`, `install`, `uninstall` or `list`._
+
+2. **Local tasks**: any local tasks present in the `skivvy_tasks/` folder will take priority over tasks defined in external packages.
+
+	> _External tasks can still be targeted by prefixing them with their package name, as seen below._
+
+3. **External tasks**: these are given the lowest priority when matching a task name. To avoid naming conflicts between tasks in different packages, you can prefix the task name with the package name, followed by a colon:
 
 	```bash
-	# Run `my-custom-task` from the `my-custom-package` package:
-	skivvy my-custom-package:my-custom-task
+	# Run the `start` task from the `hello` package:
+	skivvy hello:start
 	```
 
-- **Local tasks**
 
-	```bash
-	# Run `my-local-task` from the local tasks folder:
-	skivvy local:my-local-task
-	```
+## Configuring tasks
 
-- **Top-level tasks**
-
-	The top-level tasks `init`, `install`, `uninstall` and `list` always take priority over tasks defined with the same name in other packages:
-	
-	```bash
-	# Run the top-level `skivvy install` command:
-	skivvy install
-	```
-
-	> _This means that the only way to run an external or local task named `init`, `install`, `uninstall` or `list` is via the colon-prefixed syntax._
+Most tasks need to be given some kind of configuration in order to do anything useful. With Skivvy, task configuration can be set in two places: the project-level `skivvy.json` file, and at runtime via command-line arguments.
 
 
-### Passing custom configuration to Skivvy tasks (TODO)
+### Setting project configuration via the `skivvy.json` file (TODO)
 
 
-#### Setting project configuration via the `skivvy.json` file (TODO)
+### Overriding configuration for individual packages in the `skivvy.json` file (TODO)
 
 
-#### Setting package-level configuration in the `skivvy.json` file (TODO)
+### Passing configuration via command-line arguments (TODO)
 
 
-#### Passing configuration via command-line flags (TODO)
+## Writing custom tasks and packages
 
+It's easy to write your own Skivvy tasks and bundle them into reusable packages. These resources should help you get started:
 
-#### Passing configuration via environment variables (TODO)
-
-
-## Writing custom Skivvy tasks (TODO)
-
-- Under the hood, a Skivvy task is just a plain JavaScript function that takes a single `config` argument. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/etc within the same Skivvy project.
-
-- The `config` argument is automatically supplied to the task. It is a plain JavaScript object containing all the relevant task configuration, as discussed in [Passing custom configuration to Skivvy tasks](#passing-custom-configuration-to-skivvy-tasks).
-
-- Skivvy task functions can also have a `description` property. This is used by the `skivvy list` command to describe the task in a user-friendly form.
-
-### Example Skivvy task
-
-Save the following file as `skivvy_tasks/greet.js` to create a new local task:
-
-```javascript
-module.exports.task = function(config) {
-	console.log('Hello, ' + config.user + '!');
-};
-
-module.exports.description = 'Greet the user';
-```
-
-Now you are able to run the task:
-
-```bash
-skivvy greet --config.user="world" # Outputs: "Hello, world!"
-```
-
-
-### Synchronous vs asynchronous tasks (TODO)
-
-
-#### Asynchronous Skivvy task examples (TODO)
-
-
-## Creating custom Skivvy packages (TODO)
-
-
-### Skivvy package folder structure (TODO)
-
-
-### Skivvy package manifest file (TODO)
-
-
-### Publishing a Skivvy package to npm (TODO)
+- [Writing Skivvy tasks](docs/writing-skivvy-tasks.md)
+- [Creating Skivvy packages](docs/creating-skivvy-packages.md)
+- [The Skivvy API](docs/api.md)
+- [Public Skivvy packages](docs/public-skivvy-packages.md)
