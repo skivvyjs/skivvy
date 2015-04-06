@@ -1,9 +1,20 @@
+# Getting started with Skivvy
+
+- [Introduction](00-introduction.md)
+- [Adding tasks](01-adding-tasks.md)
+- [Configuring tasks](02-configuring-tasks.md)
+- [Running tasks](03-running-tasks.md)
+- **Writing your own tasks**
+- [Creating packages](05-creating-packages.md)
+
+-
+
 # Writing Skivvy tasks
 
 ## Overview
-- Under the hood, a Skivvy task is **just a plain JavaScript function** that takes a single `config` argument. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/Yo/etc.
+- Under the hood, a task is **just a plain JavaScript function** that takes a single `config` argument.
 
-- The `config` argument is **automatically supplied to the task**. It is a plain JavaScript object containing a merged key/value map of all the project and task configuration.
+- The `config` argument is **automatically supplied to the task**. It is a plain JavaScript key/value object containing the task's configuration settings.
 
 - Skivvy task functions can also have a `description` property. This is used by the `skivvy list` command to display a **user-friendly description** of the task.
 
@@ -18,6 +29,7 @@ module.exports = function(config) {
 
 module.exports.description = 'Greet the user';
 ```
+> _You can also create local tasks using the `skivvy create:task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
 
 Now you are able to see the task straight away in the command-line tool:
 
@@ -36,6 +48,8 @@ You can also run the newly-created task:
 ```bash
 skivvy greet --user="world" # Outputs: "Hello, world!"
 ```
+
+As you can see, the task is just a plain JavaScript function. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/Yo/etc within the task. When Skivvy calls the function it automatically passes in a `config` object, according to the rules discussed in the section on [configuring tasks](02-configuring-tasks.md).
 
 
 ## Synchronous vs asynchronous tasks
@@ -83,7 +97,7 @@ module.exports.description = 'Wait a second';
 
 ## Combining existing tasks to form composite tasks
 
-The [Skivvy API methods](api.md) make it easy to compose individual tasks into larger sequences of tasks:
+The [Skivvy API](../api.md) makes it easy to compose individual tasks into larger sequences of tasks:
 
 ```javascript
 var skivvy = require('skivvy');
@@ -136,6 +150,8 @@ module.exports = function(config) {
 module.exports.description = 'Build and deploy';
 ```
 
+See the documentation for the [Skivvy API](../api.md) for more details.
+
 
 ## Publishing tasks for reuse
 
@@ -143,4 +159,6 @@ Skivvy is intended to help create modular build systems that can be reused from 
 
 For this reason, tasks can be grouped together into **packages** and published to npm for reuse in other projects.
 
-See the documentation on [creating Skivvy packages](creating-skivvy-packages.md) for more information.
+--
+
+**Next up:** [Creating packages](05-creating-packages.md)

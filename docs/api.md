@@ -1,11 +1,11 @@
-# Skivvy API
+# Skivvy API (TODO)
 
 Skivvy can be used programatically, as follows:
 
 ```javascript
 var skivvy = require('skivvy');
 
-var build = require('./build');
+var build = require('./skivvy_tasks/build');
 
 var config = {
 	source: 'src',
@@ -20,4 +20,3 @@ skivvy.run(build, config, function(error) {
 	}
 });
 ```
-
