@@ -11,7 +11,7 @@
 
 # Introduction
 
-This guide takes you through the basics of using Skivvy. By the end of it you'll know how to add, configure, run and write tasks.
+This guide is all you need to master Skivvy. By the end of it you'll know how to add, configure and run tasks, write custom tasks, and even publish your own packages.
 
 ---
 
