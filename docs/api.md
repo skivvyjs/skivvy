@@ -29,7 +29,7 @@ skivvy.run({ task: buildTask, config: buildConfig }, function(error) {
 	- `callback`: (optional) Callback to be invoked on success/error
 - All API methods return a promise to be settled on success/error
 
-This means you can call the API methods either using Node-style callbacks or promises:
+This means you can call the API methods either using Node-style callbacks or using promises:
 
 ```javascript
 // Example using Node-style callback
@@ -137,12 +137,12 @@ List the installed packages and tasks
 		"name": "browser-sync",
 		"description": "BrowserSync server tasks",
 		"version": "1.0.1",
-		"tasks": {
+		"tasks": [
 			{
 				"name": "serve",
 				"description": "Launch a server"
 			}
-		}
+		]
 	}
 ]
 ```
