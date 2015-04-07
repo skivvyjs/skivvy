@@ -57,6 +57,7 @@ Skivvy is also easy to integrate into existing task runners via its [JavaScript 
 	mkdir example-app && cd example-app
 	skivvy init
 	```
+	> _Seeing as this directory has not yet been initialized as an npm module, Skivvy will automatically run the `npm init` command and guide you through the process._
 
 2. Add the `hello-world` package to the current project:
 
