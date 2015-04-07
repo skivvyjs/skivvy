@@ -46,7 +46,7 @@ Project-level configuration is automatically passed to **local tasks** whenever 
 
 ---
 
-**IMPORTANT:** Project-level configuration is **not** automatically passed to **external tasks**. In order to automatically pass configuration to external tasks, you need to update their package-level configuration.
+**IMPORTANT:** Project-level configuration is **not** automatically passed to **external tasks**. In order to automatically pass configuration to external tasks, you need to update their _package-level_ configuration.
 
 ---
 
@@ -70,7 +70,7 @@ If you ran the command above, the `browser-sync` package configuration would now
 }
 ```
 
-Package-level configuration does **not** automatically inherit the project-level configuration. If you want to pass project-level configuration settings to external tasks, you can achieve this by using placeholders in package-level configuration that reference the project-level `projectConfig` placeholder variable:
+Package-level configuration does **not** automatically inherit the project-level configuration. If you want to pass project-level configuration settings to external tasks, you can achieve this by using placeholders in the package-level configuration, referencing the project-level `projectConfig` placeholder variable:
 
 ```bash
 skivvy config browser-sync --config.source="<%=projectConfig.paths.destination%>" --config.options.port="<%=projectConfig.port%>" --config.options.watch="<%=projectConfig.debug%>"
@@ -78,7 +78,7 @@ skivvy config browser-sync --config.source="<%=projectConfig.paths.destination%>
 
 ## Using placeholders in configuration values
 
-Sometimes you need dynamic values in your configuration settings, to avoid repeatedly hard-coding the same value across multiple packages. The following placeholders can be used when setting configuration values:
+Sometimes you need dynamic values in your configuration settings, in order to avoid repeatedly hard-coding the same value across multiple packages. The following placeholders can be used when setting configuration values:
 
 - **Project-level** configuration:
 	- `project`: contents of `package.json`

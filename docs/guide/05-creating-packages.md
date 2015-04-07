@@ -11,7 +11,7 @@
 
 # Creating Skivvy packages
 
-Skivvy packages are freestanding npm modules that contain tasks. Skivvy packages can be installed into any Skivvy project, and are intended to be as generic and configurable as possible.
+Skivvy packages are freestanding npm modules that contain tasks. Packages can be installed into any Skivvy project, and can range from very generic (e.g. a wrapper for a build tool) to very specific (e.g. a scaffolding tool for the company website).
 
 ## Developing a Skivvy package
 
@@ -79,7 +79,7 @@ exports.tasks = {
 
 #### `tasks/`
 
-Folder containing the exported tasks in separate files. See the guide section on [writing tasks](04-writing-tasks) to learn how to write your own tasks.
+Folder containing the exported tasks in separate files. See the guide section on [writing tasks](04-writing-tasks) to learn how to write your own tasks. When developing a package, it's best to make sure its tasks are as configurable as possible, seeing as the package could potentially be used in many different projects.
 
 
 #### `src/`

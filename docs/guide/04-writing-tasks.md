@@ -14,7 +14,7 @@
 ## Overview
 - Under the hood, a task is **just a plain JavaScript function** that takes a single `config` argument.
 
-- The `config` argument is **automatically supplied to the task**. It is a plain JavaScript key/value object containing the task's configuration settings.
+- The `config` argument is **automatically supplied to the task**. It is a plain JavaScript key/value object containing the task's configuration settings (as seen in [configuring tasks](02-configuring-tasks.md)). Make sure to use this argument to pass in any task options or file paths.
 
 - Skivvy task functions should also have a `description` property. This is used by the `skivvy list` command to display a **user-friendly description** of the task.
 
@@ -29,7 +29,7 @@ module.exports = function(config) {
 
 module.exports.description = 'Greet the user';
 ```
-> _You can also create local tasks using the `skivvy create:task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
+> _You can also create tasks using the `skivvy create:task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
 
 Now you are able to see the task straight away in the command-line tool:
 
@@ -39,7 +39,7 @@ skivvy list
 
 > _This will output something like the following:_
 ```
-example-app@0.0.1
+example-app@1.0.0
 └─┬ [local tasks]
   └── greet - Greet the user
 ```
@@ -47,7 +47,7 @@ example-app@0.0.1
 You can also run the newly-created task:
 
 ```bash
-skivvy greet --user="world" # Outputs: "Hello, world!"
+skivvy greet --config.user="world" # Outputs: "Hello, world!"
 ```
 
 As you can see, the task is just a plain JavaScript function. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/Yo/etc within the task. When Skivvy calls the function it automatically passes in a `config` object, according to the rules discussed in the section on [configuring tasks](02-configuring-tasks.md).
@@ -129,7 +129,7 @@ module.exports = function(config, callback) {
 module.exports.description = 'Build and deploy';
 ```
 
-The above example uses a Node-style callbacks to handle the asynchronous operations. The API methods also return promises:
+The above example uses Node-style callbacks to handle the asynchronous operations. The API methods also return promises if you prefer to use them:
 
 
 ```javascript

@@ -40,7 +40,7 @@ skivvy create:task
 
 Skivvy will prompt you for a task name and description for your task, and then you're done!
 
-> _Behind the scenes, this uses the built-in [skivvy-create](https://github.com/timkendrick/skivvy-create) scaffolder to create a new file named `greet.js` in the local tasks folder (`./skivvy_tasks` by default)_
+> _Behind the scenes, this uses the built-in [skivvy-create](https://github.com/timkendrick/skivvy-create) scaffolder to create a new `.js` file in the local tasks folder (`./skivvy_tasks` by default)_
 
 > _If you prefer to enter the task name and description via the command-line, you can pass `--config.name` and `--config.description` arguments_
 

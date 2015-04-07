@@ -31,7 +31,7 @@ There are 4 steps in the Skivvy workflow:
 Anybody who's spent a decent amount of time with Gulpfiles and Gruntfiles knows that they start off small, but soon spiral into an unmanageable mess. Skivvy brings order to this chaos by introducing a modular, package-based approach to managing and running tasks, eliminating the need for Gulpfiles/Gruntfiles/etc in the process. Here's how it works:
 
 - Off-the-shelf task packages can be installed alongside your project-specific tasks
-- All tasks are automagically exposed to the command-line tool, with no plumbing code needed
+- All tasks are automagically accessible from the command-line, with no plumbing code needed
 - Tasks can be configured via the command-line tool, or by hand-editing JSON if preferred
 - Custom tasks can easily be packaged into modules and shared across multiple projects
 
