@@ -30,7 +30,7 @@ Skivvy was invented so that you can spend less time worrying about tooling, and 
 
 - **Saves you time and effort** by automagically exposing your tasks to the command-line, with no plumbing code needed.
 - **Simplifies your build setup** by allowing you to mix and match easily-configured task packages to suit your project requirements.
-- **Encourages code reuse** by replacing sprawling monolithic build scripts with a collection of small, modular tasks that can be shared across projects.
+- **Encourages code reuse** by replacing sprawling monolithic build scripts with a collection of small, modular tasks.
 
 Skivvy's package-based methodology encourages users to abstract their tasks into reusable modules that can be shared across many different projects. All the heavy lifting is sandboxed into generic helper packages whose internals remain completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. In practice, this saves a lot of developer effort and ensures that your build setup won't sprawl out of control as your codebase grows over time.
 
