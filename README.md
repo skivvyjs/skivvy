@@ -59,7 +59,7 @@ One last thing to bear in mind: Skivvy is **a task runner, not a build tool**. I
 	```
 
 	> _This will output something like the following:_
-	```bash
+	```
 	example-app@1.0.0
 	└─┬ hello-world@1.0.0
 	  └── greet - Greet the user

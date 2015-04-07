@@ -16,7 +16,7 @@
 
 - The `config` argument is **automatically supplied to the task**. It is a plain JavaScript key/value object containing the task's configuration settings.
 
-- Skivvy task functions can also have a `description` property. This is used by the `skivvy list` command to display a **user-friendly description** of the task.
+- Skivvy task functions should also have a `description` property. This is used by the `skivvy list` command to display a **user-friendly description** of the task.
 
 ## Example: creating a new local task
 
@@ -38,10 +38,11 @@ skivvy list
 ```
 
 > _This will output something like the following:_
-```bash
+```
 example-app@0.0.1
 └─┬ [local tasks]
   └── greet - Greet the user
+```
 
 You can also run the newly-created task:
 
