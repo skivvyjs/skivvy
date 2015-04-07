@@ -97,8 +97,8 @@ Good luck Skivvying!
 - `skivvy update` Update all package within the current project
 - `skivvy update [package]` Update a package within the current project
 - `skivvy list` List this project's installed tasks
-- `skivvy config` Update the current project configuration (see [configuring tasks](02-configuring-tasks.md#configuring-tasks))
-- `skivvy config [package]` Update a package's configuration (see [configuring tasks](02-configuring-tasks.md#configuring-tasks))
+- `skivvy config` Update the current project configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
+- `skivvy config [package]` Update a package's configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
 - `skivvy [task]` Run a task within the current project
 
 All additional functionality is provided by the tasks themselves. See the list of [public Skivvy packages](docs/public-packages.md) for some common pre-packaged build tasks.
