@@ -70,7 +70,7 @@ api.method(options)
 
 Create a new Skivvy project
 
-**Returns:** `Promise<void>`
+**Returns:** `Promise`
 
 **Options:**
 
@@ -99,7 +99,7 @@ Install a package in a Skivvy project
 
 Uninstall a package from a Skivvy project
 
-**Returns:** `Promise<void>`
+**Returns:** `Promise`
 
 **Options:**
 
