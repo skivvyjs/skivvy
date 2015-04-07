@@ -131,7 +131,7 @@ List the installed packages and tasks
 				"name": "compile",
 				"description": "Compile JS and CSS"
 			}
-		}
+		]
 	},
 	{
 		"name": "browser-sync",
