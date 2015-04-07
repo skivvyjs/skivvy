@@ -13,6 +13,7 @@ npm install -g skivvy
 
 This will make the `skivvy` command globally available. See the list of [available commands](#available-commands).
 
+
 ## The Skivvy workflow
 
 There are 4 steps in the Skivvy workflow:
@@ -24,17 +25,25 @@ There are 4 steps in the Skivvy workflow:
 
 ...all without having to write a single line of code.
 
+
 ## Why Skivvy?
 
-Skivvy was invented so that you can spend less time worrying about tooling, and more time coding. Now you can finally say goodbye to those unnecessary Gulpfiles/Gruntfiles/Cakefiles!
+Skivvy was invented so that you can spend less time worrying about tooling, and more time coding.
 
-- **Saves you time and effort** by automagically exposing your tasks to the command-line, with no plumbing code needed.
-- **Simplifies your build setup** by allowing you to mix and match easily-configured task packages to suit your project requirements.
-- **Encourages code reuse** by replacing sprawling monolithic build scripts with a collection of small, modular tasks.
+- **Save time and effort**: simplify your build system by installing easily-configured off-the-shelf task packages alongside your own custom tasks.
+- **Run tasks in a flash**: all your tasks are automagically exposed to the command-line, with no plumbing code needed. Say goodbye to those Gulpfiles/Gruntfiles/Cakefiles!
+- **Modularise your build scripts**: repackage sprawling, monolithic build scripts into collections of small, modular tasks for reuse in different projects.
 
-Skivvy's package-based methodology encourages users to abstract their tasks into reusable modules that can be shared across many different projects. All the heavy lifting is sandboxed into generic helper packages whose internals remain completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. In practice, this saves a lot of developer effort and ensures that your build setup won't sprawl out of control as your codebase grows over time.
+Skivvy's package-based methodology means that all the heavy lifting is handled by helper packages whose internals remain completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. In practice, this saves a lot of unnecessary developer effort and ensures that your build setup won't sprawl out of control as a project grows over time.
 
-One last thing to bear in mind: Skivvy is **a task runner, not a build tool**. In other words, you can do whatever you like inside your tasks, Skivvy just provides a way to launch them in a flash with the correct configuration. This means that within the tasks themselves you're free to use any combination of [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, all in the same project – no more vendor lock-in!
+
+### What can I do with Skivvy?
+
+Skivvy is **a task runner, not a build tool**. In other words, Skivvy provides a way to instantly launch your tasks with the correct configuration, but what you choose to do within the tasks themselves is completely up to you.
+
+You can write tasks that scaffold components, bump version numbers, deploy builds, send emails… a whole lot more than just build scripts. Skivvy tasks are [just plain functions](docs/guide/04-writing-tasks.md), so you're free to implement them however you like. This means that under the hood, you can write tasks using any combination of [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, all within the same package – making vendor lock-in a thing of the past.
+
+Skivvy is also easy to integrate into existing build systems via its [JavaScript API](docs/api.md), so even if you're not ready to fully switch over just yet, you can still reap the benefits of moving towards a more modular build system.
 
 
 ## Usage instructions: Hello World app
