@@ -42,7 +42,7 @@ If you ran the command above, the project-level configuration would now look lik
 
 > _As you can see from the output above, the `skivvy config` command handles strings, numbers, booleans and nested objects correctly._
 
-Project-level configuration is automatically passed to **local tasks** whenever they are run via `skivvy [task]`.
+Project-level configuration is automatically passed to **local tasks** whenever they are run via `skivvy run [task]`.
 
 ---
 

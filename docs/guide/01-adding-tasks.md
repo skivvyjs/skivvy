@@ -27,7 +27,7 @@ skivvy install hello-world
 
 > _This will install the npm module named `skivvy-hello-world` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
 
-After running this command, all the tasks defined in `hello-world` are immediately available for use via `skivvy [task]`.
+After running this command, all the tasks defined in `hello-world` are immediately available for use via `skivvy run [task]`.
 
 
 ## Adding local tasks

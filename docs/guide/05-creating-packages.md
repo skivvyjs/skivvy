@@ -17,7 +17,7 @@ Skivvy packages are freestanding npm modules that contain tasks. Packages can be
 
 Let's say we want to create a Skivvy package for developing client-side React apps, called `react-seed`.
 
-To get started, create a new folder and initialise it as an npm module:
+To get started, create a new folder and initialize it as an npm module:
 
 ```bash
 mkdir skivvy-react-seed && cd skivvy-react-seed

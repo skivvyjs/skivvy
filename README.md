@@ -21,7 +21,7 @@ There are 4 steps in the Skivvy workflow:
 1. Initialize a project: `skivvy init`
 2. Install packages: `skivvy install [package]`
 3. Configure packages: `skivvy config [package]`
-4. Run tasks from the installed packages: `skivvy [task]`
+4. Run tasks from the installed packages: `skivvy run [task]`
 
 ...all without having to write a single line of code.
 
@@ -75,9 +75,10 @@ Skivvy is also easy to integrate into existing task runners via its [JavaScript 
 	```
 	example-app@1.0.0
 	└─┬ hello-world@1.0.0
-	  └── greet - Greet the user
+	  ├── greet - Greet the user
+	  └── welcome - Welcome the user
 	```
-	_This means that within our project we're now able to use the `hello-world:greet` task, seeing as it was included in the `hello-world` package._
+	_This means that within our project we're now able to use the `hello-world:greet` and `hello-world:welcome` tasks, seeing as they were both included in the `hello-world` package._
 
 4. Configure the `hello-world` package:
 
@@ -86,14 +87,14 @@ Skivvy is also easy to integrate into existing task runners via its [JavaScript 
 	```
 	> _This sets the `user` configuration variable for all tasks within the `hello-world` package_
 
-5. Run the `hello-world:greet` task:
+5. Run the `hello-world:greet` and `hello-world:welcome` tasks:
 
 	```bash
-	skivvy hello-world:greet # Outputs: "Hello, Skivvy!"
+	skivvy run hello-world:greet # Outputs: "Hello, Skivvy!"
+	skivvy run hello-world:welcome # Outputs: "Welcome to Skivvy!"
 	```
 
-	> _N.B. In the example above, the `hello-world:` package prefix is optional – `skivvy greet` would also work._
-
+	> _N.B. In the example above, the `hello-world:` package prefix is optional – `skivvy run greet` and `skivvy run welcome` would also work._
 
 ## User guide
 
@@ -114,6 +115,6 @@ Good luck Skivvying!
 - `skivvy list` List this project's installed tasks
 - `skivvy config` Update the current project configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
 - `skivvy config [package]` Update a package's configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
-- `skivvy [task]` Run a task within the current project
+- `skivvy run [task]` Run a task within the current project
 
 All additional functionality is provided by the tasks themselves. See the list of [public Skivvy packages](docs/public-packages.md) for some common pre-packaged build tasks.
