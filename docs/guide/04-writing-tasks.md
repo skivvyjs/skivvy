@@ -20,7 +20,7 @@
 
 ## Example: creating a new local task
 
-Save the following file as `skivvy_tasks/greet.js` to create a new local task:
+Save the following file as `skivvy_tasks/hello.js` to create a new local task:
 
 ```javascript
 module.exports = function(config) {
@@ -41,13 +41,13 @@ skivvy list
 ```
 example-app@1.0.0
 └─┬ [local tasks]
-  └── greet - Greet the user
+  └── hello - Greet the user
 ```
 
 You can also run the newly-created task:
 
 ```bash
-skivvy greet --config.user="world" # Outputs: "Hello, world!"
+skivvy hello --config.user="world" # Outputs: "Hello, world!"
 ```
 
 As you can see, the task is just a plain JavaScript function. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/Yo/etc within the task. When Skivvy calls the function it automatically passes in a `config` object, according to the rules discussed in the section on [configuring tasks](02-configuring-tasks.md).
