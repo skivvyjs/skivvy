@@ -1,0 +1,252 @@
+#!/usr/bin/env node
+'use strict';
+
+var commander = require('commander');
+
+var normalizeArgs = require('../lib/helpers/normalizeArgs');
+var reporter = require('../lib/cli/utils/reporter');
+var api = require('../lib/api');
+
+var cliConfig = require('../lib/cli/config');
+var cliInit = require('../lib/cli/init');
+var cliInstall = require('../lib/cli/install');
+var cliList = require('../lib/cli/list');
+var cliRun = require('../lib/cli/run');
+var cliUninstall = require('../lib/cli/uninstall');
+var cliUpdate = require('../lib/cli/update');
+
+var pkg = require('../package.json');
+
+reporter(api);
+
+var numPrimaryArgs = 1;
+var argv = normalizeArgs(process.argv, numPrimaryArgs);
+var commandName = (argv.length > 2) && (argv[2].charAt(0) !== '-') ? argv.splice(2, 1)[0] : null;
+
+var commands = getCommands();
+
+var activeCommand = getCommand(commandName, commands);
+if (!activeCommand) { activeCommand = getCommand(null, commands); }
+
+var app = createApp(activeCommand);
+
+app.parse(argv);
+
+if (activeCommand.action) {
+	activeCommand.action(app.args, app);
+} else {
+	app.help();
+}
+
+
+function createApp(activeCommand) {
+	var app = commander
+		.version(pkg.version);
+
+	if (activeCommand.usage) {
+		app.usage(activeCommand.usage);
+	}
+	if (activeCommand.description) {
+		app.description(activeCommand.description);
+	}
+	if (activeCommand.options) {
+		activeCommand.options.forEach(function(option) {
+			app.option(option.usage, option.description);
+		});
+	}
+	return app;
+}
+
+function getCommand(commandName, commands) {
+	commandName = commandName || null;
+	return commands.filter(function(command) {
+		return command.name === commandName;
+	})[0] || null;
+}
+
+function getCommands() {
+	var subCommands = createSubCommands();
+	var mainCommand = createMainCommand(subCommands);
+	return [mainCommand].concat(subCommands);
+
+	function createMainCommand(subCommands) {
+		var command = {
+			name: null,
+			usage: '<command> [options]',
+			description: 'Commands:',
+			options: [],
+			action: null
+		};
+		var defaultOptions = [
+			{
+				usage: '-h, --help',
+				description: 'output usage information'
+			},
+			{
+				usage: '-V, --version',
+				description: 'output the version number'
+			}
+		];
+
+		var commandHelp = createCommandList(subCommands, defaultOptions.concat(command.options));
+		command.description += '\n\n' + commandHelp;
+
+		return command;
+
+		function createCommandList(commands, options) {
+			var maxCommandLength = commands.map(function(command) {
+				return command.name;
+			}).reduce(function(maxLength, commandName) {
+				return Math.max(maxLength, commandName.length);
+			}, 0);
+
+			var maxOptionLength = options.map(function(option) {
+				return option.usage;
+			}).reduce(function(maxLength, optionName) {
+				return Math.max(maxLength, optionName.length);
+			}, 0);
+
+			var columnWidth = Math.max(maxCommandLength, maxOptionLength);
+
+			return commands.map(function(command) {
+				var commandName = command.name;
+				var commandDescription = command.description;
+				var paddedCommandName = padString(commandName, columnWidth, ' ');
+				return '    ' + paddedCommandName + '  ' + commandDescription;
+			}).join('\n');
+
+
+			function padString(string, length, padCharacter) {
+				while (string.length < length) { string += padCharacter; }
+				return string;
+			}
+		}
+	}
+
+	function createSubCommands() {
+		return [
+			{
+				name: 'init',
+				usage: 'init',
+				description: 'Initialize a project',
+				options: [
+					{
+						usage: '-P, --path [path] [options]',
+						description: 'project path'
+					}
+				],
+				action: createCommandAction(cliInit)
+			},
+			{
+				name: 'install',
+				usage: 'install <package> [package...] [options]',
+				description: 'Install a package',
+				options: [
+					{
+						usage: '-P, --path [path]',
+						description: 'project path'
+					}
+				],
+				action: createCommandAction(cliInstall)
+			},
+			{
+				name: 'uninstall',
+				usage: 'uninstall <package> [package...] [options]',
+				description: 'Uninstall a package',
+				options: [
+					{
+						usage: '-P, --path [path]',
+						description: 'project path'
+					}
+				],
+				action: createCommandAction(cliUninstall)
+			},
+			{
+				name: 'update',
+				usage: 'update <package> [package...] [options]',
+				description: 'Update a package',
+				options: [],
+				action: createCommandAction(cliUpdate)
+			},
+			{
+				name: 'list',
+				usage: 'list [options]',
+				description: 'List installed packages and tasks',
+				options: [
+					{
+						usage: '-q, --quiet',
+						description: 'non-verbose output'
+					}
+				],
+				action: createCommandAction(cliList)
+			},
+			{
+				name: 'config',
+				usage: 'config [options]',
+				description: 'Set environment/package/task configuration',
+				options: [
+						{
+						usage: '-c, --config <json>',
+						description: 'configuration updates'
+					},
+					{
+						usage: '-t, --task [name]',
+						description: 'task to configure'
+					},
+					{
+						usage: '-T, --target [name]',
+						description: 'target to configure'
+					},
+					{
+						usage: '-p, --package [name]',
+						description: 'task package'
+					},
+					{
+						usage: '-e, --env [name]',
+						description: 'environment to configure'
+					},
+					{
+						usage: '-P, --path [path]',
+						description: 'project path'
+					}
+				],
+				action: createCommandAction(cliConfig)
+			},
+			{
+				name: 'run',
+				usage: 'run <task> [task...] [options]',
+				description: 'Run a task',
+				options: [
+					{
+						usage: '-c, --config <json>',
+						description: 'task configuration overrides'
+					},
+					{
+						usage: '-e, --env [name]',
+						description: 'environment name'
+					},
+					{
+						usage: '-P, --path [path]',
+						description: 'project path'
+					}
+
+				],
+				action: createCommandAction(cliRun)
+			}
+		];
+
+		function createCommandAction(command) {
+			return function(args, options) {
+				command(args, options, function(error) {
+					if (error) {
+						if (error.name === 'ErrorInvalidArgumentsError') {
+							return options.help();
+						} else {
+							throw error;
+						}
+					}
+				});
+			};
+		}
+	}
+}

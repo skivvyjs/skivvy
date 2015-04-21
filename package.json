@@ -1,0 +1,64 @@
+{
+  "name": "skivvy",
+  "version": "0.1.10",
+  "description": "Lightweight task runner for modular, reusable build systems",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": {
+    "skivvy": "./bin/skivvy"
+  },
+  "directories": {
+    "bin": "bin",
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "bin"
+  ],
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timkendrick/skivvy.git"
+  },
+  "author": "Tim Kendrick <timkendrick@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/timkendrick/skivvy/issues"
+  },
+  "homepage": "https://github.com/timkendrick/skivvy",
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "chai-as-promised": "^5.0.0",
+    "mocha": "^2.2.4",
+    "mock-fs": "^2.5.0",
+    "mocks": "0.0.15",
+    "rewire": "^2.3.3",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.7.0"
+  },
+  "dependencies": {
+    "archy": "^1.0.0",
+    "chalk": "^1.0.0",
+    "commander": "^2.7.1",
+    "dateformat": "^1.0.11",
+    "end-of-stream": "^1.1.0",
+    "error-system": "^0.1.0",
+    "es6-template-strings": "^0.1.0",
+    "escape-regexp": "0.0.1",
+    "extend": "^2.0.0",
+    "glob": "^5.0.5",
+    "init-package-json": "^1.4.2",
+    "lodash.template": "^3.5.0",
+    "minimist": "^1.1.1",
+    "npm": "^2.8.4",
+    "pretty-ms": "^1.1.0",
+    "promise": "^7.0.0",
+    "promise-map-series": "^0.2.1",
+    "stream-consume": "^0.1.0"
+  }
+}
