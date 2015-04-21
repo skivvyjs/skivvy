@@ -165,6 +165,7 @@ Get the Skivvy project configuration
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
+| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
@@ -195,6 +196,7 @@ Get a package's configuration
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
+| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
