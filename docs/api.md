@@ -54,19 +54,19 @@ api.method(options)
 
 ## API methods
 
-- [`skivvy.init()`](#skivvy.init)
-- [`skivvy.install()`](#skivvy.install)
-- [`skivvy.uninstall()`](#skivvy.uninstall)
-- [`skivvy.list()`](#skivvy.list)
+- [`skivvy.initProject()`](#skivvy.initProject)
+- [`skivvy.installPackage()`](#skivvy.installPackage)
+- [`skivvy.uninstallPackage()`](#skivvy.uninstallPackage)
+- [`skivvy.listPackages()`](#skivvy.listPackages)
 - [`skivvy.getProjectConfig()`](#skivvy.getProjectConfig)
-- [`skivvy.setProjectConfig()`](#skivvy.setProjectConfig)
+- [`skivvy.updateProjectConfig()`](#skivvy.updateProjectConfig)
 - [`skivvy.getPackageConfig()`](#skivvy.getPackageConfig)
-- [`skivvy.setPackageConfig()`](#skivvy.setPackageConfig)
+- [`skivvy.updatePackageConfig()`](#skivvy.updatePackageConfig)
 - [`skivvy.run()`](#skivvy.run)
-- [`skivvy.update()`](#skivvy.update)
+- [`skivvy.updatePackage()`](#skivvy.updatePackage)
 
-<a name="skivvy.init"></a>
-### `skivvy.init(options, [callback])`
+<a name="skivvy.initProject"></a>
+### `skivvy.initProject(options, [callback])`
 
 Create a new Skivvy project
 
@@ -79,8 +79,8 @@ Create a new Skivvy project
 | `path` | `string` | No | `process.cwd()` | Path at which to initialize the project |
 
 
-<a name="skivvy.install"></a>
-### `skivvy.install(options, [callback])`
+<a name="skivvy.installPackage"></a>
+### `skivvy.installPackage(options, [callback])`
 
 Install a package in a Skivvy project
 
@@ -94,8 +94,8 @@ Install a package in a Skivvy project
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.uninstall"></a>
-### `skivvy.uninstall(options, [callback])`
+<a name="skivvy.uninstallPackage"></a>
+### `skivvy.uninstallPackage(options, [callback])`
 
 Uninstall a package from a Skivvy project
 
@@ -109,8 +109,8 @@ Uninstall a package from a Skivvy project
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.list"></a>
-### `skivvy.list(options, [callback])`
+<a name="skivvy.listPackages"></a>
+### `skivvy.listPackages(options, [callback])`
 
 List the installed packages and tasks
 
@@ -169,8 +169,8 @@ Get the Skivvy project configuration
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.setProjectConfig"></a>
-### `skivvy.setProjectConfig(options, [callback])`
+<a name="skivvy.updateProjectConfig"></a>
+### `skivvy.updateProjectConfig(options, [callback])`
 
 Update the Skivvy project configuration
 
@@ -180,7 +180,7 @@ Update the Skivvy project configuration
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `config` | `object` | Yes | N/A | New project configuration |
+| `updates` | `object` | Yes | N/A | Updates to merge into project configuration |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
@@ -200,8 +200,8 @@ Get a package's configuration
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.setPackageConfig"></a>
-### `skivvy.setPackageConfig(options, [callback])`
+<a name="skivvy.updatePackageConfig"></a>
+### `skivvy.updatePackageConfig(options, [callback])`
 
 Update a package's configuration
 
@@ -212,7 +212,7 @@ Update a package's configuration
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
-| `config` | `object` | Yes | N/A | New package configuration |
+| `updates` | `object` | Yes | N/A | Updates to merge into package configuration |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
@@ -232,8 +232,8 @@ Run a task
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.update"></a>
-### `skivvy.update(options, [callback])`
+<a name="skivvy.updatePackage"></a>
+### `skivvy.updatePackage(options, [callback])`
 
 Update installed packages
 
