@@ -136,28 +136,23 @@ List the installed packages and tasks
 	{
 		"name": "react-seed",
 		"description": "React app package",
-		"version": "1.0.3",
-		"tasks": [
-			{
-				"name": "test",
+		"tasks": {
+			"test": {
 				"description": "Run automated tests"
 			},
-			{
-				"name": "compile",
+			"compile": {
 				"description": "Compile JS and CSS"
 			}
-		]
+		}
 	},
 	{
 		"name": "browser-sync",
 		"description": "BrowserSync server tasks",
-		"version": "1.0.1",
-		"tasks": [
-			{
-				"name": "serve",
+		"tasks": {
+			"serve": {
 				"description": "Launch a server"
 			}
-		]
+		}
 	}
 ]
 ```
