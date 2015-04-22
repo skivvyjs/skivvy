@@ -57,13 +57,13 @@ api.method(options)
 - [`skivvy.initProject()`](#skivvy.initProject)
 - [`skivvy.installPackage()`](#skivvy.installPackage)
 - [`skivvy.uninstallPackage()`](#skivvy.uninstallPackage)
+- [`skivvy.updatePackage()`](#skivvy.updatePackage)
 - [`skivvy.listPackages()`](#skivvy.listPackages)
 - [`skivvy.getProjectConfig()`](#skivvy.getProjectConfig)
 - [`skivvy.updateProjectConfig()`](#skivvy.updateProjectConfig)
 - [`skivvy.getPackageConfig()`](#skivvy.getPackageConfig)
 - [`skivvy.updatePackageConfig()`](#skivvy.updatePackageConfig)
 - [`skivvy.run()`](#skivvy.run)
-- [`skivvy.updatePackage()`](#skivvy.updatePackage)
 
 <a name="skivvy.initProject"></a>
 ### `skivvy.initProject(options, [callback])`
@@ -106,6 +106,21 @@ Uninstall a package from a Skivvy project
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
+| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
+
+
+<a name="skivvy.updatePackage"></a>
+### `skivvy.updatePackage(options, [callback])`
+
+Update installed packages
+
+**Returns:** `Promise<string>` Version number of the updated package
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `package` | `string` `array` | No | `null` | Package name(s) to update, or `null` to update all packages |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
@@ -230,19 +245,3 @@ Run a task
 | `task` | `function` | Yes | N/A | Task to run |
 | `config` | `object` | Yes | N/A | Config object to pass to the task |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
-
-
-<a name="skivvy.updatePackage"></a>
-### `skivvy.updatePackage(options, [callback])`
-
-Update installed packages
-
-**Returns:** `Promise<string>` Version number of the updated package
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `package` | `string` `array` | No | `null` | Package name(s) to update, or `null` to update all packages |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
-
