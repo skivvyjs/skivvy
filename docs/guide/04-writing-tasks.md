@@ -67,6 +67,7 @@ module.exports = function(config, callback) {
 
 module.exports.description = 'Wait a second';
 ```
+> _The callback argument follows the standard Node conventions: you can indicate that the task has failed by calling `callback(error)`, or alternatively call `callback(null, value)` to pass a return value (useful when running tasks via the [Skivvy API](../api.md#skivvy.run))._
 
 ### Method 2: return a promise from the task
 
@@ -82,6 +83,7 @@ module.exports = function(config) {
 
 module.exports.description = 'Wait a second';
 ```
+> _You can also indicate that the task has failed by calling `reject(error)`, or alternatively call `resolve(value)` to pass a return value (useful when running tasks via the [Skivvy API](../api.md#skivvy.run))._
 
 ### Method 3: use `this.async()` within the task
 
@@ -94,6 +96,8 @@ module.exports = function(config) {
 
 module.exports.description = 'Wait a second';
 ```
+
+> _You can also indicate that the task has failed by calling `done(false)`._
 
 
 ## Combining existing tasks to form composite tasks
