@@ -59,8 +59,8 @@ api.method(options)
 - [`skivvy.uninstallPackage()`](#skivvy.uninstallPackage)
 - [`skivvy.updatePackage()`](#skivvy.updatePackage)
 - [`skivvy.listPackages()`](#skivvy.listPackages)
-- [`skivvy.getProjectConfig()`](#skivvy.getProjectConfig)
-- [`skivvy.updateProjectConfig()`](#skivvy.updateProjectConfig)
+- [`skivvy.getEnvironmentConfig()`](#skivvy.getEnvironmentConfig)
+- [`skivvy.updateEnvironmentConfig()`](#skivvy.updateEnvironmentConfig)
 - [`skivvy.getPackageConfig()`](#skivvy.getPackageConfig)
 - [`skivvy.updatePackageConfig()`](#skivvy.updatePackageConfig)
 - [`skivvy.run()`](#skivvy.run)
@@ -164,23 +164,24 @@ List the installed packages and tasks
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.getProjectConfig"></a>
-### `skivvy.getProjectConfig(options, [callback])`
+<a name="skivvy.getEnvironmentConfig"></a>
+### `skivvy.getEnvironmentConfig(options, [callback])`
 
-Get the Skivvy project configuration
+Get the Skivvy environment configuration
 
-**Returns:** `Promise<object>` Current project configuration
+**Returns:** `Promise<object>` Current environment configuration
 
 **Options:**
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
+| `environment` | `string` | No | `"default"` | Which environment configuration to retrieve |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.updateProjectConfig"></a>
-### `skivvy.updateProjectConfig(options, [callback])`
+<a name="skivvy.updateEnvironmentConfig"></a>
+### `skivvy.updateEnvironmentConfig(options, [callback])`
 
 Update the Skivvy project configuration
 
@@ -190,7 +191,8 @@ Update the Skivvy project configuration
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `updates` | `object` | Yes | N/A | Updates to merge into project configuration |
+| `updates` | `object` | Yes | N/A | Updates to merge into environment configuration |
+| `environment` | `string` | No | `"default"` | Which environment configuration to update |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
@@ -207,6 +209,7 @@ Get a package's configuration
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
+| `environment` | `string` | No | `"default"` | Environment to use when expanding placeholder variables |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 

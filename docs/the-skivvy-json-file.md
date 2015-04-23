@@ -10,38 +10,48 @@ This file can be edited manually or updated via the `skivvy config` command.
 ```json
 {
 	"include": "skivvy/tasks",
-	"projectConfig": {
-		"paths": {
-			"source": "src",
-			"destination": "dist"
+	"environment": {
+		"default": {
+			"paths": {
+				"source": "src",
+				"destination": "build-dev"
+			},
+			"port": 8000,
+			"debug": true
 		},
-		"port": 8000,
-		"debug": false
+		"production": {
+			"paths": {
+				"source": "src",
+				"destination": "build-prod"
+			},
+			"port": 80,
+			"debug": false
+		}
 	},
-	"packageConfig": {
+	"packages": {
 		"browserify": {
-			"source": "<%= projectConfig.paths.source %>/**/*.js",
-			"destination": "<%= projectConfig.paths.destination %>/js/app.js",
+			"source": "<%= environment.paths.source %>/**/*.js",
+			"destination": "<%= environment.paths.destination %>/js/app.js",
 			"options": {
-				"debug": "<%= projectConfig.debug %>",
+				"debug": "<%= environment.debug %>",
 				"banner": "<%= project.name %> - v<%= project.version %>\n"
 			}
 		},
 		"stylus": {
-			"source": "<%= projectConfig.paths.source %>/**/*.styl",
-			"destination": "<%= projectConfig.paths.destination %>/css/app.css",
+			"source": "<%= environment.paths.source %>/**/*.styl",
+			"destination": "<%= environment.paths.destination %>/css/app.css",
 			"options": {
 				"includeCss": true,
-				"compress": "<%= !projectConfig.debug %>",
+				"compress": "<%= !environment.debug %>",
 				"banner": "<%= project.name %> - v<%= project.version %>\n"
 			}
 		},
 		"browser-sync": {
-			"root": "<%= projectConfig.paths.destination %>",
+			"root": "<%= environment.paths.destination %>",
 			"options": {
-				"port": "<%= projectConfig.port %>",
+				"port": "<%= environment.port %>",
 				"hostname": "*",
-				"watch": "<%= projectConfig.debug %>",
+				"watch": "<%= environment.debug %>",
 				"open": true
 			}
 		}
@@ -56,15 +66,17 @@ The following options can be set in the `skivvy.json` file:
 The path where local tasks are loaded from, relative to the project root
 
 
-### `projectConfig` (default: `{}`)
+### `environment` (default: `{}`)
 
-Project-level configuration settings
+Environment configuration settings, keyed by environment name
+
+The default environment is named `"default"`
 
 
 ### `packageConfig` (default: `{}`)
 
-Package-level configuration settings, keyed by package name
+Package configuration settings, keyed by package name
 
 -
 
-See the [Configuring tasks](guide/02-configuring-tasks.md) guide for more information on how to work with project-level and package-level configuration.
+See the [Configuring tasks](guide/02-configuring-tasks.md) guide for more information on how to work with environment and package configuration.
