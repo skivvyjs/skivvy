@@ -88,18 +88,10 @@ Sometimes you need dynamic values in your configuration settings, in order to av
 - **Package** configuration
 	- `project`: contents of `package.json`
 	- `environment`: the environment configuration object
-	- `package`: the package module itself. This contains the following:
-		-  `package.name`: the package name
-		-  `package.description`: human-readable description of the package
-		-  `package.tasks`: array of tasks contained in the package
 - **Task-level** configuration (via command-line arguments when running a task)
 	- `project`: contents of `package.json`
 	- `environment`: the environment configuration object
 	- `config`: the package configuration object
-	- `package`: the containing package module. This contains the following:
-		-  `package.name`: the package name
-		-  `package.description`: human-readable description of the package
-		-  `package.tasks`: array of tasks contained in the package
 
 
 #### Example: Referencing `package.json` values with the `project` placeholder
