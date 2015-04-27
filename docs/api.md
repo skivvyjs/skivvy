@@ -23,47 +23,93 @@ skivvy.run({ task: buildTask, config: buildConfig }, function(error) {
 
 ## API rules
 
-- All API methods are asynchronous
-- All API methods specify two arguments:
+All API methods are either **synchronous** or **asynchronous**.
+
+### Synchronous API methods
+
+- Specify one argument:
+	- `options`: key/value object containing method arguments
+- Return immediately with a value
+
+### Asynchronous API methods
+
+- Specify two arguments:
 	- `options`: key/value object containing method arguments
 	- `callback`: (optional) Callback to be invoked on success/error
-- All API methods return a promise to be settled on success/error
+- Return a promise to be settled on success/error
 
-This means you can call the API methods either using Node-style callbacks or using promises:
+	This means you can call the API methods either using Node-style callbacks or using promises:
 
-```javascript
-// Example using Node-style callback
-api.method(options, function(error, result) {
-	if (error) {
-		console.error('Called API Method, encountered error:', error);
-	} else {
-		console.log('Called API Method, returned value:', result);
-	}
-});
-
-// Example using promises:
-api.method(options)
-	.then(function(result) {
-		console.log('Called API Method, returned value:', result);
-	})
-	.catch(function(error) {
-		console.error('Called API Method, encountered error:', error);
+	```javascript
+	// Example using Node-style callback
+	api.method(options, function(error, result) {
+		if (error) {
+			console.error('Called API Method, encountered error:', error);
+		} else {
+			console.log('Called API Method, returned value:', result);
+		}
 	});
-```
+
+	// Example using promises:
+	api.method(options)
+		.then(function(result) {
+			console.log('Called API Method, returned value:', result);
+		})
+		.catch(function(error) {
+			console.error('Called API Method, encountered error:', error);
+		});
+	```
 
 
 ## API methods
 
+### Synchronous methods
+- [`skivvy.getEnvironmentConfig()`](#skivvy.getEnvironmentConfig)
+- [`skivvy.getPackageConfig()`](#skivvy.getPackageConfig)
+
+### Asynchronous methods
 - [`skivvy.initProject()`](#skivvy.initProject)
 - [`skivvy.installPackage()`](#skivvy.installPackage)
 - [`skivvy.uninstallPackage()`](#skivvy.uninstallPackage)
 - [`skivvy.updatePackage()`](#skivvy.updatePackage)
 - [`skivvy.listPackages()`](#skivvy.listPackages)
-- [`skivvy.getEnvironmentConfig()`](#skivvy.getEnvironmentConfig)
 - [`skivvy.updateEnvironmentConfig()`](#skivvy.updateEnvironmentConfig)
-- [`skivvy.getPackageConfig()`](#skivvy.getPackageConfig)
 - [`skivvy.updatePackageConfig()`](#skivvy.updatePackageConfig)
 - [`skivvy.run()`](#skivvy.run)
+
+
+<a name="skivvy.getEnvironmentConfig"></a>
+### `skivvy.getEnvironmentConfig(options)`
+
+Get the Skivvy environment configuration
+
+**Returns:** `object` Environment configuration object
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
+| `environment` | `string` | No | `"default"` | Which environment configuration to retrieve |
+| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
+
+
+<a name="skivvy.getPackageConfig"></a>
+### `skivvy.getPackageConfig(options)`
+
+Get a package's configuration
+
+**Returns:** `object` Package configuration object
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `package` | `string` | Yes | N/A | Package name |
+| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
+| `environment` | `string` | No | `"default"` | Environment to use when expanding placeholder variables |
+| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
+
 
 <a name="skivvy.initProject"></a>
 ### `skivvy.initProject(options, [callback])`
@@ -164,22 +210,6 @@ List the installed packages and tasks
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.getEnvironmentConfig"></a>
-### `skivvy.getEnvironmentConfig(options, [callback])`
-
-Get the Skivvy environment configuration
-
-**Returns:** `Promise<object>` Current environment configuration
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
-| `environment` | `string` | No | `"default"` | Which environment configuration to retrieve |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
-
-
 <a name="skivvy.updateEnvironmentConfig"></a>
 ### `skivvy.updateEnvironmentConfig(options, [callback])`
 
@@ -193,23 +223,6 @@ Update the Skivvy project configuration
 | ----- | ---- | -------- | ------- | ----------- |
 | `updates` | `object` | Yes | N/A | Updates to merge into environment configuration |
 | `environment` | `string` | No | `"default"` | Which environment configuration to update |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
-
-
-<a name="skivvy.getPackageConfig"></a>
-### `skivvy.getPackageConfig(options, [callback])`
-
-Get a package's configuration
-
-**Returns:** `Promise<object>` Current package configuration
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `package` | `string` | Yes | N/A | Package name |
-| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
-| `environment` | `string` | No | `"default"` | Environment to use when expanding placeholder variables |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
