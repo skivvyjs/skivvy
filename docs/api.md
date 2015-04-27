@@ -234,12 +234,12 @@ Update a package's configuration
 
 Run a task
 
-**Returns:** `Promise<*>` Value returned by the task function
+**Returns:** `Promise<*>` Value returned by the task function. If the `task` option is an array of task functions, the promise will be fulfilled with an array of values corresponding to the task functions.
 
 **Options:**
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `task` | `function` | Yes | N/A | Task to run |
-| `config` | `object` | Yes | N/A | Config object to pass to the task |
+| `task` | `function`,`array` | Yes | N/A | Task function (or array of task functions) to run |
+| `config` | `object` | Yes | N/A | Config object to pass to the task function |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
