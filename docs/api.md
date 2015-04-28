@@ -23,7 +23,7 @@ skivvy.run({ task: buildTask, config: buildConfig }, function(error) {
 
 ## API rules
 
-All API methods are either **synchronous** or **asynchronous**.
+All API methods are either **synchronous**, **asynchronous**, or **utility** methods.
 
 ### Synchronous API methods
 
@@ -60,6 +60,10 @@ All API methods are either **synchronous** or **asynchronous**.
 		});
 	```
 
+### Utility methods
+
+- Used for debugging and notification purposes
+
 
 ## API methods
 
@@ -77,6 +81,13 @@ All API methods are either **synchronous** or **asynchronous**.
 - [`skivvy.updatePackageConfig()`](#skivvy.updatePackageConfig)
 - [`skivvy.run()`](#skivvy.run)
 
+### Utility methods
+
+- [`skivvy.log()`](#skivvy.log)
+- [`skivvy.timer.start()`](#skivvy.timer.start)
+- [`skivvy.timer.end()`](#skivvy.timer.end)
+
+-
 
 <a name="skivvy.getEnvironmentConfig"></a>
 ### `skivvy.getEnvironmentConfig(options)`
@@ -256,3 +267,53 @@ Run a task
 | `task` | `function`,`array` | Yes | N/A | Task function (or array of task functions) to run |
 | `config` | `object` | Yes | N/A | Config object to pass to the task function |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
+
+
+<a name="skivvy.log"></a>
+### `skivvy.log(message, [message2, [message3...]])`
+
+Log a message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.timer.start"></a>
+### `skivvy.timer.start(label, [quiet])`
+
+Start timing an event
+
+The current time will be logged to the console, unless the `quiet` argument is set to `true`
+
+The timer will stop when [`skivvy.timer.end()`](#skivvy.timer.end) is called with the corresponding `label`
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `label` | `string` | Yes | N/A | Event identifier |
+| `quiet` | `boolean` | No | `false` | Whether to prevent console output |
+
+
+<a name="skivvy.timer.end"></a>
+### `skivvy.timer.end(label, [quiet])`
+
+Stop timing an event that was started by calling [`skivvy.timer.start()`](#skivvy.timer.start) with the corresponding `label`
+
+The elapsed time will be logged to the console, prefixed with the current time, unless the `quiet` argument is set to `true`
+
+**Returns:** `number` Number of milliseconds that have elapsed since the timer was started
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `label` | `string` | Yes | N/A | Event identifier |
+| `quiet` | `boolean` | No | `false` | Whether to prevent console output |
