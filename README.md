@@ -19,33 +19,35 @@ This will make the `skivvy` command globally available. See the list of [availab
 There are 4 steps in the Skivvy workflow:
 
 1. Initialize a project: `skivvy init`
-2. Install packages: `skivvy install [package]`
-3. Configure packages: `skivvy config [package]`
+2. Install task packages: `skivvy install [package]`
+3. Configure task packages: `skivvy config [package]`
 4. Run tasks from the installed packages: `skivvy run [task]`
 
-...all without having to write a single line of code.
+...this gives you a robust and highly configurable build system, all without having to write a single line of code.
 
 
 ## What is Skivvy?
 
-Skivvy is **a task runner, not a build tool**. In other words, Skivvy provides a way to instantly launch your tasks with the correct configuration, but what you choose to do within the tasks themselves is completely up to you.
+Skivvy is a task runner. It comes with a simple command-line tool that lets you instantly launch your project's tasks without ever needing to write any plumbing code. Skivvy's task packages make it a piece of cake to add to your project's repertoire of available tasks, and allow you to create truly modular, reusable build systems.
 
-You can write tasks that scaffold components, switch branches, bump version numbers, deploy builds, send emails… the sky's the limit. Under the hood, Skivvy tasks are [just plain functions](docs/guide/04-writing-tasks.md), so you're free to implement them however you like. This means that you can write your tasks using [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, even mixing different build tools within the same project if that's what you feel like doing. No more vendor lock-in!
+Skivvy will only go as far as launching your tasks though: what you choose to do within the tasks themselves is completely up to you. You can write tasks that scaffold components, switch branches, bump version numbers, deploy builds, send emails… the sky's the limit. Under the hood, Skivvy tasks are [just plain functions](docs/guide/04-writing-tasks.md), so you're free to implement them however you like.
+
+This means that you can carry on writing your tasks using [Gulp](http://gulpjs.com/)/[Broccoli](https://github.com/broccolijs/broccoli)/[Yo](https://github.com/yeoman/yo)/etc, even mixing multiple build tools within the same project if that's what you feel like doing, with no more need to worry about vendor lock-in.
 
 
 ### How does it work?
 
 - Off-the-shelf task packages can be installed alongside your project-specific tasks
-- All tasks are automagically accessible from the command-line, with no plumbing code needed
+- All tasks are automagically accessible from the command-line as soon as they are installed
 - Tasks can be configured via the command-line tool, or by hand-editing JSON if preferred
 - Custom tasks can easily be packaged into modules and shared across multiple projects
 
 
 ### The killer feature: task packages
 
-Skivvy tasks can be organized into modules, or **packages**. This modular approach means that all the heavy lifting is handled by helper packages whose internals are completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. Packages are intended to be reused across many different projects, and range from generic utilities (e.g. [skivvy-create](https://github.com/timkendrick/skivvy-create) or [skivvy-browserify](https://github.com/timkendrick/skivvy-browserify)), to heavily opinionated build packs (e.g. a package to scaffold/test/build/deploy an HTML boilerplate app in your company's house style).
+Skivvy tasks can be organized into modules, or **packages**. This allows all the heavy lifting to be handled by helper packages whose internals are completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. Packages are intended to be reused across many different projects, and range from generic utilities (e.g. [skivvy-create](https://github.com/timkendrick/skivvy-create) or [skivvy-browserify](https://github.com/timkendrick/skivvy-browserify)), to heavily opinionated build packs (e.g. a package to scaffold/test/build/deploy an HTML boilerplate app in your company's house style).
 
-Packages can easily be combined into other packages, allowing you to compose elaborate task systems with as little code as possible. Using a modular task system saves a huge amount of developer effort and ensures that your build setup won't sprawl out of control as a project grows over time.
+Packages can easily be combined into other packages, allowing you to compose elaborate task systems with as little code as possible. Using a modular task system can save a huge amount of developer effort and ensures that your build setup won't sprawl out of control as a project grows over time.
 
 
 ### How does Skivvy differ from Gulp/Grunt/etc?
