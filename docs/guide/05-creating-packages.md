@@ -20,10 +20,10 @@ Let's say we want to create a Skivvy package for developing client-side React ap
 To get started, create a new folder and initialize it as an npm module:
 
 ```bash
-mkdir skivvy-react-seed && cd skivvy-react-seed
+mkdir skivvy-package-react-seed && cd skivvy-package-react-seed
 npm init
 ```
-> _All Skivvy packages **must** have an npm module name that starts with `skivvy-`._
+> _All Skivvy packages **must** have an npm module name that starts with `skivvy-package-`._
 
 > _Skivvy packages should also specify `skivvy-package` as a keyword in order for the npm search._
 
@@ -32,7 +32,7 @@ It can be useful to `npm link` the Skivvy package so that you can use it within 
 ```bash
 npm link
 cd ../my-other-project
-npm link skivvy-react-seed
+npm link skivvy-package-react-seed
 skivvy list # Shows the newly-created "react-seed" package
 ```
 
@@ -96,7 +96,7 @@ If you want to use Skivvy to help developing your package, there's nothing stopp
 
 Once you're happy with your package, it's time to publish it to the npm repository.
 
-> _Before you publish your package, make sure that the npm package name starts with `skivvy-` and that `skivvy-package` is one of the npm keywords._
+> _Before you publish your package, make sure that the npm package name starts with `skivvy-package-` and that `skivvy-package` is one of the npm keywords._
 
 To publish your package, run the following command and hope for the best:
 

@@ -25,7 +25,7 @@ External task packages can be installed into the current project using the `skiv
 skivvy install hello-world
 ```
 
-> _This will install the npm module named `skivvy-hello-world` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
+> _This will install the npm module named `skivvy-package-hello-world` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
 
 After running this command, all the tasks defined in `hello-world` are immediately available for use via `skivvy run [task]`.
 
