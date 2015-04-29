@@ -102,13 +102,10 @@ module.exports.description = 'Wait a second';
 
 ## Combining existing tasks to form composite tasks
 
-The easiest way to create a chain of tasks is to define your local task as an array of existing task functions:
+The easiest way to create a chain of tasks is to define your local task as an array of existing task names:
 
 ```javascript
-var build = require('./build');
-var deploy = require('./deploy');
-
-module.exports = [build, deploy];
+module.exports = ['build', 'deploy'];
 
 module.exports.description = 'Build and deploy';
 ```
@@ -120,12 +117,9 @@ For more complex use cases, the [Skivvy API](../api.md) makes it easy to compose
 ```javascript
 var skivvy = require('skivvy');
 
-var build = require('./build');
-var deploy = require('./deploy');
-
 module.exports = function(config, callback) {
 	// Run the 'build' task
-	skivvy.run(build, config, function(error) {
+	skivvy.run({ task: 'build' }, function(error) {
 		if (error) {
 			callback(error);
 			return;
@@ -135,7 +129,7 @@ module.exports = function(config, callback) {
 		console.log('Build completed, about to deploy');
 		
 		// Run the 'deploy' task
-		skivvy.run(deploy, config, function(error) {
+		skivvy.run({ task: 'deploy' }, function(error) {
 			if (error) {
 				callback(error);
 				return;
@@ -156,18 +150,15 @@ The above example uses Node-style callbacks to handle the asynchronous operation
 ```javascript
 var skivvy = require('skivvy');
 
-var build = require('./build');
-var deploy = require('./deploy');
-
 module.exports = function(config) {
 	// Run the 'build' task
-	return skivvy.run(build, config)
+	return skivvy.run({ task: 'build' }, config)
 		.then(function() {
 			// Perform some intermediate operation
 			console.log('Build completed, about to deploy');
 		}).then(function() {
 			// Run the 'deploy' task
-			return skivvy.run(deploy, config);
+			return skivvy.run({ task: 'deploy' }, config);
 		});
 	});
 });
