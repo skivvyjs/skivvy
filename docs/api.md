@@ -5,14 +5,7 @@ Skivvy can be used programatically, as follows:
 ```javascript
 var skivvy = require('skivvy');
 
-var buildTask = require('./skivvy_tasks/build');
-
-var buildConfig = {
-	source: 'src',
-	destination: 'dist'
-};
-
-skivvy.run({ task: buildTask, config: buildConfig }, function(error) {
+skivvy.run({ task:'build' }, function(error) {
 	if (error) {
 		console.error('Build error: ' + error);
 	} else {
@@ -264,8 +257,8 @@ Run a task
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `task` | `function`,`array` | Yes | N/A | Task function (or array of task functions) to run |
-| `config` | `object` | Yes | N/A | Config object to pass to the task function |
+| `task` | `string`,`array`,`function` | Yes | N/A | Task name, task function, or array of task names/functions to run in series |
+| `config` | `object` | Yes | N/A | Config values to merge into the task's config object |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
