@@ -282,9 +282,12 @@ Log a message to the console, prefixed with the current time. Multiple arguments
 
 Start timing an event
 
-If a `label` argument is passed, that label will be logged to the console
+If the `label` argument is specified, a message will be logged to the console:
 
-The timer will stop when [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end) is called with the token that is returned by this method
+- if `label` is a `string`, that label will be included in the console log
+- if `label` is `true`, a generic message will be logged to the console.
+
+The timer will stop when [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end) is called with the token that is returned by this method.
 
 **Returns:** `string` Token used to stop the timer
 
@@ -292,15 +295,20 @@ The timer will stop when [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end) i
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `label` | `string` | No | N/A | Label to log to the console |
+| `label` | `boolean`,`string` | No | N/A | Log a message to the console |
 
 
 <a name="skivvy.utils.timer.end"></a>
 ### `skivvy.utils.timer.end(token, [label])`
 
-Stop timing the event that corresponds to the `token` that was returned by [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start)
+Stop timing an event
 
-If a `label` argument is passed, that label will be logged to the console along with the timer's elapsed time
+This will stop the timer that corresponds to the `token` that was returned by the [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start) method.
+
+If the `label` argument is specified, a message will be logged to the console:
+
+- if `label` is a `string`, that label will be included in the console log
+- if `label` is `true`, a generic message will be logged to the console.
 
 **Returns:** `number` Number of milliseconds that have elapsed since the timer was started
 
@@ -309,4 +317,4 @@ If a `label` argument is passed, that label will be logged to the console along 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `token` | `string` | Yes | N/A | Timer identifier token |
-| `label` | `string` | No | N/A | Label to log to the console |
+| `label` | `string`,`boolean` | No | N/A | Log a message to the console |
