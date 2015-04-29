@@ -278,30 +278,29 @@ Log a message to the console, prefixed with the current time. Multiple arguments
 
 
 <a name="skivvy.utils.timer.start"></a>
-### `skivvy.utils.timer.start(label, [quiet])`
+### `skivvy.utils.timer.start([label])`
 
 Start timing an event
 
-The current time will be logged to the console, unless the `quiet` argument is set to `true`
+If a `label` argument is passed, that label will be logged to the console
 
-The timer will stop when [`skivvy.timer.end()`](#skivvy.timer.end) is called with the corresponding `label`
+The timer will stop when [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end) is called with the token that is returned by this method
 
-**Returns:** N/A
+**Returns:** `string` Token used to stop the timer
 
 **Options:**
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `label` | `string` | Yes | N/A | Event identifier |
-| `quiet` | `boolean` | No | `false` | Whether to prevent console output |
+| `label` | `string` | No | N/A | Label to log to the console |
 
 
 <a name="skivvy.utils.timer.end"></a>
-### `skivvy.utils.timer.end(label, [quiet])`
+### `skivvy.utils.timer.end(token, [label])`
 
-Stop timing an event that was started by calling [`skivvy.timer.start()`](#skivvy.timer.start) with the corresponding `label`
+Stop timing the event that corresponds to the `token` that was returned by [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start)
 
-The elapsed time will be logged to the console, prefixed with the current time, unless the `quiet` argument is set to `true`
+If a `label` argument is passed, that label will be logged to the console along with the timer's elapsed time
 
 **Returns:** `number` Number of milliseconds that have elapsed since the timer was started
 
@@ -309,5 +308,5 @@ The elapsed time will be logged to the console, prefixed with the current time, 
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `label` | `string` | Yes | N/A | Event identifier |
-| `quiet` | `boolean` | No | `false` | Whether to prevent console output |
+| `token` | `string` | Yes | N/A | Timer identifier token |
+| `label` | `string` | No | N/A | Label to log to the console |
