@@ -56,6 +56,7 @@ All API methods are either **synchronous**, **asynchronous**, or **utility** met
 ### Utility methods
 
 - Used for debugging and notification purposes
+- Located inside the `skivvy.utils` namespace
 
 
 ## API methods
@@ -76,9 +77,9 @@ All API methods are either **synchronous**, **asynchronous**, or **utility** met
 
 ### Utility methods
 
-- [`skivvy.log()`](#skivvy.log)
-- [`skivvy.timer.start()`](#skivvy.timer.start)
-- [`skivvy.timer.end()`](#skivvy.timer.end)
+- [`skivvy.utils.log()`](#skivvy.utils.log)
+- [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start)
+- [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end)
 
 -
 
@@ -262,8 +263,8 @@ Run a task
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.log"></a>
-### `skivvy.log(message, [message2, [message3...]])`
+<a name="skivvy.utils.log"></a>
+### `skivvy.utils.log(message, [message2, [message3...]])`
 
 Log a message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
 
@@ -276,8 +277,8 @@ Log a message to the console, prefixed with the current time. Multiple arguments
 | `message` | `string` | Yes | N/A | Message to be logged to the console |
 
 
-<a name="skivvy.timer.start"></a>
-### `skivvy.timer.start(label, [quiet])`
+<a name="skivvy.utils.timer.start"></a>
+### `skivvy.utils.timer.start(label, [quiet])`
 
 Start timing an event
 
@@ -295,8 +296,8 @@ The timer will stop when [`skivvy.timer.end()`](#skivvy.timer.end) is called wit
 | `quiet` | `boolean` | No | `false` | Whether to prevent console output |
 
 
-<a name="skivvy.timer.end"></a>
-### `skivvy.timer.end(label, [quiet])`
+<a name="skivvy.utils.timer.end"></a>
+### `skivvy.utils.timer.end(label, [quiet])`
 
 Stop timing an event that was started by calling [`skivvy.timer.start()`](#skivvy.timer.start) with the corresponding `label`
 
