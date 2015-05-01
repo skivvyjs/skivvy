@@ -85,7 +85,22 @@ module.exports.description = 'Wait a second';
 ```
 > _You can also indicate that the task has failed by calling `reject(error)`, or alternatively call `resolve(value)` to pass a return value (useful when running tasks via the [Skivvy API](../api.md#skivvy.run))._
 
-### Method 3: use `this.async()` within the task
+
+### Method 3: return a stream from the task
+
+```javascript
+var vinyl = require('vinyl-fs');
+
+module.exports = function(config) {
+	var stream = vinyl.src(config.source)
+		.pipe(vinyl.dest(config.destination));
+	return stream;
+};
+
+module.exports.description = 'Wait a second';
+```
+
+### Method 4: use `this.async()` within the task
 
 ```javascript
 module.exports = function(config) {
