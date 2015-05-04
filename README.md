@@ -90,23 +90,23 @@ Skivvy is also easy to integrate into other task runners via its [JavaScript API
 	  ├── greet - Greet the user
 	  └── welcome - Welcome the user
 	```
-	_This means that within our project we're now able to use the `hello-world:greet` and `hello-world:welcome` tasks, seeing as they were both included in the `hello-world` package._
+	_This means that within our project we're now able to use the `hello-world::greet` and `hello-world::welcome` tasks, seeing as they were both included in the `hello-world` package._
 
 4. Configure the `hello-world` package:
 
 	```bash
 	skivvy config hello-world --config.user=Skivvy
 	```
-	> _This sets the `user` configuration variable for all tasks within the `hello-world` package_
+	> _This sets the `user` configuration variable within the `hello-world` package_
 
-5. Run the `hello-world:greet` and `hello-world:welcome` tasks:
+5. Run the `hello-world::greet` and `hello-world::welcome` tasks:
 
 	```bash
-	skivvy run hello-world:greet # Outputs: "Hello, Skivvy!"
-	skivvy run hello-world:welcome # Outputs: "Welcome to Skivvy!"
+	skivvy run hello-world::greet # Outputs: "Hello, Skivvy!"
+	skivvy run hello-world::welcome # Outputs: "Welcome to Skivvy!"
 	```
 
-	> _N.B. In the example above, the `hello-world:` package prefix is optional – `skivvy run greet` and `skivvy run welcome` would also work._
+	> _N.B. In the example above, the `hello-world::` package prefix is optional – `skivvy run greet` and `skivvy run welcome` would also work._
 
 ## User guide
 
@@ -125,8 +125,7 @@ Good luck Skivvying!
 - `skivvy update` Update all package within the current project
 - `skivvy update [package]` Update a package within the current project
 - `skivvy list` List this project's installed tasks
-- `skivvy config` Update the current project configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
-- `skivvy config [package]` Update a package's configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
+- `skivvy config` Update project/package/task configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
 - `skivvy run [task]` Run a task within the current project
 
-All additional functionality is provided by the tasks themselves. See the list of [public Skivvy packages](docs/public-packages.md) for some common pre-packaged build tasks.
+All additional functionality is provided by the tasks themselves. See the list of [public Skivvy packages](docs/public-packages.md) for some common pre-packaged tasks.

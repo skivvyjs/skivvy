@@ -29,7 +29,7 @@ module.exports = function(config) {
 
 module.exports.description = 'Greet the user';
 ```
-> _You can also create tasks using the `skivvy create:task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
+> _You can also create tasks using the `skivvy create::task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
 
 Now you are able to see the task straight away in the command-line tool:
 

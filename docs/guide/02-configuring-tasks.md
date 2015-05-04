@@ -11,32 +11,36 @@
 
 # Configuring tasks
 
-Most tasks need to be given some kind of configuration in order to do anything useful. With Skivvy, task configuration can be set in three places:
+Most tasks need to be given some kind of configuration in order to do anything useful. With Skivvy, task configuration can be set in four places:
 
 - At the **environment** level, via `skivvy config`
-- At the **package** level, via `skivvy config [package]`
-- At the **task level**, via command-line arguments when running the task
+- At the **package** level, via `skivvy config --package=[package]`
+- At the **task** level, via `skivvy config --task=[task]`
+- At **run-time**, via command-line arguments when running the task
 
-We'll deal with task-level configuration in the section that discusses [running tasks](03-running-tasks.md#passing-additional-configuration-via-command-line-arguments). For now, let's concentrate on environment and packageconfiguration using the `skivvy config` command.
+We'll deal with run-time configuration overrides in the section that discusses [running tasks](03-running-tasks.md#passing-additional-configuration-via-command-line-arguments). For now, let's concentrate on using the `skivvy config` command to set configuration for environments, packages and tasks.
 
 **Note: in the examples below, "environment" refers to a Skivvy environment, not your shell environment.** A Skivvy environment is a self-contained set of project-level configuration that is accessible to all your tasks, and does not inherit any variables from your shell environment.
 
 
 ## Setting environment configuration
 
-Here's how to use the `skivvy config` command to set environment configuration settings:
+> Environment configuration variables are **not** passed directly to tasks, however their values can be referenced in **package** configuration, **task** configuration and **run-time** configuration.
+
+Here's how to use the `skivvy config` command to set configuration settings for the default environment:
 
 ```bash
-skivvy config --config.paths.source=src --config.port=8000 --config.debug=true
+skivvy config --config.paths.source=src --config.paths.destination=dest --config.port=8000 --config.debug=true
 ```
 > _Behind the scenes, this updates the project's `skivvy.json` file. See [here](../the-skivvy-json-file.md) for details._
 
-If you ran the command above, the environment configuration would now look like this:
+If you ran the command above, the default environment configuration would now look like this:
 
 ```json
 {
 	"paths": {
-		"source": "src"
+		"source": "src",
+		"destination": "dest"
 	},
 	"port": 8000,
 	"debug": true
@@ -45,53 +49,100 @@ If you ran the command above, the environment configuration would now look like 
 
 > _As you can see from the output above, the `skivvy config` command handles strings, numbers, booleans and nested objects correctly._
 
-Environment configuration is automatically passed to **local tasks** whenever they are run via `skivvy run [task]`.
+Tasks can be run in different environments to accommodate different build types. You can read more about configuring multiple environments in the section below on [using multiple environments](#using-multiple-environments).
 
----
-
-**IMPORTANT:** Environment configuration is **not** automatically passed to **external tasks**. In order to automatically pass configuration to external tasks, you need to update their _package_ configuration.
-
----
 
 ## Setting package configuration
 
-The `skivvy config [package]` command is used to set package-level configuration settings:
+> Package configuration variables are **not** passed directly to tasks, however their values can be referenced in **task** configuration and **run-time** configuration.
+
+> Package configuration can contain references to **environment** configuration variables.
+
+The `skivvy config --package=[package]` command is used to set package-level configuration settings:
 
 ```bash
-skivvy config browser-sync --config.source=dest --config.options.port=8000 --config.options.watch=true
+skivvy config --package=browser-sync --config.port=8000 --config.livereload=true
 ```
 
 If you ran the command above, the `browser-sync` package configuration would now look like this:
 
 ```json
 {
-	"source": "dest",
-	"options": {
-		"port": 8000,
-		"watch": true
-	}
+	"port": 8000,
+	"livereload": true
 }
 ```
 
-Package configuration does **not** automatically inherit the environment configuration. If you want to pass environment configuration settings to external tasks, you can achieve this by using placeholders in the packageconfiguration, referencing the `environment` placeholder variable:
+Package configuration does **not** automatically inherit the environment configuration. If you want to refer to environment configuration settings in your package configuration, you can achieve this by using placeholders in the package configuration, referencing the `environment` placeholder variable:
 
 ```bash
-skivvy config browser-sync --config.source="<%=environment.paths.destination%>" --config.options.port="<%=environment.port%>" --config.options.watch="<%=environment.debug%>"
+skivvy config browser-sync --config.port="<%=environment.port%>" --config.livereload="<%=environment.debug%>"
 ```
+
+
+## Setting task configuration
+
+> Task configuration variables **are** passed directly to tasks, however their values can be overridden by **run-time** configuration.
+
+> Task configuration can contain references to **package** and **environment** configuration variables.
+
+### Local tasks
+
+The `skivvy config --task=[task]` command is used to set task-level configuration settings for local tasks:
+
+```bash
+skivvy config --task=greet --config.user=Skivvy
+```
+
+If you ran the command above, the local `greet` task configuration would now look like this:
+
+```json
+{
+	"user": "Skivvy"
+}
+```
+
+### External tasks
+
+The `skivvy config --package=[package] --task=[task]` command is used to set task-level configuration settings for external tasks:
+
+```bash
+skivvy config --package=browser-sync --task=serve --config.open=true
+```
+
+If you ran the command above, the external `browser-sync` package's `serve` task configuration would now look like this:
+
+```json
+{
+	"open": true
+}
+```
+
+Task configuration does **not** automatically inherit package configuration or environment configuration. If you want to refer to package configuration or environment configuration settings in your task configuration, you can achieve this by using placeholders in the package configuration, referencing the `package` and `environment` placeholder variable:
+
+```bash
+skivvy config browser-sync --config.port="<%=package.port%>" --config.livereload="<%=package.livereload%>" --config.source="<%=environment.paths.destination%>"
+```
+
 
 ## Using placeholders in configuration values
 
-Sometimes you need dynamic values in your configuration settings, in order to avoid repeatedly hard-coding the same value across multiple packages. The following placeholders can be used when setting configuration values:
+Sometimes you need dynamic values in your configuration settings, in order to avoid repeatedly hard-coding the same value across multiple packages and tasks. The following placeholders are available when setting configuration values:
 
-- **Environment** configuration:
+- When setting **environment** configuration:
 	- `project`: contents of `package.json`
-- **Package** configuration
-	- `project`: contents of `package.json`
-	- `environment`: the environment configuration object
-- **Task-level** configuration (via command-line arguments when running a task)
+- When setting **package** configuration:
 	- `project`: contents of `package.json`
 	- `environment`: the environment configuration object
-	- `config`: the package configuration object
+- When setting **task-level** configuration:
+	- `project`: contents of `package.json`
+	- `environment`: the environment configuration object
+	- `package`: the package configuration object
+- When setting **run-time** configuration via command-line arguments when running a task:
+	- `project`: contents of `package.json`
+	- `environment`: the environment configuration object
+	- `package`: the package configuration object
+	- `config`: the task configuration object
 
 
 #### Example: Referencing `package.json` values with the `project` placeholder
@@ -102,7 +153,7 @@ When setting the environment or package configuration, you can reference fields 
 skivvy config --config.title="<%=project.name%> v<%=project.version%>"
 ```
 
-For example, in version 1.0.3 of an npm package named `"my-project-name"`, this would be translated to the following config object when the task is run:
+For example, in version `1.0.3` of an npm package named `"my-project-name"`, this would be equivalent to the following environment configuration:
 
 ```json
 {
@@ -112,19 +163,21 @@ For example, in version 1.0.3 of an npm package named `"my-project-name"`, this 
 
 #### Example: Referencing environment configuration using the `environment` placeholder
 
-You can reference the environment configuration when setting package configuration values, under the `environment` configuration variable:
+You can reference the environment configuration when setting package configuration values and task configuration values, under the `environment` configuration variable:
 
 ```bash
-skivvy config browserify --config.source="<%=environment.paths.source%>/**/*.js"
+skivvy config --package=browserify --config.source="<%=environment.paths.source%>/**/*.js"
 ```
 
-For an environment configuration object whose `"paths"` setting was set to `{ "source": "src" }`, this would translate to the following config object when a task from the browserify package was run:
+For an environment configuration object whose `"paths"` setting was set to `{ "source": "src" }`, this would be equivalent to the following browserify package configuration:
 
 ```bash
 {
 	"source": "src/**/*.js"
 }
 ```
+
+For examples of using placeholders in run-time configuration, see the section on [running tasks](03-running-tasks.md#passing-additional-configuration-via-command-line-arguments).
 
 
 ## Using multiple environments
@@ -152,6 +205,49 @@ This will give us an environment named `production`, and its configuration will 
 ```
 
 When it comes to running a task with `skivvy run [task]`, you can specify the `--env=production` argument to tell Skivvy to use this custom environment.
+
+
+## Configuring multiple task targets
+
+Sometimes you might want to run the same task several different times during the same build, with different configuration each time. This is achievable by defining multiple **target** configurations within the same task.
+
+For example, say you have a generic `copy` task that copies files from one location to another. When building an HTML5 app, you might want to copy an `assets` folder into the output directory, as well as copying an `index.html` file into the output directory. You can use the same `copy` task to perform the copy operation, and tell it to run different targets in order to perform both tasks.
+
+You can add custom task targets by adding a `--target=[target]` flag when setting task configuration:
+
+```bash
+skivvy config --task=copy --target=assets --config.source=./assets
+skivvy config --task=copy --target=index --config.source=./index.html
+```
+
+This would result in the following configuration for the `copy` task:
+
+```json
+{
+	"targets": {
+		"default": {},
+		"assets": {
+			"source": "./assets"
+		},
+		"index": {
+			"source": "./index.html"
+		}
+	}
+```
+
+...this also works for external tasks:
+
+```bash
+skivvy config --package=copy-files --task=copy --target=assets --config.source=./assets
+skivvy config --package=copy-files --task=copy --target=index --config.source=./index.html
+```
+
+See the section on [running tasks](03-running-tasks.md#running-tasks-with-different-targets) to see how to run tasks with a different target.
+
+
+## Hand-editing configuration JSON
+
+While the command-line tool provides a simple means of updating configuration, it might be easier to edit your configuration by hand for more complex projects.
 
 All the project's configuration, including all the different environment configurations, are stored in the project's [skivvy.json](../the-skivvy-json-file.md) file.
 

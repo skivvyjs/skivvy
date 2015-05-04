@@ -8,55 +8,7 @@ This file can be edited manually or updated via the `skivvy config` command.
 ## Example `skivvy.json` file
 
 ```json
-{
-	"include": "skivvy/tasks",
-	"environment": {
-		"default": {
-			"paths": {
-				"source": "src",
-				"destination": "build-dev"
-			},
-			"port": 8000,
-			"debug": true
-		},
-		"production": {
-			"paths": {
-				"source": "src",
-				"destination": "build-prod"
-			},
-			"port": 80,
-			"debug": false
-		}
-	},
-	"packages": {
-		"browserify": {
-			"source": "<%= environment.paths.source %>/**/*.js",
-			"destination": "<%= environment.paths.destination %>/js/app.js",
-			"options": {
-				"debug": "<%= environment.debug %>",
-				"banner": "<%= project.name %> - v<%= project.version %>\n"
-			}
-		},
-		"stylus": {
-			"source": "<%= environment.paths.source %>/**/*.styl",
-			"destination": "<%= environment.paths.destination %>/css/app.css",
-			"options": {
-				"includeCss": true,
-				"compress": "<%= !environment.debug %>",
-				"banner": "<%= project.name %> - v<%= project.version %>\n"
-			}
-		},
-		"browser-sync": {
-			"root": "<%= environment.paths.destination %>",
-			"options": {
-				"port": "<%= environment.port %>",
-				"hostname": "*",
-				"watch": "<%= environment.debug %>",
-				"open": true
-			}
-		}
-	}
-}
+// TODO
 ```
 
 The following options can be set in the `skivvy.json` file:

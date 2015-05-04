@@ -25,11 +25,10 @@ This will search all the installed packages and local tasks for a task named `se
 You can override configuration settings at runtime, by adding extra `--config.key=value` command-line arguments like this:
 
 ```bash
-skivvy run serve --config.source="<%=projectConfig.destination%>" --config.options.port=8000 --config.options.hostname=localhost --config.options.watch=true --config.options.open=false
+skivvy run serve --config.source="<%=environment.paths.destination%>" --config.port=8000 --config.livereload=true --config.open=false
 ```
 
 > _As shown here, the `--config` arguments support strings, numbers, booleans and nested objects. They also support placeholders in strings. See the section on [configuring tasks](02-configuring-tasks.md) for instructions on setting configuration values._
-
 
 ## Dealing with naming collisions
 
@@ -39,18 +38,34 @@ If there's more than one match for the specified task name, Skivvy prioritizes t
 
 1. **Local tasks**: any local tasks present in the `./skivvy_tasks` folder will take priority over tasks defined in external packages.
 
-2. **External tasks**: these are given the lowest priority when matching a task name.
+2. **External tasks**: these are prioritized below local tasks when matching a task name.
 
 	> _External tasks can still be targeted by prefixing them with their package name, as seen below._
 
-To avoid naming collisions when trying to run external tasks, you can prefix the task name with the package name, followed by a colon:
+To avoid naming collisions when trying to run external tasks, you can prefix the task name with the package name, followed by a double colon:
 
 ```bash
 # Run the `greet` task from the `hello-world` package:
-skivvy run hello-world:greet
+skivvy run hello-world::greet
 ```
 
-That should remove any lingering ambiguity. If it looks like a lot of typing, you'll be pleased to know that Skivvy comes with tab-autocomplete to save those precious seconds.
+## Running tasks with different targets
+
+As seen in the section on [configuring tasks](02-configuring-tasks.md#configuring-multiple-task-targets), each task can define multiple target configurations. Tasks usually run in their default target configuration, but you can tell a task to run in a different target configuration by suffixing the task name with a colon followed by the target name.
+
+For example, to run a task named `greet` which specifies a target configuration named `goodbye`, you can tell Skivvy to use the `goodbye` target configuration as follows:
+
+```bash
+# Run the `greet` task with the `goodbye` target configuration
+skivvy run greet:goodbye
+```
+
+This also applies to running package-prefixed tasks:
+
+```bash
+# Run the `greet` task from the `hello-world` package with the `goodbye` target configuration
+skivvy run hello-world::greet:goodbye
+```
 
 -
 

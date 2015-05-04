@@ -35,7 +35,7 @@ After running this command, all the tasks defined in `hello-world` are immediate
 Adding a local task is just as simple. Here's how you create a new local task:
 
 ```bash
-skivvy create:task
+skivvy create::task
 ```
 
 Skivvy will prompt you for a task name and description for your task, and then you're done!
