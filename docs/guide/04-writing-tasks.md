@@ -117,17 +117,60 @@ module.exports.description = 'Wait a second';
 
 ## Combining existing tasks to form composite tasks
 
+Tasks can be combined into a chain to form a **composite task**. Composite tasks offer an easy way to compose indvidual tasks into automated sequences of tasks.
+
+
+### Combining local tasks to form a composite task
+
 The easiest way to create a chain of tasks is to define your local task as an array of existing task names:
 
 ```javascript
-module.exports = ['build', 'deploy'];
+module.exports = ['test', 'build'];
 
-module.exports.description = 'Build and deploy';
+module.exports.description = 'Compile the application';
 ```
 
-In the example above, Skivvy will first run the local `build` task, then once it has successfully completed it will run the local `deploy` task. Each of the sub-tasks will be passed the same environment `config` argument.
+In the example above, Skivvy will first run the local `test` task, then once it has successfully completed it will run the local `build` task. Each of the sub-tasks will load their task configuration automatically, according to the rules discussed in the [configuring tasks](02-configuring-tasks.md) section.
 
-For more complex use cases, the [Skivvy API](../api.md) makes it easy to compose individual tasks into larger sequences of tasks:
+
+### Combining external tasks to form a composite task
+
+External tasks can also be composed into a sequence, as follows:
+
+```javascript
+module.exports = [
+	{ package: 'browserify', task: 'compile' },
+	{ package: 'copy-files', task: 'copy', target: 'assets' },
+	{ package: 'browser-sync', task: 'serve' }
+];
+
+module.exports.description = 'Build and serve the application';
+```
+
+Each task will wait for the previous one to complete successfully before continuing.
+
+
+### Combining local tasks, external tasks and anonymous tasks
+
+Composite tasks can contain a mixture of local tasks, external tasks and anonymous tasks.
+
+An anonymous task is a function which takes a `config` argument, and optionally uses one of the methods described in the section on [asynchronous tasks](#synchronous-vs-asynchronous-tasks) to indicate that Skivvy should wait for it to complete before moving onto the next task:
+
+```javascript
+module.exports = [
+	'test',
+	function(config, callback) {
+		console.log('Wait a second...');
+		setTimeout(callback, 1000);
+	},
+	{ task: 'build', target: 'client-app' },
+	{ package: 'browser-sync', task: 'serve' }
+]
+```
+
+## Composing more complex task sequences
+
+For more fine-grained control over task sequences, the [Skivvy API](../api.md) makes it easy to compose individual tasks into larger sequences of tasks:
 
 ```javascript
 var skivvy = require('skivvy');
@@ -144,7 +187,7 @@ module.exports = function(config, callback) {
 		console.log('Build completed, about to deploy');
 		
 		// Run the 'deploy' task
-		skivvy.run({ task: 'deploy' }, function(error) {
+		skivvy.run({ task: 'deploy', target: 'client-app' }, function(error) {
 			if (error) {
 				callback(error);
 				return;
@@ -167,13 +210,13 @@ var skivvy = require('skivvy');
 
 module.exports = function(config) {
 	// Run the 'build' task
-	return skivvy.run({ task: 'build' }, config)
+	return skivvy.run({ task: 'build' })
 		.then(function() {
 			// Perform some intermediate operation
 			console.log('Build completed, about to deploy');
 		}).then(function() {
 			// Run the 'deploy' task
-			return skivvy.run({ task: 'deploy' }, config);
+			return skivvy.run({ task: 'deploy', target: 'client-app' });
 		});
 	});
 });
