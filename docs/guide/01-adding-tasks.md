@@ -22,17 +22,31 @@ Remember that Skivvy tasks come in two flavors: **external tasks** and **local t
 External task packages can be installed into the current project using the `skivvy install` command:
 
 ```bash
-skivvy install hello-world
+skivvy install browserify
 ```
 
-> _This will install the npm module named `skivvy-package-hello-world` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
+> _This will install the npm module named `skivvy-package-browserify` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
 
-After running this command, all the tasks defined in `hello-world` are immediately available for use via `skivvy run [task]`.
+After running this command, all the tasks defined in the `browserify` package are immediately available for use via `skivvy run [task]`.
+
+
+### Adding tasks from scoped npm packages
+
+As well as globally-published packages, Skivvy was designed to integrate seamlessly with npm's [scoped packages](https://docs.npmjs.com/misc/scope). For example, your company might have various Skivvy packages that are not for public use and therefore have to be stored as private scoped npm modules.
+
+You can install a scoped Skivvy package as follows:
+
+```bash
+skivvy install @my-company/intranet-tools
+```
+
+> _This will install the npm module named `@my-company/skivvy-package-intranet-tools` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
+
 
 
 ## Adding local tasks
 
-Adding a local task is just as simple. Here's how you create a new local task:
+Adding a local task is just as simple as adding external tasks. Here's how you create a new local task:
 
 ```bash
 skivvy create::task
