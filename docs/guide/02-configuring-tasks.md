@@ -20,7 +20,7 @@ Most tasks need to be given some kind of configuration in order to do anything u
 
 We'll deal with run-time configuration overrides in the section that discusses [running tasks](03-running-tasks.md#passing-additional-configuration-via-command-line-arguments). For now, let's concentrate on using the `skivvy config` command to set configuration for environments, packages and tasks.
 
-**Note: in the examples below, "environment" refers to a Skivvy environment, not your shell environment.** A Skivvy environment is a self-contained set of project-level configuration that is accessible to all your tasks, and does not inherit any variables from your shell environment.
+**Note: in the examples below, "environment" refers to a Skivvy environment, not your shell environment.** A Skivvy environment is a self-contained set of project-level configuration, and does not inherit any variables from your shell environment.
 
 
 ## Setting environment configuration

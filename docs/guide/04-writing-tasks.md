@@ -97,7 +97,7 @@ module.exports = function(config) {
 	return stream;
 };
 
-module.exports.description = 'Wait a second';
+module.exports.description = 'Copy files';
 ```
 
 ### Method 4: use `this.async()` within the task
