@@ -2,6 +2,7 @@
 'use strict';
 
 var commander = require('commander');
+var chalk = require('chalk');
 
 var normalizeArgs = require('../lib/helpers/normalizeArgs');
 var reporter = require('../lib/cli/utils/reporter');
@@ -243,13 +244,23 @@ function getCommands() {
 				command(args, options, function(error) {
 					if (error) {
 						if (error.name === 'ErrorInvalidArgumentsError') {
+							console.error(chalk.red(error.message));
 							return options.help();
+						} else if (getIsUserError(error)) {
+							console.error(chalk.red(error.message));
 						} else {
 							throw error;
 						}
 					}
 				});
 			};
+
+
+			function getIsUserError(error) {
+				return Object.keys(api.errors).some(function(errorName) {
+					return error.name === 'Error' + errorName;
+				});
+			}
 		}
 	}
 }
