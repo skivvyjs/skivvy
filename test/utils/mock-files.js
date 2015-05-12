@@ -1,15 +1,19 @@
 'use strict';
 
 var path = require('path');
+var fs = require('fs');
 var mockFs = require('mock-fs');
+var errno = require('errno');
 
 var isMockFsActive = false;
 
 module.exports = function(files) {
 	if (isMockFsActive) { throw new Error('Mock filesystem already active'); }
 	var isActive = true;
-	var cwd = process.cwd();
+
+	var originalPath = process.cwd();
 	process.chdir('/');
+	var restoreProcess = mockProcess();
 	mockFs(files);
 	isMockFsActive = true;
 
@@ -23,7 +27,34 @@ module.exports = function(files) {
 			}
 		});
 		mockFs.restore();
-		process.chdir(cwd);
+		restoreProcess();
+		process.chdir(originalPath);
 		isMockFsActive = false;
 	};
+
+
+	function mockProcess() {
+		var currentPath = process.cwd();
+		var cwd = process.cwd;
+		var chdir = process.chdir;
+
+		process.cwd = function() {
+			return currentPath;
+		};
+
+		process.chdir = function(directory) {
+			var isValidPath = fs.statSync(directory).isDirectory();
+			if (!isValidPath) {
+				var errorType = errno.code.ENOTDIR;
+				var message = errorType.code + ', ' + errorType.description;
+				throw new errno.custom.FilesystemError(message, errorType);
+			}
+			currentPath = directory;
+		};
+
+		return function restore() {
+			process.cwd = cwd;
+			process.chdir = chdir;
+		};
+	}
 };

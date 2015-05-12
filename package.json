@@ -34,6 +34,7 @@
   "devDependencies": {
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
+    "errno": "^0.1.2",
     "mocha": "^2.2.4",
     "mock-fs": "^2.5.0",
     "mocks": "0.0.15",
