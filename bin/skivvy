@@ -226,10 +226,13 @@ function getCommands() {
 						description: 'environment name'
 					},
 					{
+						usage: '-C, --cwd [path]',
+						description: 'custom working directory'
+					},
+					{
 						usage: '-P, --path [path]',
 						description: 'project path'
 					}
-
 				],
 				action: createCommandAction(cliRun)
 			}

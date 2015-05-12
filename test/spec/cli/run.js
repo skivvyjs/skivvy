@@ -53,7 +53,13 @@ describe('cli.run()', function() {
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/external-conflict.js': 'module.exports = function(config) { };',
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/skivvy.json': JSON.stringify(config),
-			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };'
+			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
+			'/other/package.json': JSON.stringify(pkg),
+			'/other/skivvy.json': JSON.stringify(config),
+			'/other/skivvy_tasks/cwd1.js': 'module.exports = function(config) { return process.cwd(); };',
+			'/other/project/package.json': JSON.stringify(pkg),
+			'/other/project/skivvy.json': JSON.stringify(config),
+			'/other/project/skivvy_tasks/cwd2.js': 'module.exports = function(config) { return process.cwd(); };'
 		};
 		unmockFiles = mockFiles(files);
 	});
@@ -354,6 +360,31 @@ describe('cli.run()', function() {
 			});
 	});
 
+	it('should set the current working directory to the custom project path', function() {
+		var args = [
+			'local'
+		];
+		var options = {
+			path: '/project'
+		};
+		var actualCwd = null;
+		var expected, actual;
+		var mockedApiMethod = api.run;
+		api.run = function(options, callback) {
+			actualCwd = process.cwd();
+			return mockedApiMethod.apply(api, arguments);
+		};
+		return cliRun(args, options)
+			.then(function() {
+				expected = '/project';
+				actual = actualCwd;
+				expect(actual).to.equal(expected);
+			})
+			.finally(function() {
+				api.run = mockedApiMethod;
+			});
+	});
+
 	it('should call API method repeatedly for multiple tasks', function() {
 		var args = [
 			'series1',
@@ -398,6 +429,77 @@ describe('cli.run()', function() {
 				expected.forEach(function(expected) {
 					expect(api.run).to.have.been.calledWith(expected);
 				});
+			});
+	});
+
+	it('should allow custom working directory', function() {
+		var args = [
+			'cwd1'
+		];
+		var options = {
+			cwd: '/other'
+		};
+		var actualCwd = null;
+		var expected, actual;
+		var mockedApiMethod = api.run;
+		api.run = function(options, callback) {
+			actualCwd = process.cwd();
+			return mockedApiMethod.apply(api, arguments);
+		};
+		return cliRun(args, options)
+			.then(function() {
+				expected = {
+					task: 'cwd1',
+					target: null,
+					package: null,
+					environment: null,
+					path: '/other',
+					config: null
+				};
+				expect(mockedApiMethod).to.have.been.calledWith(expected);
+
+				expected = '/other';
+				actual = actualCwd;
+				expect(actual).to.equal(expected);
+			})
+			.finally(function() {
+				api.run = mockedApiMethod;
+			});
+	});
+
+	it('should allow custom working directory with custom project path', function() {
+		var args = [
+			'cwd2'
+		];
+		var options = {
+			cwd: '/other',
+			path: './project'
+		};
+		var actualCwd = null;
+		var expected, actual;
+		var mockedApiMethod = api.run;
+		api.run = function(options, callback) {
+			actualCwd = process.cwd();
+			return mockedApiMethod.apply(api, arguments);
+		};
+		return cliRun(args, options)
+			.then(function() {
+				expected = {
+					task: 'cwd2',
+					target: null,
+					package: null,
+					environment: null,
+					path: '/other/project',
+					config: null
+				};
+				expect(mockedApiMethod).to.have.been.calledWith(expected);
+
+				expected = '/other';
+				actual = actualCwd;
+				expect(actual).to.equal(expected);
+			})
+			.finally(function() {
+				api.run = mockedApiMethod;
 			});
 	});
 });
