@@ -238,11 +238,45 @@ This would result in the following configuration for the `copy` task:
 ...this also works for external tasks:
 
 ```bash
-skivvy config --package=copy-files --task=copy --target=assets --config.source=./assets
-skivvy config --package=copy-files --task=copy --target=index --config.source=./index.html
+skivvy config --package=filesystem --task=copy --target=assets --config.source=./assets
+skivvy config --package=filesystem --task=copy --target=index --config.source=./index.html
 ```
 
 See the section on [running tasks](03-running-tasks.md#running-tasks-with-different-targets) to see how to run tasks with a different target.
+
+
+### Specifying the default target for a task
+
+All tasks have a target named `"default"`, whose configuration will be used if the user does not specify a custom target when running the task.
+
+If you would prefer to use a different target as the default, you can pass the target name as the `--config` argument when configuring a task, as follows:
+
+```bash
+skivvy config --task=copy --config=assets
+```
+
+This will set the `"assets"` target as the default target for the `copy-files` package.
+
+This also works for external tasks:
+
+```bash
+skivvy config --package=filesystem --task=copy --config=assets
+```
+
+
+### Specifying multiple default targets for a task
+
+You can configure a task to run multiple targets as the default, by specifying multiple `--config` arguments as follows:
+
+```bash
+skivvy config --task=copy --config=assets --config=index
+```
+
+This also works for external tasks:
+
+```bash
+skivvy config --package=filesystem --task=copy --config=assets --config=index
+```
 
 
 ## Hand-editing configuration JSON
