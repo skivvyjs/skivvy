@@ -300,6 +300,7 @@ Run a task
 | `package` | `string` | No | `null` | Package name, used to locate the task if `task` is a string |
 | `config` | `object` | No | `{}` | Run-time config overrides to merge into the task's config object |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
+| `cwd` | `string` | No | `process.cwd()` | Working directory in which to run the task |
 
 
 <a name="skivvy.on"></a>
