@@ -103,7 +103,7 @@ describe('cli.init()', function() {
 
 				var npmPackages = ['skivvy'];
 				var npmOptions = {
-					saveDev: true
+					'save-dev': true
 				};
 				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/project');
 				expect(api.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
@@ -133,7 +133,7 @@ describe('cli.init()', function() {
 
 				var npmPackages = ['skivvy'];
 				var npmOptions = {
-					saveDev: true
+					'save-dev': true
 				};
 				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/project');
 				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
@@ -175,7 +175,7 @@ describe('cli.init()', function() {
 
 				var npmPackages = ['skivvy'];
 				var npmOptions = {
-					saveDev: true
+					'save-dev': true
 				};
 				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/project');
 				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
