@@ -306,7 +306,8 @@ describe('api.run()', function() {
 			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
 			'/project/node_modules/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
 			'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
-			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped\'; }; module.exports.callback = null;'
+			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped\'; }; module.exports.callback = null;',
+			'/other': {}
 		};
 		unmockFiles = mockFiles(files);
 	});
@@ -1688,6 +1689,49 @@ describe('api.run()', function() {
 		})
 			.then(function(actual) {
 				expect(actual).to.eql(expected);
+			});
+	});
+
+	it('should maintain current working directory with custom project path', function() {
+		var task = function(config) {
+			return process.cwd();
+		};
+		var expected = '/';
+		return run({
+			task: task,
+			path: '/project'
+		})
+			.then(function(actual) {
+				expect(actual).to.equal(expected);
+			});
+	});
+
+	it('should allow custom working directory', function() {
+		var task = function(config) {
+			return process.cwd();
+		};
+		var expected = '/other';
+		return run({
+			task: task,
+			cwd: '/other'
+		})
+			.then(function(actual) {
+				expect(actual).to.equal(expected);
+			});
+	});
+
+	it('should allow custom working directory with custom project path', function() {
+		var task = function(config) {
+			return process.cwd();
+		};
+		var expected = '/other';
+		return run({
+			task: task,
+			path: '/project',
+			cwd: '/other'
+		})
+			.then(function(actual) {
+				expect(actual).to.equal(expected);
 			});
 	});
 });
