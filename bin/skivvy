@@ -166,7 +166,12 @@ function getCommands() {
 				name: 'update',
 				usage: 'update <package> [package...] [options]',
 				description: 'Update a package',
-				options: [],
+				options: [
+					{
+						usage: '-P, --path [path]',
+						description: 'project path'
+					}
+				],
 				action: createCommandAction(cliUpdate)
 			},
 			{
