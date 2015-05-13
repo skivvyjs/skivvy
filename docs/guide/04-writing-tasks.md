@@ -12,11 +12,17 @@
 # Writing Skivvy tasks
 
 ## Overview
+
 - Under the hood, a task is **just a plain JavaScript function** that takes a single `config` argument.
 
-- The `config` argument is **automatically supplied to the task**. It is a plain JavaScript key/value object containing the task's configuration settings (as seen in [configuring tasks](02-configuring-tasks.md)). Make sure to use this argument to pass in any task options or file paths.
+- The `config` argument is **automatically supplied to the task function** at run-time. It is a plain JavaScript key/value object containing the task's configuration settings, and is used to pass in any task options or file paths.
 
 - Skivvy task functions should also have a `description` property. This is used by the `skivvy list` command to display a **user-friendly description** of the task.
+
+- Skivvy task functions can also have a `defaults` property. This is used to provide **default configuration values** for the `config` argument.
+
+- Skivvy tasks are declared **one task per file**, and must be exported as the file's `module.exports` property.
+
 
 ## Example: creating a new local task
 
@@ -28,6 +34,10 @@ module.exports = function(config) {
 };
 
 module.exports.description = 'Greet the user';
+
+module.exports.defaults = {
+	user: 'world'
+};
 ```
 > _You can also create tasks using the `skivvy create::task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
 
@@ -47,11 +57,19 @@ example-app@1.0.0
 You can also run the newly-created task:
 
 ```bash
-skivvy hello --config.user="world" # Outputs: "Hello, world!"
+skivvy hello # Outputs: "Hello, world!"
 ```
 
-As you can see, the task is just a plain JavaScript function. This means that you can write your tasks however you want, allowing for any combination of Gulp/Broccoli/Yo/etc within the task. When Skivvy calls the function it automatically passes in a `config` object, according to the rules discussed in the section on [configuring tasks](02-configuring-tasks.md).
 
+### The task `config` object
+
+When Skivvy calls the function it automatically passes in a `config` object as the first argument. The task's default configuration is specified by the task's `defaults` property, which can be overridden according to the rules discussed in the section on [configuring tasks](02-configuring-tasks.md):
+
+```bash
+skivvy hello --config.user="Skivvy" # Outputs: "Hello, Skivvy!"
+```
+
+The task's `defaults` property can use [placeholders](02-configuring-tasks.md#using-placeholders-in-configuration-values) to reference project/environment/package configuration variables.
 
 ## Synchronous vs asynchronous tasks
 
