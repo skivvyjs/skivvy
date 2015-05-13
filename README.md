@@ -11,7 +11,7 @@ Install Skivvy globally:
 npm install -g skivvy
 ```
 
-This will make the `skivvy` command globally available. See the list of [available commands](#available-commands).
+This will make the `skivvy` command globally available. See the list of [available commands](docs/cli-options.md).
 
 
 ## The Skivvy workflow
@@ -105,22 +105,8 @@ Check out the [Skivvy for gulp/Grunt users](docs/skivvy-for-gulp-grunt-users.md)
 
 ## More information
 
-Take a look at the [Getting started with Skivvy](docs/guide/00-introduction.md) guide to get a thorough understand of how it all works. Once you've had a skim through that, you should be all set to dive in.
+Take a look at the [Getting started with Skivvy](docs/guide/00-introduction.md) guide and the list of [available commands](docs/cli-options.md) to get a thorough understand of how it all works. Once you've had a skim through that, you should be all set to dive in.
 
 There are already a bunch of [pre-built packages](docs/public-packages.md) to suit most simple projects. All the same, if you want to go off-piste and roll your own tasks, luckily that's as easy as writing [a single JavaScript function](docs/guide/04-writing-tasks.md).
 
 Good luck Skivvying!
-
-
-## Available commands
-
-- `skivvy init` create a Skivvy project in the current directory
-- `skivvy install [package]` Add a package to the current project
-- `skivvy uninstall [package]` Remove a package from the current project
-- `skivvy update` Update all package within the current project
-- `skivvy update [package]` Update a package within the current project
-- `skivvy list` List this project's installed tasks
-- `skivvy config` Update project/package/task configuration (see [configuring tasks](docs/guide/02-configuring-tasks.md#configuring-tasks))
-- `skivvy run [task]` Run a task within the current project
-
-All additional functionality is provided by the tasks themselves. See the list of [public Skivvy packages](docs/public-packages.md) for some common pre-packaged tasks.
