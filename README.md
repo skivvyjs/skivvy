@@ -1,4 +1,4 @@
-# Skivvy [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
+# Skivvy [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) [![Build Status](https://travis-ci.org/timkendrick/skivvy.svg?branch=master)](https://travis-ci.org/timkendrick/skivvy)
 
 > Lightweight task runner for modular, reusable build systems
 
