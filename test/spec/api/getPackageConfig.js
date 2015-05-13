@@ -49,26 +49,6 @@ describe('api.getPackageConfig()', function() {
 		});
 	});
 
-	it('should return an empty object if the specified package does not exist', function() {
-		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = {};
-		actual = getPackageConfig({ package: 'hello', path: '/project' });
-		expect(actual).to.eql(expected);
-	});
-
 	it('should return the package config', function() {
 		var pkg = {};
 		var config = {
@@ -86,7 +66,7 @@ describe('api.getPackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/skivvy.json': JSON.stringify(config),
-			'/project/node_modules/skivvy-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -109,7 +89,7 @@ describe('api.getPackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/skivvy.json': JSON.stringify(config),
-			'/project/node_modules/skivvy-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -119,7 +99,7 @@ describe('api.getPackageConfig()', function() {
 		expect(actual).to.eql(expected);
 	});
 
-	it('should return an empty object if config contains no package config', function() {
+	it('should return a copy of default package config if config contains no package config', function() {
 		var pkg = {};
 		var config = {
 			environment: {
@@ -129,7 +109,33 @@ describe('api.getPackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/skivvy.json': JSON.stringify(config),
-			'/project/node_modules/skivvy-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { user: \'world\' }'
+		};
+		unmockFiles = mockFiles(files);
+
+		var expected, actual;
+		expected = {
+			user: 'world'
+		};
+		actual = getPackageConfig({ package: 'hello', path: '/project' });
+		expect(actual).to.eql(expected);
+
+		expected = require('/project/node_modules/skivvy-package-hello').defaults;
+		expect(actual).to.eql(expected);
+		expect(actual).not.to.equal(expected);
+	});
+
+	it('should return an empty object if config contains no package config and no default package config exists', function() {
+		var pkg = {};
+		var config = {
+			environment: {
+				default: {}
+			}
+		};
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/skivvy.json': JSON.stringify(config),
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -139,9 +145,40 @@ describe('api.getPackageConfig()', function() {
 		expect(actual).to.eql(expected);
 	});
 
+	it('should extend default package config with package config', function() {
+		var pkg = {};
+		var config = {
+			environment: {
+				default: {}
+			},
+			packages: {
+				'hello': {
+					config: {
+						greeting: 'Goodbye'
+					}
+				}
+			}
+		};
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/skivvy.json': JSON.stringify(config),
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { user: \'world\' }'
+		};
+		unmockFiles = mockFiles(files);
+
+		var expected, actual;
+		expected = {
+			greeting: 'Goodbye',
+			user: 'world'
+		};
+		actual = getPackageConfig({ package: 'hello', path: '/project' });
+		expect(actual).to.eql(expected);
+	});
+
 	it('should expand placeholders in config', function() {
 		var pkg = {
-			author: 'A User <user@example.com>'
+			author: 'A User <user@example.com>',
+			version: '1.0.1'
 		};
 		var config = {
 			environment: {
@@ -161,13 +198,14 @@ describe('api.getPackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/skivvy.json': JSON.stringify(config),
-			'/project/node_modules/skivvy-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { \'version\': \'v<%= project.version %>\' }'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = {
-			welcome: 'Welcome, Mr A User <user@example.com>!'
+			welcome: 'Welcome, Mr A User <user@example.com>!',
+			version: 'v1.0.1'
 		};
 		actual = getPackageConfig({ package: 'hello', path: '/project', expand: true });
 		expect(actual).to.eql(expected);
@@ -175,7 +213,8 @@ describe('api.getPackageConfig()', function() {
 
 	it('should skip expanding placeholders in config', function() {
 		var pkg = {
-			author: 'A User <user@example.com>'
+			author: 'A User <user@example.com>',
+			version: '1.0.1'
 		};
 		var config = {
 			environment: {
@@ -195,13 +234,14 @@ describe('api.getPackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/skivvy.json': JSON.stringify(config),
-			'/project/node_modules/skivvy-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { \'version\': \'v<%= project.version %>\' }'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = {
-			welcome: 'Welcome, <%= environment.user %>!'
+			welcome: 'Welcome, <%= environment.user %>!',
+			version: 'v<%= project.version %>'
 		};
 		actual = [
 			getPackageConfig({ package: 'hello', path: '/project' }),
@@ -232,7 +272,7 @@ describe('api.getPackageConfig()', function() {
 		var files = {
 			'package.json': JSON.stringify(pkg),
 			'skivvy.json': JSON.stringify(config),
-			'node_modules/skivvy-hello/index.js': 'exports.tasks = {};'
+			'node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
