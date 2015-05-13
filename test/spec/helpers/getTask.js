@@ -2,15 +2,12 @@
 
 var chai = require('chai');
 var expect = chai.expect;
-var chaiAsPromised = require('chai-as-promised');
 
 var mockFiles = require('../../utils/mock-files');
 
 var InvalidTaskError = require('../../../lib/errors').InvalidTaskError;
 
 var getTask = require('../../../lib/helpers/getTask');
-
-chai.use(chaiAsPromised);
 
 describe('helpers.getTask()', function() {
 	var unmockFiles = null;
@@ -43,72 +40,72 @@ describe('helpers.getTask()', function() {
 		var expected, actual;
 		expected = require('/skivvy_tasks/local');
 		actual = getTask('local', null, '/');
-		return expect(actual).to.eventually.equal(expected);
+		expect(actual).to.equal(expected);
 	});
 
 	it('should assign a displayName to local tasks', function() {
 		var expected, actual;
-		return getTask('local', null, '/')
-			.then(function(task) {
-				expected = 'local';
-				actual = task.displayName;
-				return expect(actual).to.equal(expected);
-			});
+		var task = getTask('local', null, '/');
+		expected = 'local';
+		actual = task.displayName;
+		expect(actual).to.equal(expected);
 	});
 
 	it('should throw an error if local task does not exist', function() {
 		var expected, actual;
 		expected = InvalidTaskError;
-		actual = getTask('nonexistent', null, '/');
-		return expect(actual).to.be.rejectedWith(expected);
+		actual = function() {
+			return getTask('nonexistent', null, '/');
+		};
+		expect(actual).to.throw(expected);
 	});
 
 	it('should load external tasks', function() {
 		var expected, actual;
 		expected = require('/node_modules/skivvy-package-my-package/tasks/external');
 		actual = getTask('external', 'my-package', '/');
-		return expect(actual).to.eventually.equal(expected);
+		expect(actual).to.equal(expected);
 	});
 
 	it('should assign a displayName to external tasks', function() {
 		var expected, actual;
-		return getTask('external', 'my-package', '/')
-			.then(function(task) {
-				expected = 'my-package::external';
-				actual = task.displayName;
-				return expect(actual).to.equal(expected);
-			});
+		var task = getTask('external', 'my-package', '/');
+		expected = 'my-package::external';
+		actual = task.displayName;
+		expect(actual).to.equal(expected);
 	});
 
 	it('should throw an error if external task does not exist', function() {
 		var expected, actual;
 		expected = InvalidTaskError;
-		actual = getTask('nonexistent', 'my-package', '/');
-		return expect(actual).to.be.rejectedWith(expected);
+		actual = function() {
+			return getTask('nonexistent', 'my-package', '/');
+		};
+		expect(actual).to.throw(expected);
 	});
 
 	it('should load scoped tasks', function() {
 		var expected, actual;
 		expected = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped');
 		actual = getTask('scoped', '@my-packages/my-package', '/');
-		return expect(actual).to.eventually.equal(expected);
+		expect(actual).to.equal(expected);
 	});
 
 	it('should assign a displayName to scoped tasks', function() {
 		var expected, actual;
-		return getTask('scoped', '@my-packages/my-package', '/')
-			.then(function(task) {
-				expected = '@my-packages/my-package::scoped';
-				actual = task.displayName;
-				return expect(actual).to.equal(expected);
-			});
+		var task = getTask('scoped', '@my-packages/my-package', '/');
+		expected = '@my-packages/my-package::scoped';
+		actual = task.displayName;
+		expect(actual).to.equal(expected);
 	});
 
 	it('should throw an error if scoped task does not exist', function() {
 		var expected, actual;
 		expected = InvalidTaskError;
-		actual = getTask('nonexistent', '@my-packages/my-package', '/');
-		return expect(actual).to.be.rejectedWith(expected);
+		actual = function() {
+			return getTask('nonexistent', '@my-packages/my-package', '/');
+		};
+		expect(actual).to.throw(expected);
 	});
 
 	it('should load tasks from custom include paths', function() {
@@ -129,7 +126,7 @@ describe('helpers.getTask()', function() {
 		var expected, actual;
 		expected = require('/skivvy/tasks/local');
 		actual = getTask('local', null, '/');
-		return expect(actual).to.eventually.equal(expected);
+		expect(actual).to.equal(expected);
 	});
 
 	it('should load tasks from custom project paths', function() {
@@ -148,6 +145,6 @@ describe('helpers.getTask()', function() {
 		var expected, actual;
 		expected = require('/project/skivvy_tasks/local');
 		actual = getTask('local', null, '/project');
-		return expect(actual).to.eventually.equal(expected);
+		expect(actual).to.equal(expected);
 	});
 });
