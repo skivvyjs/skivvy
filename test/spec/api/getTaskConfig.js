@@ -35,17 +35,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			},
 			tasks: {
-				'hello': {
-					targets: {
-						default: {
-							greeting: 'hello'
-						},
-						'secondary': {
-							greeting: 'goodbye'
-						}
-					}
-				},
-				'greet': {
+				'local': {
 					targets: {
 						default: 'hello',
 						'hello': {
@@ -57,6 +47,16 @@ describe('api.getTaskConfig()', function() {
 						'custom': 'hi',
 						'hi': {
 							greeting: 'hi'
+						}
+					}
+				},
+				'default-targeter': {
+					targets: {
+						default: {
+							greeting: 'hello'
+						},
+						'custom': {
+							greeting: 'goodbye'
 						}
 					}
 				},
@@ -136,7 +136,7 @@ describe('api.getTaskConfig()', function() {
 						sender: 'the <%= project.name %>'
 					},
 					tasks: {
-						'~hello': {
+						'~external': {
 							targets: {
 								default: {
 									'~greeting': '~hello'
@@ -146,7 +146,7 @@ describe('api.getTaskConfig()', function() {
 								}
 							}
 						},
-						'~greet': {
+						'~targeter': {
 							targets: {
 								default: '~hello',
 								'~hello': {
@@ -255,8 +255,29 @@ describe('api.getTaskConfig()', function() {
 		var files = {
 			'/package.json': JSON.stringify(rootPkg),
 			'/skivvy.json': JSON.stringify(rootConfig),
+			'/skivvy_tasks/goodbye.js': 'module.exports = function(config) { };',
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/skivvy.json': JSON.stringify(config),
+			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
+			'/project/skivvy_tasks/defaulter.js': 'module.exports = function(config) { }; module.exports.defaults = { \'user\': \'world\' };',
+			'/project/skivvy_tasks/default-targeter.js': 'module.exports = function(config) { }; module.exports.defaults = { \'user\': \'world\' };',
+			'/project/skivvy_tasks/default-expander.js': 'module.exports = function(config) { }; module.exports.defaults = { \'user\': \'Mr <%= environment.user %>\', \'version\': \'<%= project.version %>\' };',
+			'/project/skivvy_tasks/expander.js': 'module.exports = function(config) { };',
+			'/project/skivvy_tasks/multi.js': 'module.exports = function(config) { };',
+			'/project/skivvy_tasks/chainer.js': 'module.exports = function(config) { };',
+			'/project/node_modules/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
+			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = {' +
+				'\'~external\': require(\'./tasks/external\'),' +
+				'\'~targeter\': require(\'./tasks/targeter\'),' +
+				'\'~expander\': require(\'./tasks/expander\'),' +
+				'\'~multi\': require(\'./tasks/multi\'),' +
+				'\'~chainer\': require(\'./tasks/chainer\')' +
+			'};',
+			'/project/node_modules/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',
+			'/project/node_modules/skivvy-package-my-package/tasks/targeter.js': 'module.exports = function(config) { };',
+			'/project/node_modules/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { };',
+			'/project/node_modules/skivvy-package-my-package/tasks/multi.js': 'module.exports = function(config) { };',
+			'/project/node_modules/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { };',
 		};
 		unmockFiles = mockFiles(files);
 	});
@@ -283,21 +304,75 @@ describe('api.getTaskConfig()', function() {
 		});
 	});
 
-	it('should return an empty object if the specified task does not exist', function() {
+	it('should throw an error if the specified task does not exist', function() {
 		var expected, actual;
-		expected = {};
+		expected = InvalidTaskError;
+		actual = function() {
+			return getTaskConfig({
+				task: 'goodbye',
+				path: '/project'
+			});
+		};
+		expect(actual).to.throw(expected);
+	});
+
+	it('should return a copy of default task config if the specified task config does not exist', function() {
+		var expected, actual;
+		expected = {
+			user: 'world'
+		};
 		actual = getTaskConfig({
-			task: 'goodbye',
+			task: 'defaulter',
 			path: '/project'
 		});
 		expect(actual).to.eql(expected);
 	});
 
-	it('should return an empty object if the specified target does not exist', function() {
+	it('should return a copy of default task config if the specified target does not exist', function() {
+		var expected, actual;
+		expected = {
+			greeting: 'hello',
+			user: 'world'
+		};
+		actual = getTaskConfig({
+			task: 'default-targeter',
+			path: '/project'
+		});
+		expect(actual).to.eql(expected);
+	});
+
+	it('should extend the default task config if the default target exists', function() {
+		var expected, actual;
+		expected = {
+			greeting: 'hello',
+			user: 'world'
+		};
+		actual = getTaskConfig({
+			task: 'default-targeter',
+			path: '/project'
+		});
+		expect(actual).to.eql(expected);
+	});
+
+	it('should extend the default task config if the specified custom target exists', function() {
+		var expected, actual;
+		expected = {
+			greeting: 'goodbye',
+			user: 'world'
+		};
+		actual = getTaskConfig({
+			task: 'default-targeter',
+			target: 'custom',
+			path: '/project'
+		});
+		expect(actual).to.eql(expected);
+	});
+
+	it('should return an empty object if the specified target does not exist and no default task config exists', function() {
 		var expected, actual;
 		expected = {};
 		actual = getTaskConfig({
-			task: 'hello',
+			task: 'local',
 			target: 'tertiary',
 			path: '/project'
 		});
@@ -310,7 +385,7 @@ describe('api.getTaskConfig()', function() {
 			greeting: 'hello'
 		};
 		actual = getTaskConfig({
-			task: 'hello',
+			task: 'local',
 			path: '/project'
 		});
 		expect(actual).to.eql(expected);
@@ -322,7 +397,7 @@ describe('api.getTaskConfig()', function() {
 			greeting: 'goodbye'
 		};
 		actual = getTaskConfig({
-			task: 'hello',
+			task: 'local',
 			target: 'secondary',
 			path: '/project'
 		});
@@ -335,7 +410,7 @@ describe('api.getTaskConfig()', function() {
 			greeting: 'hello'
 		};
 		actual = getTaskConfig({
-			task: 'greet',
+			task: 'local',
 			path: '/project'
 		});
 		expect(actual).to.eql(expected);
@@ -347,7 +422,7 @@ describe('api.getTaskConfig()', function() {
 			greeting: 'hi'
 		};
 		actual = getTaskConfig({
-			task: 'greet',
+			task: 'local',
 			target: 'custom',
 			path: '/project'
 		});
@@ -442,7 +517,7 @@ describe('api.getTaskConfig()', function() {
 			'~greeting': '~hello'
 		};
 		actual = getTaskConfig({
-			task: '~hello',
+			task: '~external',
 			package: 'my-package',
 			path: '/project'
 		});
@@ -455,7 +530,7 @@ describe('api.getTaskConfig()', function() {
 			'~greeting': '~goodbye'
 		};
 		actual = getTaskConfig({
-			task: '~hello',
+			task: '~external',
 			package: 'my-package',
 			target: '~secondary',
 			path: '/project'
@@ -469,7 +544,7 @@ describe('api.getTaskConfig()', function() {
 			'~greeting': '~hello'
 		};
 		actual = getTaskConfig({
-			task: '~greet',
+			task: '~targeter',
 			package: 'my-package',
 			path: '/project'
 		});
@@ -482,7 +557,7 @@ describe('api.getTaskConfig()', function() {
 			'~greeting': '~hi'
 		};
 		actual = getTaskConfig({
-			task: '~greet',
+			task: '~targeter',
 			target: '~custom',
 			package: 'my-package',
 			path: '/project'
