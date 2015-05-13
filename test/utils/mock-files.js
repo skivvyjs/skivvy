@@ -49,7 +49,7 @@ module.exports = function(files) {
 				var message = errorType.code + ', ' + errorType.description;
 				throw new errno.custom.FilesystemError(message, errorType);
 			}
-			currentPath = directory;
+			currentPath = path.resolve(currentPath, directory);
 		};
 
 		return function restore() {
