@@ -66,13 +66,22 @@ Readme file containing task and configuration information
 
 #### `index.js`
 
-Main JavaScript file that contains the package listing. This should export a `tasks` property that contains the named Skivvy tasks:
+Main JavaScript file that contains the package listing. This should export a `tasks` property that contains the named Skivvy tasks, and optionally a `defaults` property that specifies the default [package configuration](02-configuring-tasks.md#setting-package-configuration):
 
 ```javascript
 exports.tasks = {
 	'test': require('./tasks/test'),
 	'build': require('./tasks/build'),
 	'serve': require('./tasks/serve')
+};
+
+exports.defaults = {
+	source: null,	
+	destination: null,
+	options: {
+		port: 80,
+		debug: false
+	}
 };
 ```
 
