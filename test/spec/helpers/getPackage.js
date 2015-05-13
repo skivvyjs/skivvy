@@ -2,8 +2,6 @@
 
 var chai = require('chai');
 var expect = chai.expect;
-var chaiAsPromised = require('chai-as-promised');
-var Promise = require('promise');
 
 var mockFiles = require('../../utils/mock-files');
 
@@ -12,7 +10,6 @@ var InvalidPackageError = require('../../../lib/errors').InvalidPackageError;
 
 var getPackage = require('../../../lib/helpers/getPackage');
 
-chai.use(chaiAsPromised);
 
 describe('helpers.getPackage()', function() {
 	var unmockFiles = null;
@@ -40,16 +37,16 @@ describe('helpers.getPackage()', function() {
 		var expected, actual;
 		expected = InvalidProjectError;
 		actual = [
-			getPackage(),
-			getPackage('hello'),
-			getPackage('hello', undefined),
-			getPackage('hello', null),
-			getPackage('hello', false),
-			getPackage('hello', '')
+			function() { return getPackage(); },
+			function() { return getPackage('hello'); },
+			function() { return getPackage('hello', undefined); },
+			function() { return getPackage('hello', null); },
+			function() { return getPackage('hello', false); },
+			function() { return getPackage('hello', ''); }
 		];
-		return Promise.all(actual.map(function(actual) {
-			return expect(actual).to.be.rejectedWith(expected);
-		}));
+		actual.forEach(function(actual) {
+			expect(actual).to.throw(expected);
+		});
 	});
 
 	it('should throw an error if no package name was specified', function() {
@@ -69,14 +66,14 @@ describe('helpers.getPackage()', function() {
 		var expected, actual;
 		expected = InvalidPackageError;
 		actual = [
-			getPackage(undefined, '/project'),
-			getPackage(null, '/project'),
-			getPackage(false, '/project'),
-			getPackage('', '/project')
+			function() { getPackage(undefined, '/project'); },
+			function() { getPackage(null, '/project'); },
+			function() { getPackage(false, '/project'); },
+			function() { getPackage('', '/project'); },
 		];
-		return Promise.all(actual.map(function(actual) {
-			return expect(actual).to.be.rejectedWith(expected);
-		}));
+		actual.forEach(function(actual) {
+			expect(actual).to.throw(expected);
+		});
 	});
 
 	it('should throw an error if the specified package does not exist', function() {
@@ -96,12 +93,12 @@ describe('helpers.getPackage()', function() {
 		var expected, actual;
 		expected = InvalidPackageError;
 		actual = [
-			getPackage('hello', '/project'),
-			getPackage('@scoped/hello', '/project')
+			function() { getPackage('hello', '/project'); },
+			function() { getPackage('@scoped/hello', '/project'); }
 		];
-		return Promise.all(actual.map(function(actual) {
-			return expect(actual).to.be.rejectedWith(expected);
-		}));
+		actual.forEach(function(actual) {
+			expect(actual).to.throw(expected);
+		});
 	});
 
 	it('should get the specified package from global npm packages', function() {
@@ -127,7 +124,7 @@ describe('helpers.getPackage()', function() {
 			tasks: {}
 		};
 		actual = getPackage('hello', '/project');
-		return expect(actual).to.eventually.eql(expected);
+		expect(actual).to.eql(expected);
 	});
 
 	it('should get the specified package from scoped npm packages', function() {
@@ -153,7 +150,7 @@ describe('helpers.getPackage()', function() {
 			tasks: {}
 		};
 		actual = getPackage('@my-packages/hello', '/project');
-		return expect(actual).to.eventually.eql(expected);
+		expect(actual).to.eql(expected);
 	});
 
 
@@ -182,20 +179,18 @@ describe('helpers.getPackage()', function() {
 				'example2': require('/project/node_modules/@my-packages/skivvy-package-hello/tasks/example2')
 			}
 		};
-		return getPackage('@my-packages/hello', '/project')
-			.then(function(packageModule) {
-				actual = packageModule;
-				expect(actual).to.eql(expected);
-				var packageName = actual.name;
-				var tasks = actual.tasks;
-				var taskNames = Object.keys(tasks);
-				taskNames.forEach(function(taskName) {
-					var task = tasks[taskName];
-					var expected, actual;
-					expected = packageName + '::' + taskName;
-					actual = task.displayName;
-					expect(actual).to.equal(expected);
-				});
-			});
+		actual = getPackage('@my-packages/hello', '/project');
+		expect(actual).to.eql(expected);
+
+		var packageName = actual.name;
+		var tasks = actual.tasks;
+		var taskNames = Object.keys(tasks);
+		taskNames.forEach(function(taskName) {
+			var task = tasks[taskName];
+			var expected, actual;
+			expected = packageName + '::' + taskName;
+			actual = task.displayName;
+			expect(actual).to.equal(expected);
+		});
 	});
 });
