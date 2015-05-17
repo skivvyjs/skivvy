@@ -1,4 +1,7 @@
-# Skivvy [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges) [![Build Status](https://travis-ci.org/timkendrick/skivvy.svg?branch=master)](https://travis-ci.org/timkendrick/skivvy)
+# Skivvy
+[![npm version](https://img.shields.io/npm/v/skivvy.svg)](https://www.npmjs.com/package/skivvy)
+![Stability](https://img.shields.io/badge/stability-unstable-yellow.svg)
+[![Build Status](https://travis-ci.org/timkendrick/skivvy.svg?branch=master)](https://travis-ci.org/timkendrick/skivvy)
 
 > Modular task runner for reusable build systems
 
