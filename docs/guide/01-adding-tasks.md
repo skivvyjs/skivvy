@@ -46,23 +46,13 @@ skivvy install @my-company/intranet-tools
 
 ## Adding local tasks
 
-Adding a local task is just as simple as adding external tasks. Here's how you create a new local task:
+Adding a local task to your project is as simple as creating a new JavaScript file that exports a function via `module.exports`, and saving that file in your `./skivvy_tasks` directory.
 
-```bash
-skivvy create::task
-```
+The name of the task is taken from the filename: for example, a task located at `./skivvy_tasks/build.js` can be launched by running `skivvy run build` from within the project folder.
 
-Skivvy will prompt you for a task name and description for your task, and then you're done!
+Any tasks that are present within a project's local tasks folder will automatically be available to the command-line tool.
 
-> _Behind the scenes, this uses the built-in [skivvy-create](https://github.com/timkendrick/skivvy-create) scaffolder to create a new `.js` file in the local tasks folder (`./skivvy_tasks` by default)_
-
-> _If you prefer to enter the task name and description via the command-line, you can pass `--config.name` and `--config.description` arguments_
-
-You should now have a brand new JavaScript task file located in the `./skivvy_tasks` directory. Take a look at the section on [writing your own tasks](04-writing-tasks.md) to learn a bit more about how to make the most out of local Skivvy tasks.
-
-> _N.B. In this example we used the automatic scaffolding tool to create the task file, but any tasks that are present within a project's local tasks folder will automatically be available to the `skivvy` command-line tool._
-
-> _The name of the task is taken from the filename of the `.js` file: for example, a task located at `./skivvy_tasks/build.js` can be launched by running `skivvy build` from within the project folder._
+Take a look at the section on [writing your own tasks](04-writing-tasks.md) to learn how to write a Skivvy task.
 
 -
 

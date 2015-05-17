@@ -39,7 +39,6 @@ module.exports.defaults = {
 	user: 'world'
 };
 ```
-> _You can also create tasks using the `skivvy create::task` scaffolder, as discussed in the [adding tasks](01-adding-tasks.md) section._
 
 Now you are able to see the task straight away in the command-line tool:
 
@@ -200,10 +199,10 @@ module.exports = function(config, callback) {
 			callback(error);
 			return;
 		}
-		
+
 		// Perform some intermediate operation
 		console.log('Build completed, about to deploy');
-		
+
 		// Run the 'deploy' task
 		skivvy.run({ task: 'deploy', target: 'client-app' }, function(error) {
 			if (error) {
