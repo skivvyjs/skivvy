@@ -69,7 +69,7 @@ describe('helpers.getPackage()', function() {
 			function() { getPackage(undefined, '/project'); },
 			function() { getPackage(null, '/project'); },
 			function() { getPackage(false, '/project'); },
-			function() { getPackage('', '/project'); },
+			function() { getPackage('', '/project'); }
 		];
 		actual.forEach(function(actual) {
 			expect(actual).to.throw(expected);

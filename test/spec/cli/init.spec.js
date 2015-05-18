@@ -61,7 +61,7 @@ describe('cli.init()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/node_nodules/skivvy/index.js': 'module.exports = {};',
-			'/project/node_nodules/skivvy/package.json': '{ "name": "skivvy", "version": "0.0.1" }',
+			'/project/node_nodules/skivvy/package.json': '{ "name": "skivvy", "version": "0.0.1" }'
 		};
 		unmockFiles = mockFiles(files);
 

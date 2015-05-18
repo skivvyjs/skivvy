@@ -226,7 +226,7 @@ describe('api.updateEnvironmentConfig()', function() {
 				event: events.UPDATE_ENVIRONMENT_CONFIG_STARTED,
 				updates: data.updates,
 				environment: data.environment,
-				path: data.path,
+				path: data.path
 			});
 		}
 
@@ -316,7 +316,7 @@ describe('api.updateEnvironmentConfig()', function() {
 				event: events.UPDATE_ENVIRONMENT_CONFIG_STARTED,
 				environment: data.environment,
 				updates: data.updates,
-				path: data.path,
+				path: data.path
 			});
 		}
 

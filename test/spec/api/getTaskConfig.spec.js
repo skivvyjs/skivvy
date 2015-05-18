@@ -277,7 +277,7 @@ describe('api.getTaskConfig()', function() {
 			'/project/node_modules/skivvy-package-my-package/tasks/targeter.js': 'module.exports = function(config) { };',
 			'/project/node_modules/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { };',
 			'/project/node_modules/skivvy-package-my-package/tasks/multi.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { };',
+			'/project/node_modules/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { };'
 		};
 		unmockFiles = mockFiles(files);
 	});

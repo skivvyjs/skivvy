@@ -104,7 +104,7 @@ describe('api.run()', function() {
 						customstep3: {
 							message: 'local:chainer:customstep3 - <%= environment.greeting %>, <%= environment.user %>!',
 							index: 3
-						},
+						}
 					}
 				},
 				'series': {
@@ -185,7 +185,7 @@ describe('api.run()', function() {
 								customstep3: {
 									message: 'external:chainer:customstep3 - <%= package.message %>',
 									index: 3
-								},
+								}
 							}
 						},
 						'series': {
@@ -266,7 +266,7 @@ describe('api.run()', function() {
 								customstep3: {
 									message: 'scoped:chainer:customstep3 - <%= package.message %>',
 									index: 3
-								},
+								}
 							}
 						},
 						'series': {
@@ -575,7 +575,7 @@ describe('api.run()', function() {
 		return run({
 			task: 'chainer',
 			target: 'custom',
-			environment: 'goodbye',
+			environment: 'goodbye'
 		})
 			.then(function(returnValue) {
 				expect(spy).to.have.callCount(3);

@@ -52,7 +52,7 @@ describe('api.installPackage()', function() {
 			environment: {
 				default: {}
 			},
-			packages: {},
+			packages: {}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -82,7 +82,7 @@ describe('api.installPackage()', function() {
 			environment: {
 				default: {}
 			},
-			packages: {},
+			packages: {}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -115,7 +115,7 @@ describe('api.installPackage()', function() {
 			environment: {
 				default: {}
 			},
-			packages: {},
+			packages: {}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -232,7 +232,7 @@ describe('api.installPackage()', function() {
 					},
 					tasks: {}
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -294,7 +294,7 @@ describe('api.installPackage()', function() {
 					},
 					tasks: {}
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -381,7 +381,7 @@ describe('api.installPackage()', function() {
 			environment: {
 				default: {}
 			},
-			packages: {},
+			packages: {}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),

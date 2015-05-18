@@ -346,7 +346,7 @@ describe('api.updatePackageConfig()', function() {
 				event: events.UPDATE_PACKAGE_CONFIG_STARTED,
 				package: data.package,
 				updates: data.updates,
-				path: data.path,
+				path: data.path
 			});
 		}
 

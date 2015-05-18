@@ -150,7 +150,7 @@ function getStubPackages(options) {
 				version: null,
 				tasks: {
 					'hello': createMockTask('hello', 'Hello World task', false, 'hello'),
-					'goodbye': createMockTask('goodbye', 'Goodbye World task', true, 'goodbye'),
+					'goodbye': createMockTask('goodbye', 'Goodbye World task', true, 'goodbye')
 				}
 			},
 			{
@@ -159,7 +159,7 @@ function getStubPackages(options) {
 				version: '1.2.3',
 				tasks: {
 					'hello': createMockTask('my-package/hello', 'Hello World task', false, 'hello'),
-					'goodbye': createMockTask('my-package/goodbye', 'Goodbye World task', true, 'goodbye'),
+					'goodbye': createMockTask('my-package/goodbye', 'Goodbye World task', true, 'goodbye')
 				}
 			},
 			{
@@ -168,7 +168,7 @@ function getStubPackages(options) {
 				version: '1.2.4',
 				tasks: {
 					'hello': createMockTask('@my-packages/my-package/hello', 'Hello World task', false, 'hello'),
-					'goodbye': createMockTask('@my-packages/my-package/goodbye', 'Goodbye World task', true, 'goodbye'),
+					'goodbye': createMockTask('@my-packages/my-package/goodbye', 'Goodbye World task', true, 'goodbye')
 				}
 			}
 		];
@@ -179,7 +179,7 @@ function getStubPackages(options) {
 				description: null,
 				tasks: {
 					'hello': createMockTask('hello', 'Hello World task', false, 'hello'),
-					'goodbye': createMockTask('goodbye', 'Goodbye World task', true, 'goodbye'),
+					'goodbye': createMockTask('goodbye', 'Goodbye World task', true, 'goodbye')
 				}
 			},
 			{
@@ -187,7 +187,7 @@ function getStubPackages(options) {
 				description: 'External package',
 				tasks: {
 					'hello': createMockTask('my-package/hello', 'Hello World task', false, 'hello'),
-					'goodbye': createMockTask('my-package/goodbye', 'Goodbye World task', true, 'goodbye'),
+					'goodbye': createMockTask('my-package/goodbye', 'Goodbye World task', true, 'goodbye')
 				}
 			},
 			{
@@ -195,7 +195,7 @@ function getStubPackages(options) {
 				description: 'Scoped package',
 				tasks: {
 					'hello': createMockTask('@my-packages/my-package/hello', 'Hello World task', false, 'hello'),
-					'goodbye': createMockTask('@my-packages/my-package/goodbye', 'Goodbye World task', true, 'goodbye'),
+					'goodbye': createMockTask('@my-packages/my-package/goodbye', 'Goodbye World task', true, 'goodbye')
 				}
 			}
 		];

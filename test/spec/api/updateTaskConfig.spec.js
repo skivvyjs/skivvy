@@ -65,7 +65,7 @@ describe('api.updateTaskConfig()', function() {
 		var rootPkg = {};
 		var rootConfig = {
 			environment: {
-				default: {},
+				default: {}
 			},
 			tasks: {
 				'existing': {
@@ -730,7 +730,7 @@ describe('api.updateTaskConfig()', function() {
 				actual = JSON.parse(fs.readFileSync('/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
-						default: {},
+						default: {}
 					},
 					tasks: {
 						'existing': {
@@ -795,7 +795,7 @@ describe('api.updateTaskConfig()', function() {
 				target: data.target,
 				package: data.package,
 				updates: data.updates,
-				path: data.path,
+				path: data.path
 			});
 		}
 

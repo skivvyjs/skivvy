@@ -341,7 +341,7 @@ describe('cli.run()', function() {
 				user: 'world'
 			},
 			environment: 'alternate',
-			path: '/project',
+			path: '/project'
 		};
 		var expected;
 		return cliRun(args, options)

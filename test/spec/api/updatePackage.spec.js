@@ -56,7 +56,7 @@ describe('api.updatePackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -92,7 +92,7 @@ describe('api.updatePackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -123,7 +123,7 @@ describe('api.updatePackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -172,7 +172,7 @@ describe('api.updatePackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -221,7 +221,7 @@ describe('api.updatePackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/package.json': JSON.stringify(pkg),
@@ -262,7 +262,7 @@ describe('api.updatePackage()', function() {
 			environment: {
 				default: {}
 			},
-			packages: {},
+			packages: {}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),

@@ -56,7 +56,7 @@ describe('api.uninstallPackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -92,7 +92,7 @@ describe('api.uninstallPackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -123,7 +123,7 @@ describe('api.uninstallPackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -168,7 +168,7 @@ describe('api.uninstallPackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -196,7 +196,7 @@ describe('api.uninstallPackage()', function() {
 						'@my-packages/hello-world': {
 							message: 'Hello, world!'
 						}
-					},
+					}
 				};
 				expect(actual).to.eql(expected);
 			});
@@ -217,7 +217,7 @@ describe('api.uninstallPackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -254,7 +254,7 @@ describe('api.uninstallPackage()', function() {
 						'goodbye-world': {
 							message: 'Goodbye, world!'
 						}
-					},
+					}
 				};
 				expect(actual).to.eql(expected);
 			});
@@ -272,7 +272,7 @@ describe('api.uninstallPackage()', function() {
 				'@my-packages/hello-world': {
 					message: 'Hello, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -345,7 +345,7 @@ describe('api.uninstallPackage()', function() {
 				'goodbye-world': {
 					message: 'Goodbye, world!'
 				}
-			},
+			}
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
@@ -381,7 +381,7 @@ describe('api.uninstallPackage()', function() {
 						'@my-packages/hello-world': {
 							message: 'Hello, world!'
 						}
-					},
+					}
 				};
 				expect(actual).to.eql(expected);
 			});
@@ -395,7 +395,7 @@ describe('api.uninstallPackage()', function() {
 			environment: {
 				default: {}
 			},
-			packages: {},
+			packages: {}
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),

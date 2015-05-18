@@ -120,7 +120,7 @@ describe('helpers.getTask()', function() {
 		var files = {
 			'package.json': JSON.stringify(pkg),
 			'.skivvyrc': JSON.stringify(config),
-			'skivvy/tasks/local.js': 'module.exports = function(config) { };',
+			'skivvy/tasks/local.js': 'module.exports = function(config) { };'
 		};
 		unmockFiles = mockFiles(files);
 		var expected, actual;
@@ -139,7 +139,7 @@ describe('helpers.getTask()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
+			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };'
 		};
 		unmockFiles = mockFiles(files);
 		var expected, actual;
