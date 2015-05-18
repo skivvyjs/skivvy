@@ -248,7 +248,7 @@ function getCommands() {
 			return function(args, options) {
 				command(args, options, function(error) {
 					if (error) {
-						if (error.name === 'ErrorInvalidArgumentsError') {
+						if (error.name === 'InvalidArgumentsError') {
 							console.error(chalk.red(error.message));
 							return options.help();
 						} else if (getIsUserError(error)) {
@@ -263,7 +263,8 @@ function getCommands() {
 
 			function getIsUserError(error) {
 				return Object.keys(api.errors).some(function(errorName) {
-					return error.name === 'Error' + errorName;
+					var errorClass = api.errors[errorName];
+					return error instanceof errorClass;
 				});
 			}
 		}
