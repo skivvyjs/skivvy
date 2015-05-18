@@ -4,6 +4,7 @@ var path = require('path');
 var fs = require('fs');
 var mockFs = require('mock-fs');
 var errno = require('errno');
+var configCache = require('../../lib/helpers/configCache');
 
 var isMockFsActive = false;
 
@@ -15,6 +16,7 @@ module.exports = function(files) {
 	process.chdir('/');
 	var restoreProcess = mockProcess();
 	var restoreRequire = mockRequire();
+	var restoreConfigCache = mockConfigCache();
 	mockFs(files);
 	isMockFsActive = true;
 
@@ -24,6 +26,7 @@ module.exports = function(files) {
 		mockFs.restore();
 		restoreProcess();
 		restoreRequire();
+		restoreConfigCache();
 		process.chdir(originalPath);
 		isMockFsActive = false;
 	};
@@ -67,6 +70,13 @@ module.exports = function(files) {
 			Object.keys(originalCache).forEach(function(filename) {
 				require.cache[filename] = originalCache[filename];
 			});
+		};
+	}
+
+	function mockConfigCache() {
+		configCache.clear();
+		return function() {
+			configCache.clear();
 		};
 	}
 };
