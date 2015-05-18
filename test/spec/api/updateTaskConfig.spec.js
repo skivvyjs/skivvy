@@ -79,10 +79,10 @@ describe('api.updateTaskConfig()', function() {
 		};
 		unmockFiles = mockFiles({
 			'/package.json': JSON.stringify(rootPkg),
-			'/skivvy.json': JSON.stringify(rootConfig),
+			'/.skivvyrc': JSON.stringify(rootConfig),
 			'/skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'/project/skivvy_tasks/existing.js': 'module.exports = function(config) { };',
 			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'~external\': require(\'./tasks/external\'), \'~existing\': require(\'./tasks/existing\') };',
@@ -152,7 +152,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -208,7 +208,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -265,7 +265,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -316,7 +316,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -367,7 +367,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -436,7 +436,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -493,7 +493,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -551,7 +551,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -603,7 +603,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -655,7 +655,7 @@ describe('api.updateTaskConfig()', function() {
 			path: '/project'
 		})
 			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {}
@@ -727,7 +727,7 @@ describe('api.updateTaskConfig()', function() {
 			}
 		})
 			.then(function() {
-				actual = JSON.parse(fs.readFileSync('/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/.skivvyrc', 'utf8'));
 				expected = {
 					environment: {
 						default: {},

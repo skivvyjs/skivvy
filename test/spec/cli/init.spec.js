@@ -153,7 +153,7 @@ describe('cli.init()', function() {
 		};
 		var files = {
 			'project.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 

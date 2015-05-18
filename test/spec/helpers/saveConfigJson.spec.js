@@ -34,7 +34,7 @@ describe('helpers.saveConfigJson()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -67,7 +67,7 @@ describe('helpers.saveConfigJson()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -98,7 +98,7 @@ describe('helpers.saveConfigJson()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -111,7 +111,7 @@ describe('helpers.saveConfigJson()', function() {
 		expected = updates;
 		actual = saveConfigJson('/project', updates)
 			.then(function() {
-				return JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				return JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 			});
 		return expect(actual).to.eventually.eql(expected);
 	});
@@ -126,7 +126,7 @@ describe('helpers.saveConfigJson()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 

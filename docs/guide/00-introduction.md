@@ -42,7 +42,7 @@ skivvy init
 ```
 > _Seeing as this directory has not yet been initialized as an npm module, Skivvy will automatically run the `npm init` command and guide you through the process._
 
-> _Behind the scenes, the `skivvy init` command creates a file in the project root named `skivvy.json`. This is used to store the project and task configuration._
+> _Behind the scenes, the `skivvy init` command creates a file in the project root named `.skivvyrc`. This is used to store the project and task configuration._
 
 That's all it takes to set up a Skivvy project. Time to add some tasks!
 

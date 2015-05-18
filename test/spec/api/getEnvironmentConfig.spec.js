@@ -64,7 +64,7 @@ describe('api.getEnvironmentConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -122,7 +122,7 @@ describe('api.getEnvironmentConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -148,7 +148,7 @@ describe('api.getEnvironmentConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -176,7 +176,7 @@ describe('api.getEnvironmentConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -205,7 +205,7 @@ describe('api.getEnvironmentConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -237,7 +237,7 @@ describe('api.getEnvironmentConfig()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 

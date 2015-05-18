@@ -32,7 +32,7 @@ Here's how to use the `skivvy config` command to set configuration settings for 
 ```bash
 skivvy config --config.paths.source=src --config.paths.destination=dest --config.port=8000 --config.debug=true
 ```
-> _Behind the scenes, this updates the project's `skivvy.json` file. See [here](../the-skivvy-json-file.md) for details._
+> _Behind the scenes, this updates the project's `.skivvyrc` file. See [here](../the-skivvyrc-file.md) for details._
 
 If you ran the command above, the default environment configuration would now look like this:
 
@@ -283,7 +283,7 @@ skivvy config --package=filesystem --task=copy --config=assets --config=index
 
 While the command-line tool provides a simple means of updating configuration, it might be easier to edit your configuration by hand for more complex projects.
 
-All the project's configuration, including all the different environment configurations, are stored in the project's [skivvy.json](../the-skivvy-json-file.md) file.
+All the project's configuration, including all the different environment configurations, are stored in the project's [.skivvyrc](../the-skivvyrc-file.md) file.
 
 -
 

@@ -40,7 +40,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -68,7 +68,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -92,7 +92,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
@@ -130,7 +130,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
@@ -159,7 +159,7 @@ describe('api.updatePackageConfig()', function() {
 			path: '/project'
 		})
 			.then(function(updatedConfig) {
-				return JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				return JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 			});
 		return expect(actual).to.eventually.eql(expected);
 	});
@@ -189,7 +189,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
@@ -219,7 +219,7 @@ describe('api.updatePackageConfig()', function() {
 			path: '/project'
 		})
 			.then(function(updatedConfig) {
-				return JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				return JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 			});
 		return expect(actual).to.eventually.eql(expected);
 	});
@@ -237,7 +237,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
@@ -263,7 +263,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
@@ -306,7 +306,7 @@ describe('api.updatePackageConfig()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);

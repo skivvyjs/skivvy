@@ -34,7 +34,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -62,7 +62,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
@@ -93,7 +93,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-goodbye/package.json': '{ "name": "skivvy-package-goodbye", "version": "1.2.3" }',
 			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
 			'/project/node_modules/skivvy-package-hello/package.json': '{ "name": "skivvy-package-hello", "version": "1.2.3" }',
@@ -129,7 +129,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
 			'/project/node_modules/@my-packages/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
@@ -160,7 +160,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/package.json': '{ "name": "skivvy-package-goodbye", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
 			'/project/node_modules/@my-packages/skivvy-package-hello/package.json': '{ "name": "skivvy-package-hello", "version": "1.2.3" }',
@@ -196,7 +196,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages2/other/index.js': 'module.exports = \'Unrelated package\';',
 			'/project/node_modules/other/index.js': 'module.exports = \'Unrelated package\';'
 		};
@@ -218,7 +218,7 @@ describe('helpers.getPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
 			'/project/node_modules/skivvy-package-goodbye/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
 			'/project/node_modules/skivvy-package-goodbye/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';',

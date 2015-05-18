@@ -30,7 +30,7 @@ describe('helpers.getPackage()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -59,7 +59,7 @@ describe('helpers.getPackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -86,7 +86,7 @@ describe('helpers.getPackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -111,7 +111,7 @@ describe('helpers.getPackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/other/index.js': 'module.exports = \'Non-Skivvy package\';',
 			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};',
 			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};'
@@ -138,7 +138,7 @@ describe('helpers.getPackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/other/index.js': 'module.exports = \'Non-Skivvy package\';',
 			'/project/node_modules/@my-packages/skivvy-package-hello/index.js': 'exports.tasks = {};',
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/index.js': 'exports.tasks = {};'
@@ -164,7 +164,7 @@ describe('helpers.getPackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
 			'/project/node_modules/@my-packages/skivvy-package-hello/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
 			'/project/node_modules/@my-packages/skivvy-package-hello/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';'

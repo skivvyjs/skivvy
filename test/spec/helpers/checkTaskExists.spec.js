@@ -27,7 +27,7 @@ describe('helpers.checkTaskExists()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\') };',
 			'/project/node_modules/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',

@@ -39,7 +39,7 @@ describe('cli.list()', function() {
 	it('should handle empty projects (quiet)', function(done) {
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -70,7 +70,7 @@ describe('cli.list()', function() {
 	it('should handle empty projects (verbose)', function(done) {
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -103,7 +103,7 @@ describe('cli.list()', function() {
 	it('should handle empty packages (quiet)', function(done) {
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'node_modules/skivvy-package-empty-package/index.js': 'exports.tasks = {};',
 			'node_modules/@my-packages/skivvy-package-empty-package/index.js': 'exports.tasks = {};'
 		};
@@ -136,7 +136,7 @@ describe('cli.list()', function() {
 	it('should handle empty packages (verbose)', function(done) {
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'node_modules/skivvy-package-empty-package/package.json': '{ "name": "skivvy-package-empty-package", "version": "1.2.3" }',
 			'node_modules/skivvy-package-empty-package/index.js': 'exports.tasks = {};',
 			'node_modules/@my-packages/skivvy-package-empty-package/package.json': '{ "name": "@my-packages/skivvy-package-empty-package", "version": "1.2.3" }',
@@ -176,7 +176,7 @@ describe('cli.list()', function() {
 	it('should list installed packages (quiet)', function(done) {
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'skivvy_tasks/local1.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 1\';',
 			'skivvy_tasks/local2.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 2\';',
 			'node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'external1\': require(\'./tasks/external1\'), \'external2\': require(\'./tasks/external2\') };',
@@ -223,7 +223,7 @@ describe('cli.list()', function() {
 	it('should list installed packages (verbose)', function(done) {
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'skivvy_tasks/local1.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 1\';',
 			'skivvy_tasks/local2.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 2\';',
 			'node_modules/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package", "version": "1.2.3" }',

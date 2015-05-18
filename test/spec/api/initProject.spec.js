@@ -51,7 +51,7 @@ describe('api.initProject()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': ''
+			'/project/.skivvyrc': ''
 		};
 		unmockFiles = mockFiles(files);
 
@@ -85,7 +85,7 @@ describe('api.initProject()', function() {
 		})
 			.then(function() {
 				expected = defaultConfigFile;
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expect(actual).to.eql(expected);
 
 				expected = true;
@@ -117,7 +117,7 @@ describe('api.initProject()', function() {
 		})
 			.then(function() {
 				expected = defaultConfigFile;
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expect(actual).to.eql(expected);
 
 				expected = true;
@@ -147,7 +147,7 @@ describe('api.initProject()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config)
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -157,7 +157,7 @@ describe('api.initProject()', function() {
 		})
 			.then(function() {
 				expected = config;
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expect(actual).to.eql(expected);
 
 				expected = true;
@@ -186,7 +186,7 @@ describe('api.initProject()', function() {
 		return initProject()
 			.then(function() {
 				expected = defaultConfigFile;
-				actual = JSON.parse(fs.readFileSync('skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('.skivvyrc', 'utf8'));
 				expect(actual).to.eql(expected);
 
 				expected = true;

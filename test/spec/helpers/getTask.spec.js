@@ -17,7 +17,7 @@ describe('helpers.getTask()', function() {
 		var config = {};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'node_modules/@my-packages/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
 			'node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped\': require(\'./tasks/scoped\') };',
@@ -119,7 +119,7 @@ describe('helpers.getTask()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'skivvy/tasks/local.js': 'module.exports = function(config) { };',
 		};
 		unmockFiles = mockFiles(files);
@@ -138,7 +138,7 @@ describe('helpers.getTask()', function() {
 		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
 		};
 		unmockFiles = mockFiles(files);

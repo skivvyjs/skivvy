@@ -33,7 +33,7 @@ describe('api.listPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/my-tasks/unused.js': 'module.exports = function() { console.warn(\'Unused task\'); }; module.exports.description = \'Unused task\';',
 			'/project/skivvy_tasks/goodbye.js': 'module.exports = function() { console.log(\'Goodbye, world!\'); }; module.exports.description = \'Goodbye World task\';',
 			'/project/skivvy_tasks/hello.js': 'module.exports = function() { console.log(\'Hello, world!\'); }; module.exports.description = \'Hello World task\';'
@@ -65,7 +65,7 @@ describe('api.listPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/my-tasks/goodbye.js': 'module.exports = function() { console.log(\'Goodbye, world!\'); }; module.exports.description = \'Goodbye World task\';',
 			'/project/my-tasks/hello.js': 'module.exports = function() { console.log(\'Hello, world!\'); }; module.exports.description = \'Hello World task\';',
 			'/project/skivvy_tasks/unused.js': 'module.exports = function() { console.warn(\'Unused task\'); }; module.exports.description = \'Unused task\';'
@@ -97,7 +97,7 @@ describe('api.listPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/my-tasks/goodbye.js': 'module.exports = function() { console.log(\'Goodbye, world!\'); }; module.exports.description = \'Goodbye World task\';',
 			'/project/my-tasks/hello.js': 'module.exports = function() { console.log(\'Hello, world!\'); }; module.exports.description = \'Hello World task\';',
 			'/project/node_modules/@my-packages1/skivvy-package-hello/index.js': 'exports.tasks = {};',
@@ -151,7 +151,7 @@ describe('api.listPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/my-tasks/goodbye.js': 'module.exports = function() { console.log(\'Goodbye, world!\'); }; module.exports.description = \'Goodbye World task\';',
 			'/project/my-tasks/hello.js': 'module.exports = function() { console.log(\'Hello, world!\'); }; module.exports.description = \'Hello World task\';',
 			'/project/node_modules/@my-packages1/skivvy-package-hello/package.json': '{ "name": "@my-packages1/skivvy-package-hello", "version": "1.2.3" }',
@@ -214,7 +214,7 @@ describe('api.listPackages()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages2/other/index.js': 'module.exports = \'Unrelated package\';',
 			'/project/node_modules/other/index.js': 'module.exports = \'Unrelated package\';'
 		};
@@ -241,7 +241,7 @@ describe('api.listPackages()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
 			'node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};

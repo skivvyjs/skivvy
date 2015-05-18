@@ -282,7 +282,7 @@ describe('api.run()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'skivvy_tasks/local.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local\'; }; module.exports.callback = null;',
 			'skivvy_tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:expander\'; }; module.exports.callback = null;',
 			'skivvy_tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:defaulter\'; }; module.exports.callback = null;',
@@ -301,7 +301,7 @@ describe('api.run()', function() {
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:chainer\' + config.index; }; module.exports.callback = null;',
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:series\'; }; module.exports.callback = null;',
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local\'; }; module.exports.callback = null;',
 			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
 			'/project/node_modules/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',

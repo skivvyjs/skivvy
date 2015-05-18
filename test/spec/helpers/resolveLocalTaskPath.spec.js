@@ -29,7 +29,7 @@ describe('helpers.resolveLocalTaskPath()', function() {
 		};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config)
+			'.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
@@ -58,7 +58,7 @@ describe('helpers.resolveLocalTaskPath()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/hello.js': 'module.exports = function(config) { }; module.exports.description = \'Hello World task\';'
 		};
 		unmockFiles = mockFiles(files);
@@ -86,7 +86,7 @@ describe('helpers.resolveLocalTaskPath()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/hello.js': 'module.exports = function(config) { }; module.exports.description = \'Hello World task\';'
 		};
 		unmockFiles = mockFiles(files);

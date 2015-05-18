@@ -254,10 +254,10 @@ describe('api.getTaskConfig()', function() {
 		};
 		var files = {
 			'/package.json': JSON.stringify(rootPkg),
-			'/skivvy.json': JSON.stringify(rootConfig),
+			'/.skivvyrc': JSON.stringify(rootConfig),
 			'/skivvy_tasks/goodbye.js': 'module.exports = function(config) { };',
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'/project/skivvy_tasks/defaulter.js': 'module.exports = function(config) { }; module.exports.defaults = { \'user\': \'world\' };',
 			'/project/skivvy_tasks/default-targeter.js': 'module.exports = function(config) { }; module.exports.defaults = { \'user\': \'world\' };',

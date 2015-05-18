@@ -62,7 +62,7 @@ function addProjectTests(apiCommand, isAsync, title) {
 
 		it('should throw an error if the path contains an empty config file', function() {
 			var files = {
-				'/project/skivvy.json': ''
+				'/project/.skivvyrc': ''
 			};
 			unmockFiles = mockFiles(files);
 
@@ -78,7 +78,7 @@ function addProjectTests(apiCommand, isAsync, title) {
 
 		it('should throw an error if the path contains an invalid config file', function() {
 			var files = {
-				'/project/skivvy.json': '{'
+				'/project/.skivvyrc': '{'
 			};
 			unmockFiles = mockFiles(files);
 

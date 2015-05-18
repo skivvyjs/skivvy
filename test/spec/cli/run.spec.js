@@ -35,7 +35,7 @@ describe('cli.run()', function() {
 		var config = {};
 		var files = {
 			'package.json': JSON.stringify(pkg),
-			'skivvy.json': JSON.stringify(config),
+			'.skivvyrc': JSON.stringify(config),
 			'skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'skivvy_tasks/local-conflict.js': 'module.exports = function(config) { };',
 			'skivvy_tasks/series1.js': 'module.exports = function(config) { return \'series1\'; };',
@@ -52,13 +52,13 @@ describe('cli.run()', function() {
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/local-conflict.js': 'module.exports = function(config) { };',
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/external-conflict.js': 'module.exports = function(config) { };',
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
 			'/other/package.json': JSON.stringify(pkg),
-			'/other/skivvy.json': JSON.stringify(config),
+			'/other/.skivvyrc': JSON.stringify(config),
 			'/other/skivvy_tasks/cwd1.js': 'module.exports = function(config) { return process.cwd(); };',
 			'/other/project/package.json': JSON.stringify(pkg),
-			'/other/project/skivvy.json': JSON.stringify(config),
+			'/other/project/.skivvyrc': JSON.stringify(config),
 			'/other/project/skivvy_tasks/cwd2.js': 'module.exports = function(config) { return process.cwd(); };'
 		};
 		unmockFiles = mockFiles(files);

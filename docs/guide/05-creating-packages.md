@@ -76,7 +76,7 @@ exports.tasks = {
 };
 
 exports.defaults = {
-	source: null,	
+	source: null,
 	destination: null,
 	options: {
 		port: 80,
@@ -120,7 +120,7 @@ That's it! Time to sit back and relax, safe in the knowledge that you're an acti
 Now that you're a Skivvy pro, it's time to get writing your own tasks and packages. These resources should help you get started:
 
 - [The Skivvy API](../api.md)
-- [The `skivvy.json` file](../the-skivvy-json-file.md)
+- [The `.skivvyrc` file](../the-skivvyrc-file.md)
 - [Public Skivvy packages](../public-skivvy-packages.md)
 
 Good luck Skivvying!

@@ -60,7 +60,7 @@ describe('api.updatePackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
 			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
@@ -96,7 +96,7 @@ describe('api.updatePackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
 			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
@@ -127,7 +127,7 @@ describe('api.updatePackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
@@ -151,7 +151,7 @@ describe('api.updatePackage()', function() {
 				};
 				expect(npmCommands.update).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/project');
 
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = config;
 				expect(actual).to.eql(expected);
 			});
@@ -176,7 +176,7 @@ describe('api.updatePackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
@@ -200,7 +200,7 @@ describe('api.updatePackage()', function() {
 				};
 				expect(npmCommands.update).to.have.been.calledWith('@my-packages/skivvy-package-hello-world', npmOptions, '/project');
 
-				actual = JSON.parse(fs.readFileSync('/project/skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = config;
 				expect(actual).to.eql(expected);
 			});
@@ -225,7 +225,7 @@ describe('api.updatePackage()', function() {
 		};
 		var files = {
 			'/package.json': JSON.stringify(pkg),
-			'/skivvy.json': JSON.stringify(config),
+			'/.skivvyrc': JSON.stringify(config),
 			'/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
@@ -248,7 +248,7 @@ describe('api.updatePackage()', function() {
 				};
 				expect(npmCommands.update).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/');
 
-				actual = JSON.parse(fs.readFileSync('skivvy.json', 'utf8'));
+				actual = JSON.parse(fs.readFileSync('.skivvyrc', 'utf8'));
 				expected = config;
 				expect(actual).to.eql(expected);
 			});
@@ -266,7 +266,7 @@ describe('api.updatePackage()', function() {
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/skivvy.json': JSON.stringify(config),
+			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
 			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
