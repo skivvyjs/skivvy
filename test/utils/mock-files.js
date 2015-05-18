@@ -14,20 +14,16 @@ module.exports = function(files) {
 	var originalPath = process.cwd();
 	process.chdir('/');
 	var restoreProcess = mockProcess();
+	var restoreRequire = mockRequire();
 	mockFs(files);
 	isMockFsActive = true;
 
 	return function restore() {
 		if (!isActive) { return; }
 		isActive = false;
-		Object.keys(files).forEach(function(filename) {
-			filename = path.resolve(filename);
-			if (require.cache.hasOwnProperty(filename)) {
-				delete require.cache[filename];
-			}
-		});
 		mockFs.restore();
 		restoreProcess();
+		restoreRequire();
 		process.chdir(originalPath);
 		isMockFsActive = false;
 	};
@@ -55,6 +51,22 @@ module.exports = function(files) {
 		return function restore() {
 			process.cwd = cwd;
 			process.chdir = chdir;
+		};
+	}
+
+	function mockRequire() {
+		var originalCache = {};
+		Object.keys(require.cache).forEach(function(filename) {
+			originalCache[filename] = require.cache[filename];
+			delete require.cache[filename];
+		});
+		return function() {
+			Object.keys(require.cache).forEach(function(filename) {
+				delete require.cache[filename];
+			});
+			Object.keys(originalCache).forEach(function(filename) {
+				require.cache[filename] = originalCache[filename];
+			});
 		};
 	}
 };
