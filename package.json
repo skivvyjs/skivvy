@@ -19,6 +19,7 @@
     "bin"
   ],
   "scripts": {
+    "prepublish": "npm test",
     "test": "eslint index.js test lib bin && mocha --reporter spec"
   },
   "repository": {
