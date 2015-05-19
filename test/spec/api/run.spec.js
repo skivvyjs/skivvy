@@ -1349,45 +1349,20 @@ describe('api.run()', function() {
 		return expect(actual).to.be.rejectedWith(expected);
 	});
 
-	it('should handle asynchronous tasks by providing this.async() (success)', function() {
-		var config = { user: 'world' };
-		var task = sinon.spy(function(config) {
-			var done = this.async();
-			setTimeout(function() {
-				done();
-			});
-		});
-
-		var actual, expected;
-		expected = undefined;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return Promise.all([
-			actual.then(function() {
-				expect(task).to.have.been.calledWith(config);
-			}),
-			expect(actual).to.eventually.equal(expected)
-		]);
-	});
-
-	it('should handle asynchronous tasks by providing this.async() (failure)', function() {
-		var config = { user: 'world' };
+	it('should pass the API as the \'this\' object', function() {
+		var config = {};
 		var task = function(config) {
-			var done = this.async();
-			setTimeout(function() {
-				done(false);
-			});
+			var skivvy = this;
+			return skivvy;
 		};
 
 		var actual, expected;
-		expected = Error;
+		expected = api;
 		actual = run({
 			task: task,
 			config: config
 		});
-		return expect(actual).to.be.rejectedWith(expected);
+		return expect(actual).to.eventually.equal(expected);
 	});
 
 	it('should run an array of function tasks in series', function() {

@@ -208,39 +208,4 @@ describe('helpers.runAsync()', function() {
 		actual = runAsync(task, args);
 		return expect(actual).to.be.rejectedWith(expected);
 	});
-
-	it('should handle asynchronous functions by providing this.async() (success)', function() {
-		var args = ['hello', 'world'];
-		var task = sinon.spy(function(arg1, arg2) {
-			var done = this.async();
-			setTimeout(function() {
-				done();
-			});
-		});
-
-		var actual, expected;
-		expected = undefined;
-		actual = runAsync(task, args);
-		return Promise.all([
-			actual.then(function() {
-				expect(task).to.have.been.calledWith(args[0], args[1]);
-			}),
-			expect(actual).to.eventually.equal(expected)
-		]);
-	});
-
-	it('should handle asynchronous functions by providing this.async() (failure)', function() {
-		var args = ['hello', 'world'];
-		var task = sinon.spy(function(arg1, arg2) {
-			var done = this.async();
-			setTimeout(function() {
-				done(false);
-			});
-		});
-
-		var actual, expected;
-		expected = Error;
-		actual = runAsync(task, args);
-		return expect(actual).to.be.rejectedWith(expected);
-	});
 });
