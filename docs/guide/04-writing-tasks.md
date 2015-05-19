@@ -117,20 +117,6 @@ module.exports = function(config) {
 module.exports.description = 'Copy files';
 ```
 
-### Method 4: use `this.async()` within the task
-
-```javascript
-module.exports = function(config) {
-	var done = this.async();
-	console.log('Waiting one second...');
-	setTimeout(done, 1000);
-};
-
-module.exports.description = 'Wait a second';
-```
-
-> _You can also indicate that the task has failed by calling `done(false)`._
-
 
 ## Combining existing tasks to form composite tasks
 
@@ -190,11 +176,13 @@ module.exports = [
 For more fine-grained control over task sequences, the [Skivvy API](../api.md) makes it easy to compose individual tasks into larger sequences of tasks:
 
 ```javascript
-var skivvy = require('skivvy');
 
 module.exports = function(config, callback) {
+	// Within a task, the Skivvy API is available as 'this'
+	var skivvy = this;
+
 	// Run the 'build' task
-	skivvy.run({ task: 'build' }, function(error) {
+	skivvy.run({ task: 'build' }, function(error, result) {
 		if (error) {
 			callback(error);
 			return;
@@ -204,7 +192,7 @@ module.exports = function(config, callback) {
 		console.log('Build completed, about to deploy');
 
 		// Run the 'deploy' task
-		skivvy.run({ task: 'deploy', target: 'client-app' }, function(error) {
+		skivvy.run({ task: 'deploy', target: 'client-app' }, function(error, result) {
 			if (error) {
 				callback(error);
 				return;
@@ -223,15 +211,17 @@ The above example uses Node-style callbacks to handle the asynchronous operation
 
 
 ```javascript
-var skivvy = require('skivvy');
-
 module.exports = function(config) {
+	// Get the Skivvy API
+	var skivvy = this;
+
 	// Run the 'build' task
 	return skivvy.run({ task: 'build' })
 		.then(function() {
 			// Perform some intermediate operation
 			console.log('Build completed, about to deploy');
-		}).then(function() {
+		})
+		.then(function() {
 			// Run the 'deploy' task
 			return skivvy.run({ task: 'deploy', target: 'client-app' });
 		});

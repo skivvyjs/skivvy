@@ -1,6 +1,33 @@
 # Skivvy API
 
-Skivvy can be used programatically, as follows:
+Skivvy comes with an API that can be used to control Skivvy programatically. This means you can run tasks, configure tasks, install packages: anything the command-line tool can do, can also be done via the Skivvy API.
+
+## Accessing the API
+
+### Accessing the API from within a Skivvy task
+
+The Skivvy API is automatically passed to tasks as the value of `this`:
+
+```javascript
+module.exports = function(config, callback) {
+	var skivvy = this;
+	return skivvy.run({ task: 'build' }, function(error, result) {
+		callback(error, result);
+	});
+};
+
+module.description = 'API task';
+```
+
+### Accessing the API from outside Skivvy tasks
+
+First, install the Skivvy API to your project's module npm dependencies:
+
+```bash
+npm install skivvy --save-dev
+```
+
+...then you can `require` the Skivvy API anywhere within your app:
 
 ```javascript
 var skivvy = require('skivvy');
