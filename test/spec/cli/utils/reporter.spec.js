@@ -2,13 +2,12 @@
 
 var chai = require('chai');
 var expect = chai.expect;
-var chalk = require('chalk');
 var EventEmitter = require('events').EventEmitter;
 
-var sharedTests = require('../../utils/sharedTests');
+var mockLogFactory = require('../../../fixtures/mockLogFactory');
+var mockColorsFactory = require('../../../fixtures/mockColorsFactory');
 
 var events = require('../../../../lib/events');
-var utils = require('../../../../lib/utils');
 
 var reporter = require('../../../../lib/cli/utils/reporter');
 
@@ -36,34 +35,42 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.INIT_PROJECT_STARTED,
 			data: { path: projectPath },
-			expected: chalk.black('Initializing project at ' + chalk.magenta(projectPath))
+			expected: [
+				{ type: 'info', message: 'Initializing project at <path>' + projectPath + '</path>' }
+			]
 		});
 
 		testEventLog({
 			event: events.INIT_PROJECT_FAILED,
 			data: { path: projectPath, error: new Error() },
-			expected: chalk.red('Failed to initialize project at ' + chalk.magenta(projectPath))
+			expected: [
+				{ type: 'error', message: 'Failed to initialize project at <path>' + projectPath + '</path>' }
+			]
 		});
 
 		testEventLog({
 			event: events.INIT_PROJECT_COMPLETED,
 			data: { path: projectPath },
-			expected: chalk.bold('Initialized project at ' + chalk.magenta(projectPath))
+			expected: [
+				{ type: 'success', message: 'Initialized project at <path>' + projectPath + '</path>' }
+			]
 		});
 
 		testEventLog({
 			event: events.INIT_PROJECT_NPM_INIT_NEEDED,
 			data: { path: projectPath },
 			expected: [
-				chalk.yellow('No package.json file found at ' + chalk.magenta(projectPath)),
-				chalk.black('Follow the prompts to initialize a new npm module:')
+				{ type: 'warn', message: 'No package.json file found at <path>' + projectPath + '</path>' },
+				{ type: 'info', message: 'Follow the prompts to initialize a new npm module:' }
 			]
 		});
 
 		testEventLog({
 			event: events.INIT_PROJECT_API_INSTALL_NEEDED,
 			data: { path: projectPath },
-			expected: chalk.black('Installing API module for use in local tasks...')
+			expected: [
+				{ type: 'info', message: 'Installing API module for use in local tasks...' }
+			]
 		});
 	});
 
@@ -73,19 +80,25 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.INSTALL_PACKAGE_STARTED,
 			data: { package: packageName },
-			expected: chalk.black('Installing package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'info', message: 'Installing package <package>' + packageName + '</package>' }
+			]
 		});
 
 		testEventLog({
 			event: events.INSTALL_PACKAGE_FAILED,
 			data: { package: packageName, error: new Error() },
-			expected: chalk.red('Failed to install package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'error', message: 'Failed to install package <package>' + packageName + '</package>' }
+			]
 		});
 
 		testEventLog({
 			event: events.INSTALL_PACKAGE_COMPLETED,
 			data: { package: packageName, version: '1.2.3' },
-			expected: chalk.bold('Installed package ' + chalk.magenta(packageName + '@1.2.3'))
+			expected: [
+				{ type: 'success', message: 'Installed package <package>' + packageName + '@1.2.3</package>' }
+			]
 		});
 	});
 
@@ -95,19 +108,25 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.UNINSTALL_PACKAGE_STARTED,
 			data: { package: packageName },
-			expected: chalk.black('Uninstalling package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'info', message: 'Uninstalling package <package>' + packageName + '</package>' }
+			]
 		});
 
 		testEventLog({
 			event: events.UNINSTALL_PACKAGE_FAILED,
 			data: { package: packageName, error: new Error() },
-			expected: chalk.red('Failed to uninstall package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'error', message: 'Failed to uninstall package <package>' + packageName + '</package>' }
+			]
 		});
 
 		testEventLog({
 			event: events.UNINSTALL_PACKAGE_COMPLETED,
 			data: { package: packageName },
-			expected: chalk.bold('Uninstalled package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'success', message: 'Uninstalled package <package>' + packageName + '</package>' }
+			]
 		});
 	});
 
@@ -117,19 +136,25 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.UPDATE_PACKAGE_STARTED,
 			data: { package: packageName },
-			expected: chalk.black('Updating package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'info', message: 'Updating package <package>' + packageName + '</package>' }
+			]
 		});
 
 		testEventLog({
 			event: events.UPDATE_PACKAGE_FAILED,
 			data: { package: packageName, error: new Error() },
-			expected: chalk.red('Failed to update package ' + chalk.magenta(packageName))
+			expected: [
+				{ type: 'error', message: 'Failed to update package <package>' + packageName + '</package>' }
+			]
 		});
 
 		testEventLog({
 			event: events.UPDATE_PACKAGE_COMPLETED,
 			data: { package: packageName, version: '1.2.3' },
-			expected: chalk.bold('Updated package ' + chalk.magenta(packageName + '@1.2.3'))
+			expected: [
+				{ type: 'success', message: 'Updated package <package>' + packageName + '@1.2.3</package>' }
+			]
 		});
 	});
 
@@ -140,19 +165,25 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.TASK_STARTED,
 			data: { task: task },
-			expected: chalk.black('Task started: ' + chalk.magenta(task.displayName))
+			expected: [
+				{ type: 'info', message: 'Task started: <task>' + task.displayName + '</task>' }
+			]
 		});
 
 		testEventLog({
 			event: events.TASK_FAILED,
 			data: { task: task, error: new Error(), elapsed: 100 },
-			expected: chalk.red('Task failed: ' + chalk.magenta(task.displayName) + ' (100ms)')
+			expected: [
+				{ type: 'error', message: 'Task failed: <task>' + task.displayName + '</task> (<time>100ms</time>)' }
+			]
 		});
 
 		testEventLog({
 			event: events.TASK_COMPLETED,
 			data: { task: task, result: null, elapsed: 100 },
-			expected: chalk.bold('Task completed: ' + chalk.magenta(task.displayName) + ' (100ms)')
+			expected: [
+				{ type: 'success', message: 'Task completed: <task>' + task.displayName + '</task> (<time>100ms</time>)' }
+			]
 		});
 	});
 
@@ -163,19 +194,25 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.TASK_STARTED,
 			data: { task: task },
-			expected: chalk.black('Task started: ' + chalk.magenta(task.displayName))
+			expected: [
+				{ type: 'info', message: 'Task started: <task>' + task.displayName + '</task>' }
+			]
 		});
 
 		testEventLog({
 			event: events.TASK_FAILED,
 			data: { task: task, error: new Error(), elapsed: 100 },
-			expected: chalk.red('Task failed: ' + chalk.magenta(task.displayName) + ' (100ms)')
+			expected: [
+				{ type: 'error', message: 'Task failed: <task>' + task.displayName + '</task> (<time>100ms</time>)' }
+			]
 		});
 
 		testEventLog({
 			event: events.TASK_COMPLETED,
 			data: { task: task, result: null, elapsed: 100 },
-			expected: chalk.bold('Task completed: ' + chalk.magenta(task.displayName) + ' (100ms)')
+			expected: [
+				{ type: 'success', message: 'Task completed: <task>' + task.displayName + '</task> (<time>100ms</time>)' }
+			]
 		});
 	});
 
@@ -185,19 +222,25 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.TASK_STARTED,
 			data: { task: task },
-			expected: chalk.black('Task group started')
+			expected: [
+				{ type: 'info', message: 'Task group started' }
+			]
 		});
 
 		testEventLog({
 			event: events.TASK_FAILED,
 			data: { task: task, error: new Error(), elapsed: 100 },
-			expected: chalk.red('Task group failed (100ms)')
+			expected: [
+				{ type: 'error', message: 'Task group failed (<time>100ms</time>)' }
+			]
 		});
 
 		testEventLog({
 			event: events.TASK_COMPLETED,
 			data: { task: task, result: null, elapsed: 100 },
-			expected: chalk.bold('Task group completed (100ms)')
+			expected: [
+				{ type: 'success', message: 'Task group completed (<time>100ms</time>)' }
+			]
 		});
 	});
 
@@ -207,19 +250,19 @@ describe('cli.utils.reporter()', function() {
 		testEventLog({
 			event: events.TASK_STARTED,
 			data: { task: task },
-			expected: null
+			expected: []
 		});
 
 		testEventLog({
 			event: events.TASK_FAILED,
 			data: { task: task, error: new Error() },
-			expected: null
+			expected: []
 		});
 
 		testEventLog({
 			event: events.TASK_COMPLETED,
 			data: { task: task },
-			expected: null
+			expected: []
 		});
 	});
 
@@ -227,32 +270,34 @@ describe('cli.utils.reporter()', function() {
 	function testEventLog(test) {
 		var event = test.event;
 		var eventData = test.data;
-		var expected = test.expected;
+		var expectedEvents = test.expected;
 
 		var mockApi = createMockApi();
-		var detachCliLogger = reporter(mockApi);
+		var detachReporter = reporter(mockApi);
 
-		try {
-			sharedTests.testLogOutput({
-				actual: function() { mockApi.emit(event, eventData); },
-				expected: expected
-			});
-		} catch (error) {
-			detachCliLogger();
-			throw error;
-		}
+		mockApi.emit(event, eventData);
 
-		detachCliLogger();
+		var expected, actual;
+		expected = expectedEvents;
+		actual = mockApi.utils.log.messages;
+		expect(actual).to.eql(expected);
 
-		sharedTests.testLogOutput({
-			actual: function() { mockApi.emit(event, eventData); },
-			expected: null
-		});
+		mockApi.utils.log.reset();
+
+		detachReporter();
+		mockApi.emit(event, eventData);
+
+		expected = [];
+		actual = mockApi.utils.log.messages;
+		expect(actual).to.eql(expected);
 
 
-		function createMockApi() {
+		function createMockApi(mockLog, mockColors) {
 			var api = new EventEmitter();
-			api.utils = utils;
+			api.utils = {
+				log: mockLogFactory(),
+				colors: mockColorsFactory()
+			};
 			return api;
 		}
 	}
