@@ -64,14 +64,6 @@ describe('cli.utils.reporter()', function() {
 				{ type: 'info', message: 'Follow the prompts to initialize a new npm module:' }
 			]
 		});
-
-		testEventLog({
-			event: events.INIT_PROJECT_API_INSTALL_NEEDED,
-			data: { path: projectPath },
-			expected: [
-				{ type: 'info', message: 'Installing API module for use in local tasks...' }
-			]
-		});
 	});
 
 	it('should log package install events', function() {

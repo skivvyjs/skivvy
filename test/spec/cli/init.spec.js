@@ -11,7 +11,6 @@ var events = require('../../../lib/events');
 
 var mockApiFactory = require('../../fixtures/mockApiFactory');
 var mockInitPackageJsonFactory = require('../../fixtures/mockInitPackageJsonFactory');
-var mockNpmCommandsFactory = require('../../fixtures/mockNpmCommandsFactory');
 var cliInit = rewire('../../../lib/cli/init');
 
 
@@ -22,23 +21,19 @@ describe('cli.init()', function() {
 	var initPackageJson = mockInitPackageJsonFactory(function(error, data) {
 		if (initPackageJsonCallback) { initPackageJsonCallback(error, data); }
 	});
-	var npmCommands = mockNpmCommandsFactory();
 	var resetApi;
 	var resetInitPackageJson;
 	var initPackageJsonCallback;
-	var resetNpmCommands;
 	var unmockFiles;
 
 	before(function() {
 		resetApi = cliInit.__set__('api', api);
 		resetInitPackageJson = cliInit.__set__('initPackageJson', initPackageJson);
-		resetNpmCommands = cliInit.__set__('npmCommands', npmCommands);
 	});
 
 	after(function() {
 		resetApi();
 		resetInitPackageJson();
-		resetNpmCommands();
 	});
 
 	afterEach(function() {
@@ -51,7 +46,6 @@ describe('cli.init()', function() {
 		}
 		api.reset();
 		initPackageJson.reset();
-		npmCommands.reset();
 	});
 
 	it('should call API method with correct arguments if package.json is present and local npm module is present', function() {
@@ -75,13 +69,11 @@ describe('cli.init()', function() {
 		return cliInit(args, options)
 			.then(function() {
 				expect(api.initProject).to.have.been.calledWith(expected);
-				expect(npmCommands.install).not.to.have.been.called;
 				expect(api.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
-				expect(api.emit).not.to.have.been.calledWith(events.INIT_PROJECT_API_INSTALL_NEEDED);
 			});
 	});
 
-	it('should call API method with correct arguments and install local npm module if package.json is present and local npm module is not present', function() {
+	it('should call API method with correct arguments if package.json is present and local npm module is not present', function() {
 		var pkg = {
 			name: 'hello-world'
 		};
@@ -100,14 +92,7 @@ describe('cli.init()', function() {
 		return cliInit(args, options)
 			.then(function() {
 				expect(api.initProject).to.have.been.calledWith(expected);
-
-				var npmPackages = ['skivvy'];
-				var npmOptions = {
-					'save-dev': true
-				};
-				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/project');
 				expect(api.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_API_INSTALL_NEEDED);
 			});
 	});
 
@@ -130,14 +115,7 @@ describe('cli.init()', function() {
 			.then(function() {
 				expect(initPackageJson).to.have.been.calledWith('/project');
 				expect(api.initProject).to.have.been.calledWith(expected);
-
-				var npmPackages = ['skivvy'];
-				var npmOptions = {
-					'save-dev': true
-				};
-				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/project');
 				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_API_INSTALL_NEEDED);
 			});
 	});
 
@@ -172,14 +150,7 @@ describe('cli.init()', function() {
 			.then(function() {
 				expect(initPackageJson).to.have.been.calledWith('/project');
 				expect(api.initProject).to.have.been.calledWith(expected);
-
-				var npmPackages = ['skivvy'];
-				var npmOptions = {
-					'save-dev': true
-				};
-				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/project');
 				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_API_INSTALL_NEEDED);
 			});
 	});
 
@@ -200,14 +171,7 @@ describe('cli.init()', function() {
 			.then(function() {
 				expect(initPackageJson).to.have.been.calledWith('/');
 				expect(api.initProject).to.have.been.calledWith(expected);
-
-				var npmPackages = ['skivvy'];
-				var npmOptions = {
-					'save-dev': true
-				};
-				expect(npmCommands.install).to.have.been.calledWith(npmPackages, npmOptions, '/');
 				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_API_INSTALL_NEEDED);
 			});
 	});
 });
