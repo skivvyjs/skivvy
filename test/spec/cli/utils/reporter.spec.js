@@ -52,7 +52,7 @@ describe('cli.utils.reporter()', function() {
 			event: events.INIT_PROJECT_COMPLETED,
 			data: { path: projectPath },
 			expected: [
-				{ type: 'success', message: 'Initialized project at <path>' + projectPath + '</path>' }
+				{ type: 'success', message: 'Project initialized at <path>' + projectPath + '</path>' }
 			]
 		});
 
