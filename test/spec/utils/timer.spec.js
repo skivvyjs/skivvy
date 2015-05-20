@@ -68,7 +68,7 @@ describe('utils.timer.start()', function() {
 	});
 });
 
-describe('api.utils.timer.end()', function() {
+describe('utils.timer.end()', function() {
 	var mockLog = mockLogFactory();
 	var mockColors = mockColorsFactory();
 	var resetMockLog;
