@@ -120,6 +120,11 @@ All API methods are either **synchronous**, **asynchronous**, **event dispatcher
 ### Utility methods
 
 - [`skivvy.utils.log()`](#skivvy.utils.log)
+- [`skivvy.utils.log.debug()`](#skivvy.utils.log.debug)
+- [`skivvy.utils.log.info()`](#skivvy.utils.log.info)
+- [`skivvy.utils.log.warn()`](#skivvy.utils.log.warn)
+- [`skivvy.utils.log.error()`](#skivvy.utils.log.error)
+- [`skivvy.utils.log.success()`](#skivvy.utils.log.success)
 - [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start)
 - [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end)
 
@@ -395,7 +400,85 @@ Remove a listener that has previously been registered using the [`skivvy.on()`](
 <a name="skivvy.utils.log"></a>
 ### `skivvy.utils.log(message, [message2, [message3...]])`
 
-Log a message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+Log a generic message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+
+Where possible, it is better to one of the following methods:
+
+- [`skivvy.utils.log.debug()`](#skivvy.utils.log.debug)
+- [`skivvy.utils.log.info()`](#skivvy.utils.log.info)
+- [`skivvy.utils.log.warn()`](#skivvy.utils.log.warn)
+- [`skivvy.utils.log.error()`](#skivvy.utils.log.error)
+- [`skivvy.utils.log.success()`](#skivvy.utils.log.success)
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.utils.log.debug"></a>
+### `skivvy.utils.log.debug(message, [message2, [message3...]])`
+
+Log a debug message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.utils.log.info"></a>
+### `skivvy.utils.log.info(message, [message2, [message3...]])`
+
+Log a general information message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.utils.log.warning"></a>
+### `skivvy.utils.log.warning(message, [message2, [message3...]])`
+
+Log a warning message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.utils.log.error"></a>
+### `skivvy.utils.log.error(message, [message2, [message3...]])`
+
+Log an error message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+
+**Returns:** N/A
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.utils.log.success"></a>
+### `skivvy.utils.log.success(message, [message2, [message3...]])`
+
+Log an success notification to the console, prefixed with the current time. Multiple arguments are joined by a space character.
 
 **Returns:** N/A
 
