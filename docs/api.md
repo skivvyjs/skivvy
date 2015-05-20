@@ -125,6 +125,7 @@ All API methods are either **synchronous**, **asynchronous**, **event dispatcher
 - [`skivvy.utils.log.warn()`](#skivvy.utils.log.warn)
 - [`skivvy.utils.log.error()`](#skivvy.utils.log.error)
 - [`skivvy.utils.log.success()`](#skivvy.utils.log.success)
+- [`skivvy.utils.colors`](#skivvy.utils.colors)
 - [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start)
 - [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end)
 
@@ -487,6 +488,71 @@ Log an success notification to the console, prefixed with the current time. Mult
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `message` | `string` | Yes | N/A | Message to be logged to the console |
+
+
+<a name="skivvy.utils.colors"></a>
+### `skivvy.utils.colors`
+
+Object containing functions used to style console output text using ANSI codes, as seen below:
+
+```javascript
+var src = 'src/app.js';
+var message = 'Copying file: ' + skivvy.utils.colors.path(src);
+
+// Log the message to the console, with the path styled correctly
+skivvy.utils.log(message);
+
+```
+
+Various different styles exist, each for logging different types of string:
+
+- #### `skivvy.utils.colors.path(text)`
+
+	Style a filesystem path for console output
+
+	**Returns:** `string` Styled filesystem path
+
+	**Options:**
+
+	| Param | Type | Required | Default | Description |
+	| ----- | ---- | -------- | ------- | ----------- |
+	| `text` | `string` | Yes | N/A | Text to style |
+
+- #### `skivvy.utils.colors.package(text)`
+
+	Style a Skivvy package name for console output
+
+	**Returns:** `string` Styled package name
+
+	**Options:**
+
+	| Param | Type | Required | Default | Description |
+	| ----- | ---- | -------- | ------- | ----------- |
+	| `text` | `string` | Yes | N/A | Text to style |
+
+- #### `skivvy.utils.colors.task(text)`
+
+	Style a Skivvy task name for console output
+
+	**Returns:** `string` Styled task name
+
+	**Options:**
+
+	| Param | Type | Required | Default | Description |
+	| ----- | ---- | -------- | ------- | ----------- |
+	| `text` | `string` | Yes | N/A | Text to style |
+
+- #### `skivvy.utils.colors.time(text)`
+
+	Style a time measurement for console output
+
+	**Returns:** `string` Styled time measurement
+
+	**Options:**
+
+	| Param | Type | Required | Default | Description |
+	| ----- | ---- | -------- | ------- | ----------- |
+	| `text` | `string` | Yes | N/A | Text to style |
 
 
 <a name="skivvy.utils.timer.start"></a>
