@@ -2,9 +2,9 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var mockCli = require('mock-cli');
 var chalk = require('chalk');
 
-var mockCli = require('../../utils/mock-cli');
 var mockFiles = require('../../utils/mock-files');
 
 var cliList = require('../../../lib/cli/list');
