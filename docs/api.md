@@ -117,24 +117,26 @@ All API methods are either **synchronous**, **asynchronous**, **event dispatcher
 - [`skivvy.run()`](#skivvy.run)
 
 
-### Utility methods
-
-- [`skivvy.utils.log()`](#skivvy.utils.log)
-- [`skivvy.utils.log.debug()`](#skivvy.utils.log.debug)
-- [`skivvy.utils.log.info()`](#skivvy.utils.log.info)
-- [`skivvy.utils.log.warn()`](#skivvy.utils.log.warn)
-- [`skivvy.utils.log.error()`](#skivvy.utils.log.error)
-- [`skivvy.utils.log.success()`](#skivvy.utils.log.success)
-- [`skivvy.utils.colors`](#skivvy.utils.colors)
-- [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start)
-- [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end)
-
-
 ### Event dispatcher methods
 
 - [`skivvy.on()`](#skivvy.on)
 - [`skivvy.removeListener()`](#skivvy.removeListener)
 
+
+### Utility methods
+
+- [`skivvy.utils`](#skivvy.utils) is an instance of the [`skivvy-utils`](https://github.com/timkendrick/skivvy-utils) package:
+	- [`skivvy.utils.log()`](https://github.com/timkendrick/skivvy-utils#utils.log)
+	- [`skivvy.utils.log.debug()`](https://github.com/timkendrick/skivvy-utils#utils.log.debug)
+	- [`skivvy.utils.log.info()`](https://github.com/timkendrick/skivvy-utils#utils.log.info)
+	- [`skivvy.utils.log.warn()`](https://github.com/timkendrick/skivvy-utils#utils.log.warn)
+	- [`skivvy.utils.log.error()`](https://github.com/timkendrick/skivvy-utils#utils.log.error)
+	- [`skivvy.utils.log.success()`](https://github.com/timkendrick/skivvy-utils#utils.log.success)
+	- [`skivvy.utils.colors`](https://github.com/timkendrick/skivvy-utils#utils.colors)
+	- [`skivvy.utils.timer.start()`](https://github.com/timkendrick/skivvy-utils#utils.timer.start)
+	- [`skivvy.utils.timer.end()`](https://github.com/timkendrick/skivvy-utils#utils.timer.end)
+
+-
 
 <a name="skivvy.getEnvironmentConfig"></a>
 ### `skivvy.getEnvironmentConfig(options)`
@@ -398,201 +400,8 @@ Remove a listener that has previously been registered using the [`skivvy.on()`](
 | `listener` | `function` | Yes | N/A | Registered callback |
 
 
-<a name="skivvy.utils.log"></a>
-### `skivvy.utils.log(message, [message2, [message3...]])`
 
-Log a generic message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
+<a name="skivvy.utils"></a>
+### `skivvy.utils`
 
-Where possible, it is better to one of the following methods:
-
-- [`skivvy.utils.log.debug()`](#skivvy.utils.log.debug)
-- [`skivvy.utils.log.info()`](#skivvy.utils.log.info)
-- [`skivvy.utils.log.warn()`](#skivvy.utils.log.warn)
-- [`skivvy.utils.log.error()`](#skivvy.utils.log.error)
-- [`skivvy.utils.log.success()`](#skivvy.utils.log.success)
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `message` | `string` | Yes | N/A | Message to be logged to the console |
-
-
-<a name="skivvy.utils.log.debug"></a>
-### `skivvy.utils.log.debug(message, [message2, [message3...]])`
-
-Log a debug message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `message` | `string` | Yes | N/A | Message to be logged to the console |
-
-
-<a name="skivvy.utils.log.info"></a>
-### `skivvy.utils.log.info(message, [message2, [message3...]])`
-
-Log a general information message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `message` | `string` | Yes | N/A | Message to be logged to the console |
-
-
-<a name="skivvy.utils.log.warning"></a>
-### `skivvy.utils.log.warning(message, [message2, [message3...]])`
-
-Log a warning message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `message` | `string` | Yes | N/A | Message to be logged to the console |
-
-
-<a name="skivvy.utils.log.error"></a>
-### `skivvy.utils.log.error(message, [message2, [message3...]])`
-
-Log an error message to the console, prefixed with the current time. Multiple arguments are joined by a space character.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `message` | `string` | Yes | N/A | Message to be logged to the console |
-
-
-<a name="skivvy.utils.log.success"></a>
-### `skivvy.utils.log.success(message, [message2, [message3...]])`
-
-Log an success notification to the console, prefixed with the current time. Multiple arguments are joined by a space character.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `message` | `string` | Yes | N/A | Message to be logged to the console |
-
-
-<a name="skivvy.utils.colors"></a>
-### `skivvy.utils.colors`
-
-Object containing functions used to style console output text using ANSI codes, as seen below:
-
-```javascript
-var src = 'src/app.js';
-var message = 'Copying file: ' + skivvy.utils.colors.path(src);
-
-// Log the message to the console, with the path styled correctly
-skivvy.utils.log(message);
-
-```
-
-Various different styles exist, each for logging different types of string:
-
-- #### `skivvy.utils.colors.path(text)`
-
-	Style a filesystem path for console output
-
-	**Returns:** `string` Styled filesystem path
-
-	**Options:**
-
-	| Param | Type | Required | Default | Description |
-	| ----- | ---- | -------- | ------- | ----------- |
-	| `text` | `string` | Yes | N/A | Text to style |
-
-- #### `skivvy.utils.colors.package(text)`
-
-	Style a Skivvy package name for console output
-
-	**Returns:** `string` Styled package name
-
-	**Options:**
-
-	| Param | Type | Required | Default | Description |
-	| ----- | ---- | -------- | ------- | ----------- |
-	| `text` | `string` | Yes | N/A | Text to style |
-
-- #### `skivvy.utils.colors.task(text)`
-
-	Style a Skivvy task name for console output
-
-	**Returns:** `string` Styled task name
-
-	**Options:**
-
-	| Param | Type | Required | Default | Description |
-	| ----- | ---- | -------- | ------- | ----------- |
-	| `text` | `string` | Yes | N/A | Text to style |
-
-- #### `skivvy.utils.colors.time(text)`
-
-	Style a time measurement for console output
-
-	**Returns:** `string` Styled time measurement
-
-	**Options:**
-
-	| Param | Type | Required | Default | Description |
-	| ----- | ---- | -------- | ------- | ----------- |
-	| `text` | `string` | Yes | N/A | Text to style |
-
-
-<a name="skivvy.utils.timer.start"></a>
-### `skivvy.utils.timer.start([label])`
-
-Start timing an event
-
-If the `label` argument is specified, a message will be logged to the console:
-
-- if `label` is a `string`, that label will be included in the console log
-- if `label` is `true`, a generic message will be logged to the console.
-
-The timer will stop when [`skivvy.utils.timer.end()`](#skivvy.utils.timer.end) is called with the token that is returned by this method.
-
-**Returns:** `string` Token used to stop the timer
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `label` | `boolean`,`string` | No | N/A | Log a message to the console |
-
-
-<a name="skivvy.utils.timer.end"></a>
-### `skivvy.utils.timer.end(token, [label])`
-
-Stop timing an event
-
-This will stop the timer that corresponds to the `token` that was returned by the [`skivvy.utils.timer.start()`](#skivvy.utils.timer.start) method.
-
-If the `label` argument is specified, a message will be logged to the console:
-
-- if `label` is a `string`, that label will be included in the console log
-- if `label` is `true`, a generic message will be logged to the console.
-
-**Returns:** `number` Number of milliseconds that have elapsed since the timer was started
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `token` | `string` | Yes | N/A | Timer identifier token |
-| `label` | `string`,`boolean` | No | N/A | Log a message to the console |
+Instance of the [`skivvy-utils`](https://github.com/timkendrick/skivvy-utils) package

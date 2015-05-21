@@ -49,9 +49,7 @@
     "archy": "^1.0.0",
     "chalk": "^1.0.0",
     "commander": "^2.8.1",
-    "dateformat": "^1.0.11",
     "end-of-stream": "^1.1.0",
-    "es6-template-strings": "^0.1.0",
     "escape-regexp": "0.0.1",
     "extend": "^2.0.1",
     "glob": "^5.0.5",
@@ -62,6 +60,7 @@
     "pretty-ms": "^1.1.0",
     "promise": "^7.0.1",
     "promise-map-series": "^0.2.1",
+    "skivvy-utils": "^1.0.0",
     "stream-consume": "^0.1.0"
   }
 }

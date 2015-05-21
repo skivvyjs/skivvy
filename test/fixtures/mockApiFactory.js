@@ -3,7 +3,7 @@
 var EventEmitter = require('events').EventEmitter;
 var sinon = require('sinon');
 var Promise = require('promise');
-
+var skivvyUtils = require('skivvy-utils');
 
 function MockApi() {
 	this.dispatcher = new EventEmitter();
@@ -75,7 +75,7 @@ MockApi.prototype.removeListener = function(event, listener) {
 
 MockApi.prototype.events = require('../../lib/events');
 
-MockApi.prototype.utils = require('../../lib/utils');
+MockApi.prototype.utils = skivvyUtils;
 
 module.exports = function() {
 	return spyOn(new MockApi());

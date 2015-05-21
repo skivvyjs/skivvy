@@ -22,7 +22,15 @@ describe('api', function() {
 		expect(api.removeListener).to.be.a('function');
 
 		expect(api.utils.log).to.be.a('function');
-		expect(api.utils.timer).to.be.an('object');
+		expect(api.utils.log.debug).to.be.a('function');
+		expect(api.utils.log.info).to.be.a('function');
+		expect(api.utils.log.warn).to.be.a('function');
+		expect(api.utils.log.error).to.be.a('function');
+		expect(api.utils.log.success).to.be.a('function');
+		expect(api.utils.colors.path).to.be.a('function');
+		expect(api.utils.colors.package).to.be.a('function');
+		expect(api.utils.colors.task).to.be.a('function');
+		expect(api.utils.colors.time).to.be.a('function');
 		expect(api.utils.timer.start).to.be.a('function');
 		expect(api.utils.timer.end).to.be.a('function');
 	});
