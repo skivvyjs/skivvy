@@ -47,11 +47,13 @@ skivvy list
 ```
 
 > _This will output something like the following:_
-```
-example-app@1.0.0
-└─┬ [local tasks]
-  └── hello - Greet the user
-```
+> 
+> ```
+> example-app@1.0.0
+> └─┬ [local tasks]
+>   └── hello - Greet the user
+> ```
+> 
 
 You can also run the newly-created task:
 

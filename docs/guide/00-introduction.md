@@ -15,7 +15,7 @@ This guide is all you need to master Skivvy. By the end of it you'll know how to
 
 ---
 
-###IMPORTANT BACKGROUND KNOWLEDGE
+### IMPORTANT BACKGROUND KNOWLEDGE
 
 Before we start, it's important to know that Skivvy tasks come in two flavors: **external tasks** and **local tasks**. These terms will be used throughout the guide, so it's probably best to get used to them now.
 
@@ -41,7 +41,7 @@ mkdir skivvy-guide && cd skivvy-guide
 skivvy init
 ```
 > _Seeing as this directory has not yet been initialized as an npm module, Skivvy will automatically run the `npm init` command and guide you through the process._
-
+>
 > _Behind the scenes, the `skivvy init` command creates a file in the project root named `.skivvyrc`. This is used to store the project and task configuration._
 
 That's all it takes to set up a Skivvy project. Time to add some tasks!

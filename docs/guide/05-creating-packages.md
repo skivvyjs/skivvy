@@ -24,7 +24,7 @@ mkdir skivvy-package-react-seed && cd skivvy-package-react-seed
 npm init
 ```
 > _All Skivvy packages **must** have an npm module name that starts with `skivvy-package-`._
-
+>
 > _Skivvy packages should also specify `skivvy-package` as a keyword in order for the npm search._
 
 It can be useful to `npm link` the Skivvy package so that you can use it within other projects while the package is still in development:
@@ -44,14 +44,14 @@ Assuming our React seed app contains three tasks: `test`, `build` and `serve`, i
 
 ```
 skivvy-react-seed
- |-package.json
- |-README.md
- |-index.js
- |-tasks/
- |  |-test.js
- |  |-build.js
- |  |-serve.js
- |-src/
+├── package.json
+├── README.md
+├── index.js
+└─┬ tasks/
+  ├── test.js
+  ├── build.js
+  ├── serve.js
+  └── lib/
 ```
 
 #### `package.json`
@@ -91,7 +91,7 @@ exports.defaults = {
 Folder containing the exported tasks in separate files. See the guide section on [writing tasks](04-writing-tasks) to learn how to write your own tasks. When developing a package, it's best to make sure its tasks are as configurable as possible, seeing as the package could potentially be used in many different projects.
 
 
-#### `src/`
+#### `lib/`
 
 Folder containing any helper files used by the exported tasks
 
@@ -113,7 +113,7 @@ To publish your package, run the following command and hope for the best:
 npm publish
 ```
 
-That's it! Time to sit back and relax, safe in the knowledge that you're an active contributor to the Skivvy universe.
+That's it! Time to sit back and relax, safe in the knowledge that you're an active contributor to the Skivvy community.
 
 -
 

@@ -81,13 +81,15 @@ Check out the [Skivvy for gulp/Grunt users](docs/skivvy-for-gulp-grunt-users.md)
 	```
 
 	> _This will output something like the following:_
-	```
-	example-app@1.0.0
-	└─┬ hello-world@1.0.0
-	  ├── greet - Greet the user
-	  └── welcome - Welcome the user
-	```
-	_This means that within our project we're now able to use the `hello-world::greet` and `hello-world::welcome` tasks, seeing as they were both included in the `hello-world` package._
+	>
+	> ```
+	> example-app@1.0.0
+	> └─┬ hello-world@1.0.0
+	>   ├── greet - Greet the user
+	>   └── welcome - Welcome the user
+	> ```
+	>
+	> _This means that within our project we're now able to use the `hello-world::greet` and `hello-world::welcome` tasks, seeing as they were both included in the `hello-world` package._
 
 4. Configure the `hello-world` package:
 

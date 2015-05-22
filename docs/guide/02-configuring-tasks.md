@@ -55,7 +55,7 @@ Tasks can be run in different environments to accommodate different build types.
 ## Setting package configuration
 
 > Package configuration variables are **not** passed directly to tasks, however their values can be referenced in **task** configuration and **run-time** configuration.
-
+>
 > Package configuration can contain references to **environment** configuration variables.
 
 The `skivvy config --package=[package]` command is used to set package-level configuration settings:
@@ -83,7 +83,7 @@ skivvy config browser-sync --config.port="<%=environment.port%>" --config.livere
 ## Setting task configuration
 
 > Task configuration variables **are** passed directly to tasks, however their values can be overridden by **run-time** configuration.
-
+>
 > Task configuration can contain references to **package** and **environment** configuration variables.
 
 ### Local tasks
