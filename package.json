@@ -24,14 +24,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/timkendrick/skivvy.git"
+    "url": "https://github.com/skivvyjs/skivvy.git"
   },
   "author": "Tim Kendrick <timkendrick@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/timkendrick/skivvy/issues"
+    "url": "https://github.com/skivvyjs/skivvy/issues"
   },
-  "homepage": "https://github.com/timkendrick/skivvy",
+  "homepage": "https://github.com/skivvyjs/skivvy",
   "devDependencies": {
     "@skivvy/project-base": "latest",
     "chai": "^2.3.0",
@@ -60,7 +60,7 @@
     "pretty-ms": "^1.1.0",
     "promise": "^7.0.1",
     "promise-map-series": "^0.2.1",
-    "skivvy-utils": "^1.0.0",
+    "skivvy-utils": "^1.1.0",
     "stream-consume": "^0.1.0"
   }
 }
