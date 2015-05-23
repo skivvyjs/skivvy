@@ -265,19 +265,19 @@ describe('api.getTaskConfig()', function() {
 			'/project/skivvy_tasks/expander.js': 'module.exports = function(config) { };',
 			'/project/skivvy_tasks/multi.js': 'module.exports = function(config) { };',
 			'/project/skivvy_tasks/chainer.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
-			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = {' +
+			'/project/node_modules/@skivvy/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = {' +
 				'\'~external\': require(\'./tasks/external\'),' +
 				'\'~targeter\': require(\'./tasks/targeter\'),' +
 				'\'~expander\': require(\'./tasks/expander\'),' +
 				'\'~multi\': require(\'./tasks/multi\'),' +
 				'\'~chainer\': require(\'./tasks/chainer\')' +
 			'};',
-			'/project/node_modules/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/tasks/targeter.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/tasks/multi.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { };'
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/targeter.js': 'module.exports = function(config) { };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/multi.js': 'module.exports = function(config) { };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { };'
 		};
 		unmockFiles = mockFiles(files);
 	});

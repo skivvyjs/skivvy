@@ -288,12 +288,12 @@ describe('api.run()', function() {
 			'skivvy_tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:defaulter\'; }; module.exports.callback = null;',
 			'skivvy_tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:chainer\' + config.index; }; module.exports.callback = null;',
 			'skivvy_tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:series\'; }; module.exports.callback = null;',
-			'node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\'), \'expander\': require(\'./tasks/expander\'), \'defaulter\': require(\'./tasks/defaulter\'), \'chainer\': require(\'./tasks/chainer\'), \'series\': require(\'./tasks/series\') };',
-			'node_modules/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
-			'node_modules/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:expander\'; }; module.exports.callback = null;',
-			'node_modules/skivvy-package-my-package/tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:defaulter\'; }; module.exports.callback = null;',
-			'node_modules/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:chainer\' + config.index; }; module.exports.callback = null;',
-			'node_modules/skivvy-package-my-package/tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:series\'; }; module.exports.callback = null;',
+			'node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\'), \'expander\': require(\'./tasks/expander\'), \'defaulter\': require(\'./tasks/defaulter\'), \'chainer\': require(\'./tasks/chainer\'), \'series\': require(\'./tasks/series\') };',
+			'node_modules/@skivvy/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
+			'node_modules/@skivvy/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:expander\'; }; module.exports.callback = null;',
+			'node_modules/@skivvy/skivvy-package-my-package/tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:defaulter\'; }; module.exports.callback = null;',
+			'node_modules/@skivvy/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:chainer\' + config.index; }; module.exports.callback = null;',
+			'node_modules/@skivvy/skivvy-package-my-package/tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:series\'; }; module.exports.callback = null;',
 			'node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped\': require(\'./tasks/scoped\'), \'expander\': require(\'./tasks/expander\'), \'defaulter\': require(\'./tasks/defaulter\'), \'chainer\': require(\'./tasks/chainer\'), \'series\': require(\'./tasks/series\') };',
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped\'; }; module.exports.callback = null;',
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:expander\'; }; module.exports.callback = null;',
@@ -303,8 +303,8 @@ describe('api.run()', function() {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local\'; }; module.exports.callback = null;',
-			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
-			'/project/node_modules/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
 			'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
 			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped\'; }; module.exports.callback = null;'
 		};
@@ -590,7 +590,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with default target config', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/external');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/external');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -606,7 +606,7 @@ describe('api.run()', function() {
 	});
 
 	it('should expand default environment placeholders in external task config', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/expander');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -622,7 +622,7 @@ describe('api.run()', function() {
 	});
 
 	it('should expand custom environment placeholders in external task config', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/expander');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -639,7 +639,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with custom target config', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/expander');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -657,7 +657,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with overridden config', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/expander');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -678,7 +678,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with overridden custom environment config', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/expander');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -699,7 +699,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with named default target', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/defaulter');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/defaulter');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -725,7 +725,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with named custom target', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/defaulter');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/defaulter');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = {
@@ -752,7 +752,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with multiple default targets', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/chainer');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/chainer');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = [
@@ -798,7 +798,7 @@ describe('api.run()', function() {
 	});
 
 	it('should run external tasks with multiple custom targets', function() {
-		var expectedTask = require('/node_modules/skivvy-package-my-package/tasks/chainer');
+		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/chainer');
 		var spy = sinon.spy();
 		expectedTask.callback = spy;
 		var expectedConfig = [
@@ -1408,7 +1408,7 @@ describe('api.run()', function() {
 		var localSpy = sinon.spy();
 		localTask.callback = localSpy;
 
-		var externalTask = require('/node_modules/skivvy-package-my-package/tasks/series.js');
+		var externalTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/series.js');
 		var externalSpy = sinon.spy();
 		externalTask.callback = externalSpy;
 
@@ -1460,7 +1460,7 @@ describe('api.run()', function() {
 		var localSpy = sinon.spy();
 		localTask.callback = localSpy;
 
-		var externalTask = require('/node_modules/skivvy-package-my-package/tasks/series.js');
+		var externalTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/series.js');
 		var externalSpy = sinon.spy();
 		externalTask.callback = externalSpy;
 
@@ -1506,7 +1506,7 @@ describe('api.run()', function() {
 		var localSpy = sinon.spy();
 		localTask.callback = localSpy;
 
-		var externalTask = require('/node_modules/skivvy-package-my-package/tasks/series.js');
+		var externalTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/series.js');
 		var externalSpy = sinon.spy();
 		externalTask.callback = externalSpy;
 

@@ -63,8 +63,8 @@ describe('helpers.getPackages()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -94,10 +94,10 @@ describe('helpers.getPackages()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-goodbye/package.json': '{ "name": "skivvy-package-goodbye", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
-			'/project/node_modules/skivvy-package-hello/package.json': '{ "name": "skivvy-package-hello", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/package.json': '{ "name": "skivvy-package-goodbye", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-hello/package.json': '{ "name": "skivvy-package-hello", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -219,12 +219,12 @@ describe('helpers.getPackages()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
-			'/project/node_modules/skivvy-package-goodbye/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
-			'/project/node_modules/skivvy-package-goodbye/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';',
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
-			'/project/node_modules/skivvy-package-hello/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
-			'/project/node_modules/skivvy-package-hello/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';',
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
+			'/project/node_modules/@skivvy/skivvy-package-hello/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
+			'/project/node_modules/@skivvy/skivvy-package-hello/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';',
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/index.js': 'exports.tasks = { \'example1\': require(\'./tasks/example1\'), \'example2\': require(\'./tasks/example2\') };',
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/tasks/example1.js': 'module.exports = function(config) { }; module.exports.description = \'First external example task\';',
 			'/project/node_modules/@my-packages/skivvy-package-goodbye/tasks/example2.js': 'module.exports = function(config) { }; module.exports.description = \'Second external example task\';',
@@ -253,15 +253,15 @@ describe('helpers.getPackages()', function() {
 			{
 				name: 'goodbye',
 				tasks: {
-					'example1': require('/project/node_modules/skivvy-package-goodbye/tasks/example1'),
-					'example2': require('/project/node_modules/skivvy-package-goodbye/tasks/example2')
+					'example1': require('/project/node_modules/@skivvy/skivvy-package-goodbye/tasks/example1'),
+					'example2': require('/project/node_modules/@skivvy/skivvy-package-goodbye/tasks/example2')
 				}
 			},
 			{
 				name: 'hello',
 				tasks: {
-					'example1': require('/project/node_modules/skivvy-package-hello/tasks/example1'),
-					'example2': require('/project/node_modules/skivvy-package-hello/tasks/example2')
+					'example1': require('/project/node_modules/@skivvy/skivvy-package-hello/tasks/example1'),
+					'example2': require('/project/node_modules/@skivvy/skivvy-package-hello/tasks/example2')
 				}
 			}
 		];

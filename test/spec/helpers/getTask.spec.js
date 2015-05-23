@@ -22,9 +22,9 @@ describe('helpers.getTask()', function() {
 			'node_modules/@my-packages/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
 			'node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped\': require(\'./tasks/scoped\') };',
 			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped.js': 'module.exports = function(config) { };',
-			'node_modules/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
-			'node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\') };',
-			'node_modules/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };'
+			'node_modules/@skivvy/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package" }',
+			'node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\') };',
+			'node_modules/@skivvy/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };'
 		};
 		unmockFiles = mockFiles(files);
 	});
@@ -62,7 +62,7 @@ describe('helpers.getTask()', function() {
 
 	it('should load external tasks', function() {
 		var expected, actual;
-		expected = require('/node_modules/skivvy-package-my-package/tasks/external');
+		expected = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/external');
 		actual = getTask('external', 'my-package', '/');
 		expect(actual).to.equal(expected);
 	});

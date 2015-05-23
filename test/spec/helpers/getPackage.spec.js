@@ -113,8 +113,8 @@ describe('helpers.getPackage()', function() {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/other/index.js': 'module.exports = \'Non-Skivvy package\';',
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};',
-			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 

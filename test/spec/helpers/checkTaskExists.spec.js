@@ -29,8 +29,8 @@ describe('helpers.checkTaskExists()', function() {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
-			'/project/node_modules/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\') };',
-			'/project/node_modules/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\') };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',
 			'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped\': require(\'./tasks/scoped\') };',
 			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped.js': 'module.exports = function(config) { };'
 		};

@@ -86,12 +86,12 @@ describe('helpers.resolvePackagePath()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
-		expected = '/project/node_modules/skivvy-package-hello';
+		expected = '/project/node_modules/@skivvy/skivvy-package-hello';
 		actual = resolvePackagePath('hello', '/project');
 		expect(actual).to.equal(expected);
 	});

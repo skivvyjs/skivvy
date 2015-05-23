@@ -31,9 +31,9 @@ describe('helpers.resolvePackageModuleName()', function() {
 		});
 	});
 
-	it('should resolve global package names', function() {
+	it('should resolve official package names', function() {
 		var expected, actual;
-		expected = 'skivvy-package-hello';
+		expected = '@skivvy/skivvy-package-hello';
 		actual = resolvePackageModuleName('hello');
 		expect(actual).to.equal(expected);
 	});
@@ -42,6 +42,10 @@ describe('helpers.resolvePackageModuleName()', function() {
 		var expected, actual;
 		expected = '@my-packages/skivvy-package-hello';
 		actual = resolvePackageModuleName('@my-packages/hello', '/project');
+		expect(actual).to.equal(expected);
+
+		expected = '@skivvy/skivvy-package-hello';
+		actual = resolvePackageModuleName('@skivvy/hello', '/project');
 		expect(actual).to.equal(expected);
 	});
 });

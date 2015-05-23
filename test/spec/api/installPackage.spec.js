@@ -103,7 +103,7 @@ describe('api.installPackage()', function() {
 				var npmOptions = {
 					'save-dev': true
 				};
-				expect(npmCommands.install).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/project');
+				expect(npmCommands.install).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/project');
 			});
 	});
 
@@ -237,8 +237,8 @@ describe('api.installPackage()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -255,7 +255,7 @@ describe('api.installPackage()', function() {
 				var npmOptions = {
 					'save-dev': true
 				};
-				expect(npmCommands.install).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/project');
+				expect(npmCommands.install).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/project');
 
 				expected = {
 					environment: {
@@ -299,8 +299,8 @@ describe('api.installPackage()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -369,7 +369,7 @@ describe('api.installPackage()', function() {
 				var npmOptions = {
 					'save-dev': true
 				};
-				expect(npmCommands.install).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/');
+				expect(npmCommands.install).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/');
 			});
 	});
 

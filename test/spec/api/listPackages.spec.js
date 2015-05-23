@@ -104,8 +104,8 @@ describe('api.listPackages()', function() {
 			'/project/node_modules/@my-packages2/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
 			'/project/node_modules/@my-packages2/other/index.js': 'module.exports = \'Unrelated package\';',
 			'/project/node_modules/other/index.js': 'module.exports = \'Unrelated package\';',
-			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};',
 			'/project/skivvy_tasks/unused.js': 'module.exports = function() { console.warn(\'Unused task\'); }; module.exports.description = \'Unused task\';'
 		};
 		unmockFiles = mockFiles(files);
@@ -162,10 +162,10 @@ describe('api.listPackages()', function() {
 			'/project/node_modules/@my-packages2/other/index.js': 'module.exports = \'Unrelated package\';',
 			'/project/node_modules/other/index.js': 'module.exports = \'Unrelated package\';',
 			'/project/node_modules/other/package.json': '{ "name": "other", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye/package.json': '{ "name": "skivvy-package-goodbye", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
-			'/project/node_modules/skivvy-package-hello/package.json': '{ "name": "skivvy-package-hello", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/package.json': '{ "name": "skivvy-package-goodbye", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-hello/package.json': '{ "name": "skivvy-package-hello", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};',
 			'/project/skivvy_tasks/unused.js': 'module.exports = function() { console.warn(\'Unused task\'); }; module.exports.description = \'Unused task\';'
 		};
 		unmockFiles = mockFiles(files);
@@ -242,8 +242,8 @@ describe('api.listPackages()', function() {
 		var files = {
 			'package.json': JSON.stringify(pkg),
 			'.skivvyrc': JSON.stringify(config),
-			'node_modules/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
-			'node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
+			'node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 

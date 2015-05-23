@@ -93,7 +93,7 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -131,7 +131,7 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -190,7 +190,7 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -238,7 +238,7 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -264,7 +264,7 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'package.json': JSON.stringify(pkg),
 			'.skivvyrc': JSON.stringify(config),
-			'node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -307,7 +307,7 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 

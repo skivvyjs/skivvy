@@ -34,8 +34,8 @@ describe('helpers.checkPackageExists()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Scoped package\';'
 		};
@@ -65,8 +65,8 @@ describe('helpers.checkPackageExists()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Scoped package\';'
 		};
@@ -89,8 +89,8 @@ describe('helpers.checkPackageExists()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Scoped package\';'
 		};
@@ -113,8 +113,8 @@ describe('helpers.checkPackageExists()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Scoped package\';'
 		};

@@ -61,8 +61,8 @@ describe('api.uninstallPackage()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -97,8 +97,8 @@ describe('api.uninstallPackage()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -130,8 +130,8 @@ describe('api.uninstallPackage()', function() {
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -149,7 +149,7 @@ describe('api.uninstallPackage()', function() {
 				var npmOptions = {
 					'save-dev': true
 				};
-				expect(npmCommands.uninstall).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/project');
+				expect(npmCommands.uninstall).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/project');
 			});
 	});
 
@@ -175,8 +175,8 @@ describe('api.uninstallPackage()', function() {
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -224,8 +224,8 @@ describe('api.uninstallPackage()', function() {
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -279,8 +279,8 @@ describe('api.uninstallPackage()', function() {
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -311,8 +311,8 @@ describe('api.uninstallPackage()', function() {
 			'/project/.skivvyrc': JSON.stringify(config),
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -352,8 +352,8 @@ describe('api.uninstallPackage()', function() {
 			'.skivvyrc': JSON.stringify(config),
 			'node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
 			'node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -370,7 +370,7 @@ describe('api.uninstallPackage()', function() {
 				var npmOptions = {
 					'save-dev': true
 				};
-				expect(npmCommands.uninstall).to.have.been.calledWith('skivvy-package-goodbye-world', npmOptions, '/');
+				expect(npmCommands.uninstall).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/');
 
 				actual = JSON.parse(fs.readFileSync('.skivvyrc', 'utf8'));
 				expected = {
@@ -400,8 +400,8 @@ describe('api.uninstallPackage()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
 		};
 		unmockFiles = mockFiles(files);
 
