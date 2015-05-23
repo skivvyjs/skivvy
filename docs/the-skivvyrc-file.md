@@ -40,7 +40,7 @@ This file can be edited manually or updated via the `skivvy config` command.
 		}
 	},
 	"packages": {
-		"@timkendrick/mocha-stylus-browserify-app": {
+		"@my-company/mocha-stylus-browserify-app": {
 			"config": {
 				"source": "<%= environment.src %>",
 				"test": "<%= environment.test %>",

@@ -1,7 +1,7 @@
 # Skivvy
 [![npm version](https://img.shields.io/npm/v/skivvy.svg)](https://www.npmjs.com/package/skivvy)
 ![Stability](https://img.shields.io/badge/stability-stable-brightgreen.svg)
-[![Build Status](https://travis-ci.org/timkendrick/skivvy.svg?branch=master)](https://travis-ci.org/timkendrick/skivvy)
+[![Build Status](https://travis-ci.org/skivvyjs/skivvy.svg?branch=master)](https://travis-ci.org/skivvyjs/skivvy)
 
 > Modular task runner for reusable build systems
 
@@ -46,7 +46,7 @@ Skivvy will only go as far as launching your tasks though: what you choose to do
 
 ### The killer feature: task packages
 
-Skivvy tasks can be organized into modules, or **packages**. This allows all the heavy lifting to be handled by configurable helper packages whose internals are completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. Packages are intended to be reused across many different projects, and range from generic utilities (e.g. [skivvy-package-copy](https://github.com/timkendrick/skivvy-package-copy)), to heavily opinionated build packs (e.g. a package to scaffold/test/build/deploy an HTML boilerplate app in your company's house style).
+Skivvy tasks can be organized into modules, or **packages**. This allows all the heavy lifting to be handled by configurable helper packages whose internals are completely isolated from the main application – kind of like [Docker](https://www.docker.com/), but for build systems. Packages are intended to be reused across many different projects, and range from generic utilities (e.g. [skivvy-package-copy](https://www.npmjs.com/package/@skivvy/skivvy-package-copy)), to heavily opinionated build packs (e.g. a package to scaffold/test/build/deploy an HTML boilerplate app in your company's house style).
 
 Within a Skivvy project, as soon as you install an off-the-shelf task package, all of its tasks are instantly accessible from the command-line, without you having to write any code whatsoever. Tasks can be configured either via the command-line tool or by hand-editing a simple JSON configuration file. This task configuration is loaded automatically on a per-task basis, so even a very intricate task system should only need a small amount of simple code to link packages together.
 

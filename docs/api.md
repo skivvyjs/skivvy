@@ -125,16 +125,16 @@ All API methods are either **synchronous**, **asynchronous**, **event dispatcher
 
 ### Utility methods
 
-- [`skivvy.utils`](#skivvy.utils) is an instance of the [`skivvy-utils`](https://github.com/timkendrick/skivvy-utils) package:
-	- [`skivvy.utils.log()`](https://github.com/timkendrick/skivvy-utils#utils.log)
-	- [`skivvy.utils.log.debug()`](https://github.com/timkendrick/skivvy-utils#utils.log.debug)
-	- [`skivvy.utils.log.info()`](https://github.com/timkendrick/skivvy-utils#utils.log.info)
-	- [`skivvy.utils.log.warn()`](https://github.com/timkendrick/skivvy-utils#utils.log.warn)
-	- [`skivvy.utils.log.error()`](https://github.com/timkendrick/skivvy-utils#utils.log.error)
-	- [`skivvy.utils.log.success()`](https://github.com/timkendrick/skivvy-utils#utils.log.success)
-	- [`skivvy.utils.colors`](https://github.com/timkendrick/skivvy-utils#utils.colors)
-	- [`skivvy.utils.timer.start()`](https://github.com/timkendrick/skivvy-utils#utils.timer.start)
-	- [`skivvy.utils.timer.end()`](https://github.com/timkendrick/skivvy-utils#utils.timer.end)
+- [`skivvy.utils`](#skivvy.utils) is an instance of the [`skivvy-utils`](https://github.com/skivvyjs/skivvy-utils) package:
+	- [`skivvy.utils.log()`](https://github.com/skivvyjs/skivvy-utils#utils.log)
+	- [`skivvy.utils.log.debug()`](https://github.com/skivvyjs/skivvy-utils#utils.log.debug)
+	- [`skivvy.utils.log.info()`](https://github.com/skivvyjs/skivvy-utils#utils.log.info)
+	- [`skivvy.utils.log.warn()`](https://github.com/skivvyjs/skivvy-utils#utils.log.warn)
+	- [`skivvy.utils.log.error()`](https://github.com/skivvyjs/skivvy-utils#utils.log.error)
+	- [`skivvy.utils.log.success()`](https://github.com/skivvyjs/skivvy-utils#utils.log.success)
+	- [`skivvy.utils.colors`](https://github.com/skivvyjs/skivvy-utils#utils.colors)
+	- [`skivvy.utils.timer.start()`](https://github.com/skivvyjs/skivvy-utils#utils.timer.start)
+	- [`skivvy.utils.timer.end()`](https://github.com/skivvyjs/skivvy-utils#utils.timer.end)
 
 -
 
@@ -404,4 +404,4 @@ Remove a listener that has previously been registered using the [`skivvy.on()`](
 <a name="skivvy.utils"></a>
 ### `skivvy.utils`
 
-Instance of the [`skivvy-utils`](https://github.com/timkendrick/skivvy-utils) package
+Instance of the [`skivvy-utils`](https://github.com/skivvyjs/skivvy-utils) package
