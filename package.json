@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/timkendrick/skivvy",
   "devDependencies": {
-    "@timkendrick/node-project": "^1.0.4",
+    "@skivvy/project-base": "latest",
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
     "errno": "^0.1.2",
