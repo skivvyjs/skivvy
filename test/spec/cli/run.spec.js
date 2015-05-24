@@ -3,31 +3,27 @@
 var chai = require('chai');
 var expect = chai.expect;
 var chaiAsPromised = require('chai-as-promised');
+var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 var rewire = require('rewire');
 
 var mockFiles = require('../../utils/mock-files');
 
+var mockApiFactory = require('../../fixtures/mockApiFactory');
+
 var InvalidArgumentsError = require('../../../lib/errors').InvalidArgumentsError;
 var MultipleMatchingTasksError = require('../../../lib/errors').MultipleMatchingTasksError;
-
-var mockApiFactory = require('../../fixtures/mockApiFactory');
-var cliRun = rewire('../../../lib/cli/run');
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 describe('cli.run()', function() {
-	var api = mockApiFactory();
-	var resetApi;
-	var unmockFiles;
+	var MockApi;
+	var cliRun = rewire('../../../lib/cli/run');
 
 	before(function() {
-		resetApi = cliRun.__set__('api', api);
-	});
-
-	after(function() {
-		resetApi();
+		MockApi = mockApiFactory();
+		cliRun.__set__('Api', MockApi);
 	});
 
 	beforeEach(function() {
@@ -64,21 +60,20 @@ describe('cli.run()', function() {
 		unmockFiles = mockFiles(files);
 	});
 
+	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
-		api.reset();
+		MockApi.reset();
 	});
 
 	it('should throw an error if no tasks are specified', function() {
 		var args = [];
 		var options = {};
-		var expected, actual;
-		expected = InvalidArgumentsError;
-		actual = cliRun(args, options);
-		return expect(actual).to.be.rejectedWith(expected);
+		var promise = cliRun(args, options);
+		return expect(promise).to.be.rejectedWith(InvalidArgumentsError);
 	});
 
 	it('should locate local tasks', function() {
@@ -86,18 +81,16 @@ describe('cli.run()', function() {
 			'local'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'local',
 					target: null,
 					package: null,
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -106,18 +99,16 @@ describe('cli.run()', function() {
 			'local:custom'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'local',
 					target: 'custom',
 					package: null,
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -126,18 +117,16 @@ describe('cli.run()', function() {
 			'my-package::external'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'external',
 					target: null,
 					package: 'my-package',
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -146,18 +135,16 @@ describe('cli.run()', function() {
 			'my-package::external:custom'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'external',
 					target: 'custom',
 					package: 'my-package',
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -166,18 +153,16 @@ describe('cli.run()', function() {
 			'external'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'external',
 					target: null,
 					package: 'my-package',
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -186,18 +171,16 @@ describe('cli.run()', function() {
 			'external:custom'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'external',
 					target: 'custom',
 					package: 'my-package',
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -206,18 +189,16 @@ describe('cli.run()', function() {
 			'@my-packages/my-package::scoped'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'scoped',
 					target: null,
 					package: '@my-packages/my-package',
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -226,18 +207,16 @@ describe('cli.run()', function() {
 			'@my-packages/my-package::scoped:custom'
 		];
 		var options = {};
-		var expected;
 		return cliRun(args, options)
 			.then(function() {
-				expected = {
+				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'scoped',
 					target: 'custom',
 					package: '@my-packages/my-package',
 					environment: null,
 					path: '/',
 					config: null
-				};
-				expect(api.run).to.have.been.calledWith(expected);
+				});
 			});
 	});
 
@@ -257,7 +236,7 @@ describe('cli.run()', function() {
 					path: '/',
 					config: null
 				};
-				expect(api.run).to.have.been.calledWith(expected);
+				expect(MockApi.instance.run).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -277,7 +256,7 @@ describe('cli.run()', function() {
 					path: '/',
 					config: null
 				};
-				expect(api.run).to.have.been.calledWith(expected);
+				expect(MockApi.instance.run).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -297,7 +276,7 @@ describe('cli.run()', function() {
 					path: '/',
 					config: null
 				};
-				expect(api.run).to.have.been.calledWith(expected);
+				expect(MockApi.instance.run).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -317,7 +296,7 @@ describe('cli.run()', function() {
 					path: '/',
 					config: null
 				};
-				expect(api.run).to.have.been.calledWith(expected);
+				expect(MockApi.instance.run).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -356,7 +335,7 @@ describe('cli.run()', function() {
 						user: 'world'
 					}
 				};
-				expect(api.run).to.have.been.calledWith(expected);
+				expect(MockApi.instance.run).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -367,21 +346,13 @@ describe('cli.run()', function() {
 		var options = {
 			path: '/project'
 		};
-		var actualCwd = null;
-		var expected, actual;
-		var mockedApiMethod = api.run;
-		api.run = function(options, callback) {
-			actualCwd = process.cwd();
-			return mockedApiMethod.apply(api, arguments);
-		};
+		var task = sinon.spy(function(options) {
+			return process.cwd();
+		});
+		MockApi.stubs.run = task;
 		return cliRun(args, options)
-			.then(function() {
-				expected = '/project';
-				actual = actualCwd;
-				expect(actual).to.equal(expected);
-			})
-			.finally(function() {
-				api.run = mockedApiMethod;
+			.then(function(returnValue) {
+				expect(returnValue).to.eql(['/project']);
 			});
 	});
 
@@ -392,15 +363,10 @@ describe('cli.run()', function() {
 			'series3'
 		];
 		var options = {};
-		var actual, expected;
 		return cliRun(args, options)
 			.then(function(returnValue) {
-				var stubResults = ['hello', 'hello', 'hello'];
-				expected = stubResults;
-				actual = returnValue;
-				expect(actual).to.eql(expected);
-
-				expected = [
+				expect(returnValue).to.eql(['hello', 'hello', 'hello']);
+				var expectedCalls = [
 					{
 						task: 'series1',
 						target: null,
@@ -426,8 +392,8 @@ describe('cli.run()', function() {
 						config: null
 					}
 				];
-				expected.forEach(function(expected) {
-					expect(api.run).to.have.been.calledWith(expected);
+				expectedCalls.forEach(function(expected) {
+					expect(MockApi.instance.run).to.have.been.calledWith(expected);
 				});
 			});
 	});
@@ -439,31 +405,21 @@ describe('cli.run()', function() {
 		var options = {
 			cwd: '/other'
 		};
-		var actualCwd = null;
-		var expected, actual;
-		var mockedApiMethod = api.run;
-		api.run = function(options, callback) {
-			actualCwd = process.cwd();
-			return mockedApiMethod.apply(api, arguments);
-		};
+		var task = sinon.spy(function(options) {
+			return process.cwd();
+		});
+		MockApi.stubs.run = task;
 		return cliRun(args, options)
-			.then(function() {
-				expected = {
+			.then(function(returnValue) {
+				expect(returnValue).to.eql(['/other']);
+				expect(task).to.have.been.calledWith({
 					task: 'cwd1',
 					target: null,
 					package: null,
 					environment: null,
 					path: '/other',
 					config: null
-				};
-				expect(mockedApiMethod).to.have.been.calledWith(expected);
-
-				expected = '/other';
-				actual = actualCwd;
-				expect(actual).to.equal(expected);
-			})
-			.finally(function() {
-				api.run = mockedApiMethod;
+				});
 			});
 	});
 
@@ -475,31 +431,21 @@ describe('cli.run()', function() {
 			cwd: '/other',
 			path: './project'
 		};
-		var actualCwd = null;
-		var expected, actual;
-		var mockedApiMethod = api.run;
-		api.run = function(options, callback) {
-			actualCwd = process.cwd();
-			return mockedApiMethod.apply(api, arguments);
-		};
+		var task = sinon.spy(function(options) {
+			return process.cwd();
+		});
+		MockApi.stubs.run = task;
 		return cliRun(args, options)
-			.then(function() {
-				expected = {
+			.then(function(returnValue) {
+				expect(returnValue).to.eql(['/other']);
+				expect(task).to.have.been.calledWith({
 					task: 'cwd2',
 					target: null,
 					package: null,
 					environment: null,
 					path: '/other/project',
 					config: null
-				};
-				expect(mockedApiMethod).to.have.been.calledWith(expected);
-
-				expected = '/other';
-				actual = actualCwd;
-				expect(actual).to.equal(expected);
-			})
-			.finally(function() {
-				api.run = mockedApiMethod;
+				});
 			});
 	});
 });

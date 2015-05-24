@@ -7,17 +7,24 @@ var fs = require('fs');
 
 var mockFiles = require('../../utils/mock-files');
 
-var api = require('../../../lib/api');
+var mockApiFactory = require('../../fixtures/mockApiFactory');
+
 var events = require('../../../lib/events');
 
 var InvalidProjectError = require('../../../lib/errors').InvalidProjectError;
 var InvalidNpmModuleError = require('../../../lib/errors').InvalidNpmModuleError;
 
-var initProject = require('../../../lib/api/initProject');
-
 chai.use(chaiAsPromised);
 
 describe('api.initProject()', function() {
+	var initProject;
+	var MockApi;
+	before(function() {
+		MockApi = mockApiFactory();
+		initProject = require('../../../lib/api/initProject');
+		initProject = initProject.bind(MockApi);
+	});
+
 	var unmockFiles = null;
 
 	afterEach(function() {
@@ -25,6 +32,7 @@ describe('api.initProject()', function() {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
 	});
 
 	it('should throw an error if package.json is not present', function() {
@@ -217,9 +225,9 @@ describe('api.initProject()', function() {
 		];
 		actual = [];
 
-		api.on(events.INIT_PROJECT_STARTED, onStarted);
-		api.on(events.INIT_PROJECT_COMPLETED, onCompleted);
-		api.on(events.INIT_PROJECT_FAILED, onFailed);
+		MockApi.on(events.INIT_PROJECT_STARTED, onStarted);
+		MockApi.on(events.INIT_PROJECT_COMPLETED, onCompleted);
+		MockApi.on(events.INIT_PROJECT_FAILED, onFailed);
 
 
 		function onStarted(data) {
@@ -249,11 +257,6 @@ describe('api.initProject()', function() {
 		})
 			.then(function() {
 				return expect(actual).to.eql(expected);
-			})
-			.finally(function() {
-				api.removeListener(events.INIT_PROJECT_STARTED, onStarted);
-				api.removeListener(events.INIT_PROJECT_COMPLETED, onCompleted);
-				api.removeListener(events.INIT_PROJECT_FAILED, onFailed);
 			});
 	});
 });

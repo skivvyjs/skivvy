@@ -1,135 +1,173 @@
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
+var emitterMixin = require('emitter-mixin');
 var sinon = require('sinon');
 var Promise = require('promise');
 var skivvyUtils = require('skivvy-utils');
 
-function MockApi() {
-	this.dispatcher = new EventEmitter();
-}
-
-MockApi.prototype.getEnvironmentConfig = function(options, callback) {
-	return Promise.resolve(getStubEnvironmentConfig(options)).nodeify(callback);
-};
-
-MockApi.prototype.getPackageConfig = function(options, callback) {
-	return Promise.resolve(getStubPackageConfig(options)).nodeify(callback);
-};
-
-MockApi.prototype.getTaskConfig = function(options, callback) {
-	return Promise.resolve(getStubTaskConfig(options)).nodeify(callback);
-};
-
-MockApi.prototype.initProject = function(options, callback) {
-	return Promise.resolve().nodeify(callback);
-};
-
-MockApi.prototype.installPackage = function(options, callback) {
-	return Promise.resolve(getStubInstalledPackageVersion(options)).nodeify(callback);
-};
-
-MockApi.prototype.uninstallPackage = function(options, callback) {
-	return Promise.resolve().nodeify(callback);
-};
-
-MockApi.prototype.updatePackage = function(options, callback) {
-	return Promise.resolve(getStubUpdatedPackageVersion(options)).nodeify(callback);
-};
-
-MockApi.prototype.listPackages = function(options, callback) {
-	return Promise.resolve(getStubPackages(options)).nodeify(callback);
-};
-
-MockApi.prototype.updateEnvironmentConfig = function(options, callback) {
-	return Promise.resolve(getStubUpdatedEnvironmentConfig(options)).nodeify(callback);
-};
-
-MockApi.prototype.updatePackageConfig = function(options, callback) {
-	return Promise.resolve(getStubUpdatedPackageConfig(options)).nodeify(callback);
-};
-
-MockApi.prototype.updateTaskConfig = function(options, callback) {
-	return Promise.resolve(getStubUpdatedTaskConfig(options)).nodeify(callback);
-};
-
-MockApi.prototype.run = function(options, callback) {
-	return Promise.resolve(getStubTestResult(options)).nodeify(callback);
-};
-
-MockApi.prototype.emit = function(event) {
-	this.dispatcher.emit.apply(this.dispatcher, arguments);
-};
-
-MockApi.prototype.on = function(event, listener) {
-	this.dispatcher.on.apply(this.dispatcher, arguments);
-};
-
-MockApi.prototype.once = function(event, listener) {
-	this.dispatcher.once.apply(this.dispatcher, arguments);
-};
-
-MockApi.prototype.removeListener = function(event, listener) {
-	this.dispatcher.removeListener.apply(this.dispatcher, arguments);
-};
-
-MockApi.prototype.events = require('../../lib/events');
-
-MockApi.prototype.utils = skivvyUtils;
-
 module.exports = function() {
-	return spyOn(new MockApi());
-};
 
+	function MockApi(path) {
+		this.path = path;
 
-function spyOn(subject) {
-	var memberNames = Object.keys(subject.constructor.prototype);
+		this.events = MockApi.events;
+		this.utils = MockApi.utils;
 
-	var spies = memberNames.filter(function(methodName) {
-			return typeof subject[methodName] === 'function';
-		})
-		.map(function(methodName) {
-			var method = subject[methodName];
-			var spy = sinon.spy(method);
-			subject[methodName] = spy;
-			return spy;
+		this.getEnvironmentConfig = sinon.spy(function(options) {
+			return (typeof this.stubs.environmentConfig === 'function' ? this.stubs.environmentConfig(options) : (this.stubs.environmentConfig || getStubEnvironmentConfig(options)));
+		});
+		this.getPackageConfig = sinon.spy(function(options) {
+			return (typeof this.stubs.packageConfig === 'function' ? this.stubs.packageConfig(options) : (this.stubs.packageConfig || getStubPackageConfig(options)));
+		});
+		this.getTaskConfig = sinon.spy(function(options) {
+			return (typeof this.stubs.taskConfig === 'function' ? this.stubs.taskConfig(options) : (this.stubs.taskConfig || getStubTaskConfig(options)));
+		});
+		this.installPackage = sinon.spy(function(options, callback) {
+			return Promise.resolve(getStubInstalledPackageVersion(options)).nodeify(callback);
+		});
+		this.uninstallPackage = sinon.spy(function(options, callback) {
+			return Promise.resolve().nodeify(callback);
+		});
+		this.updatePackage = sinon.spy(function(options, callback) {
+			return Promise.resolve(getStubUpdatedPackageVersion(options)).nodeify(callback);
+		});
+		this.listPackages = sinon.spy(function(options, callback) {
+			return Promise.resolve(getStubPackages(options)).nodeify(callback);
+		});
+		this.updateEnvironmentConfig = sinon.spy(function(options, callback) {
+			return Promise.resolve(getStubUpdatedEnvironmentConfig(options)).nodeify(callback);
+		});
+		this.updatePackageConfig = sinon.spy(function(options, callback) {
+			return Promise.resolve(getStubUpdatedPackageConfig(options)).nodeify(callback);
+		});
+		this.updateTaskConfig = sinon.spy(function(options, callback) {
+			return Promise.resolve(getStubUpdatedTaskConfig(options)).nodeify(callback);
+		});
+		this.run = sinon.spy(function(options, callback) {
+			return Promise.resolve(this.stubs.run ? this.stubs.run(options, callback) : getStubTestResult(options)).nodeify(callback);
 		});
 
-	var stub = memberNames.reduce(
-		function(stub, memberName) {
-			stub[memberName] = subject[memberName];
-			return stub;
-		},
-		{
-			reset: function() {
-				spies.forEach(function(spy) {
-					spy.reset();
-				});
-			}
+		emitterMixin(this);
+		this.addListener = sinon.spy(this.addListener);
+		this.emit = sinon.spy(this.emit);
+		this.listeners = sinon.spy(this.listeners);
+		this.off = sinon.spy(this.off);
+		this.on = sinon.spy(this.on);
+		this.once = sinon.spy(this.once);
+		this.removeAllListeners = sinon.spy(this.removeAllListeners);
+		this.removeListener = sinon.spy(this.removeListener);
+		this.setMaxListeners = sinon.spy(this.setMaxListeners);
+
+		this.stubs = {
+			environmentConfig: MockApi.stubs.environmentConfig || null,
+			packageConfig: MockApi.stubs.packageConfig || null,
+			taskConfig: MockApi.stubs.taskConfig || null,
+			run: MockApi.stubs.run || null
+		};
+
+		this.reset = function() {
+			this.getEnvironmentConfig.reset();
+			this.getPackageConfig.reset();
+			this.getTaskConfig.reset();
+			this.installPackage.reset();
+			this.uninstallPackage.reset();
+			this.updatePackage.reset();
+			this.listPackages.reset();
+			this.updateEnvironmentConfig.reset();
+			this.updatePackageConfig.reset();
+			this.updateTaskConfig.reset();
+			this.run.reset();
+
+			this.addListener.reset();
+			this.emit.reset();
+			this.listeners.reset();
+			this.off.reset();
+			this.on.reset();
+			this.once.reset();
+			this.removeAllListeners.reset();
+			this.removeListener.reset();
+			this.setMaxListeners.reset();
+
+			this.removeAllListeners();
+
+			var stubs = this.stubs;
+			Object.keys(stubs).forEach(function(key) {
+				stubs[key] = null;
+			});
+		};
+
+		MockApi.instance = this;
+	}
+
+	emitterMixin(MockApi);
+	MockApi.addListener = sinon.spy(MockApi.addListener);
+	MockApi.emit = sinon.spy(MockApi.emit);
+	MockApi.listeners = sinon.spy(MockApi.listeners);
+	MockApi.off = sinon.spy(MockApi.off);
+	MockApi.on = sinon.spy(MockApi.on);
+	MockApi.once = sinon.spy(MockApi.once);
+	MockApi.removeAllListeners = sinon.spy(MockApi.removeAllListeners);
+	MockApi.removeListener = sinon.spy(MockApi.removeListener);
+	MockApi.setMaxListeners = sinon.spy(MockApi.setMaxListeners);
+
+	MockApi.events = require('../../lib/events');
+	MockApi.utils = skivvyUtils;
+
+	MockApi.initProject = sinon.spy(function(options, callback) {
+		return Promise.resolve(new MockApi()).nodeify(callback);
+	});
+
+	MockApi.stubs = {
+		environmentConfig: null,
+		packageConfig: null,
+		taskConfig: null,
+		run: null
+	};
+
+	MockApi.reset = function(keepListeners) {
+		MockApi.initProject.reset();
+
+		MockApi.addListener.reset();
+		MockApi.emit.reset();
+		MockApi.listeners.reset();
+		MockApi.off.reset();
+		MockApi.on.reset();
+		MockApi.once.reset();
+		MockApi.removeAllListeners.reset();
+		MockApi.removeListener.reset();
+		MockApi.setMaxListeners.reset();
+
+		var stubs = this.stubs;
+		Object.keys(stubs).forEach(function(key) {
+			stubs[key] = null;
+		});
+
+		MockApi.instance = null;
+
+		if (!keepListeners) {
+			this.removeAllListeners();
 		}
-	);
+	};
 
-	subject.constructor.call(stub);
-
-	return stub;
-}
+	return MockApi;
+};
 
 
 function getStubEnvironmentConfig(options) {
 	return {
-		message: 'Hello, world!'
+		message: 'Stub: Hello, world!'
 	};
 }
 
 function getStubPackageConfig(options) {
 	return {
-		message: 'Hello, world!'
+		message: 'Stub: Hello, world!'
 	};
 }
 
 function getStubTaskConfig(options) {
 	return {
-		message: 'Hello, world!'
+		message: 'Stub: Hello, world!'
 	};
 }
 

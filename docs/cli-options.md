@@ -56,7 +56,7 @@ Remove packages from the current project
 
 Update package(s) within the current project
 
-If no `package` is specified, all packages will be updated.
+If `package` is not specified, all packages will be updated.
 
 **Options:**
 

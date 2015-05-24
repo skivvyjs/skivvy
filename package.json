@@ -41,6 +41,7 @@
     "mocha": "^2.2.4",
     "mock-cli": "^0.1.0",
     "mock-fs": "^2.7.0",
+    "mockery": "^1.4.0",
     "rewire": "^2.3.3",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0"
@@ -49,6 +50,7 @@
     "archy": "^1.0.0",
     "chalk": "^1.0.0",
     "commander": "^2.8.1",
+    "emitter-mixin": "0.0.3",
     "end-of-stream": "^1.1.0",
     "escape-regexp": "0.0.1",
     "extend": "^2.0.1",

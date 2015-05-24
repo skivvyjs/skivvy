@@ -9,32 +9,23 @@ var rewire = require('rewire');
 var InvalidArgumentsError = require('../../../lib/errors').InvalidArgumentsError;
 
 var mockApiFactory = require('../../fixtures/mockApiFactory');
-var cliConfig = rewire('../../../lib/cli/config');
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 describe('cli.config()', function() {
-	var api = mockApiFactory();
-	var resetApi;
-
+	var cliConfig;
+	var MockApi;
 	before(function() {
-		resetApi = cliConfig.__set__('api', api);
-	});
-
-	after(function() {
-		resetApi();
-	});
-
-	afterEach(function() {
-		api.reset();
+		MockApi = mockApiFactory();
+		cliConfig = rewire('../../../lib/cli/config');
+		cliConfig.__set__('Api', MockApi);
 	});
 
 	it('should throw an error if no configuration updates are specified', function() {
 		var args = [];
 		var options = {
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		var expected = InvalidArgumentsError;
 		var actual = cliConfig(args, options);
@@ -47,19 +38,17 @@ describe('cli.config()', function() {
 			config: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		var expected = {
 			updates: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		return cliConfig(args, options)
 			.then(function(returnValue) {
-				expect(api.updateEnvironmentConfig).to.have.been.calledWith(expected);
+				expect(MockApi.instance.updateEnvironmentConfig).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -70,20 +59,18 @@ describe('cli.config()', function() {
 			config: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		var expected = {
 			package: 'my-package',
 			updates: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		return cliConfig(args, options)
 			.then(function(returnValue) {
-				expect(api.updatePackageConfig).to.have.been.calledWith(expected);
+				expect(MockApi.instance.updatePackageConfig).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -95,8 +82,7 @@ describe('cli.config()', function() {
 			config: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		var expected = {
 			task: 'hello',
@@ -105,12 +91,11 @@ describe('cli.config()', function() {
 			updates: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		return cliConfig(args, options)
 			.then(function(returnValue) {
-				expect(api.updateTaskConfig).to.have.been.calledWith(expected);
+				expect(MockApi.instance.updateTaskConfig).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -123,8 +108,7 @@ describe('cli.config()', function() {
 			config: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
-			path: '/project'
+			environment: 'goodbye'
 		};
 		var expected = {
 			task: 'hello',
@@ -133,12 +117,34 @@ describe('cli.config()', function() {
 			updates: {
 				hello: 'world'
 			},
-			environment: 'goodbye',
+			environment: 'goodbye'
+		};
+		return cliConfig(args, options)
+			.then(function(returnValue) {
+				expect(MockApi.instance.updateTaskConfig).to.have.been.calledWith(expected);
+			});
+	});
+
+	it('should pass the project path to the API', function() {
+		var args = [];
+		var options = {
+			config: {},
 			path: '/project'
 		};
 		return cliConfig(args, options)
 			.then(function(returnValue) {
-				expect(api.updateTaskConfig).to.have.been.calledWith(expected);
+				expect(MockApi.instance.path).to.equal('/project');
+			});
+	});
+
+	it('should default to process.cwd() if no project path is specified', function() {
+		var args = [];
+		var options = {
+			config: {}
+		};
+		return cliConfig(args, options)
+			.then(function(returnValue) {
+				expect(MockApi.instance.path).to.equal(process.cwd());
 			});
 	});
 });

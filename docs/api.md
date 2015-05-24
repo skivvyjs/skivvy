@@ -6,12 +6,12 @@ Skivvy comes with an API that can be used to control Skivvy programatically. Thi
 
 ### Accessing the API from within a Skivvy task
 
-The Skivvy API is automatically passed to tasks as the value of `this`:
+The current Skivvy API instance is automatically passed to tasks as the value of `this`:
 
 ```javascript
 module.exports = function(config, callback) {
-	var skivvy = this;
-	return skivvy.run({ task: 'build' }, function(error, result) {
+	var api = this;
+	return api.run({ task: 'build' }, function(error, result) {
 		callback(error, result);
 	});
 };
@@ -21,18 +21,20 @@ module.description = 'API task';
 
 ### Accessing the API from outside Skivvy tasks
 
-First, install the Skivvy API to your project's module npm dependencies:
+First, install the Skivvy API to your project's npm dependencies:
 
 ```bash
 npm install skivvy --save-dev
 ```
 
-...then you can `require` the Skivvy API anywhere within your app:
+...then you can `require` the Skivvy module anywhere within your app, and create a new API instance using the `skivvy.api()` method:
 
 ```javascript
 var skivvy = require('skivvy');
 
-skivvy.run({ task: 'build' }, function(error) {
+var api = skivvy.api();
+
+api.run({ task: 'build' }, function(error) {
 	if (error) {
 		console.error('Build error: ' + error);
 	} else {
@@ -41,10 +43,58 @@ skivvy.run({ task: 'build' }, function(error) {
 });
 ```
 
+You can also create new Skivvy projects programmatically using the `skivvy.init()` method:
 
-## API rules
+```javascript
+var skivvy = require('skivvy');
 
-All API methods are either **synchronous**, **asynchronous**, **event dispatcher** or **utility** methods.
+skivvy.init({ path: 'my/new/project' }, function(error, api) {
+	if (error) {
+		console.error('Failed to create project: ' + error);
+	} else {
+		console.log('Created project');
+	}
+});
+```
+
+## Top-level `skivvy` methods
+
+
+<a name="skivvy.init"></a>
+#### `skivvy.init([options], [callback])`
+
+Create a new Skivvy project
+
+**Returns:** `Promise<Api>` API for the newly-created project
+
+**Options:**
+
+| Name | Type | Required | Default | Description |
+| ---- | ---- | -------- | ------- | ----------- |
+| `path` | `string` | No | `process.cwd()` | Path at which the Skivvy project will be initialized |
+| `callback` | `function` | No | `null` | Callback to be invoked on success/error |
+
+
+<a name="skivvy.api"></a>
+#### `skivvy.api(options)`
+
+Get a Skivvy API instance for an existing Skivvy project
+
+##### Returns:
+
+`Api` An instance of the Skivvy API
+
+##### Options:
+
+| Name | Type | Required | Default | Description |
+| ---- | ---- | -------- | ------- | ----------- |
+| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project folder |
+
+
+
+## API instance methods
+
+All API instance methods are either **synchronous**, **asynchronous**, **event emitter** or **utility** methods.
 
 
 ### Synchronous API methods
@@ -84,62 +134,67 @@ All API methods are either **synchronous**, **asynchronous**, **event dispatcher
 	```
 
 
-### Event dispatcher methods
+### Event emitter methods
 
-- Useful for listening to global Skivvy events
+- Useful for listening to Skivvy lifecycle events
 
 
 ### Utility methods
 
-- Used for debugging and notification purposes
-- Located inside the `skivvy.utils` namespace
+- Useful for debugging and notification purposes
+- Located inside the `api.utils` namespace
 
 
 ## API methods
 
 ### Synchronous methods
 
-- [`skivvy.getEnvironmentConfig()`](#skivvy.getEnvironmentConfig)
-- [`skivvy.getPackageConfig()`](#skivvy.getPackageConfig)
-- [`skivvy.getTaskConfig()`](#skivvy.getTaskConfig)
+- [`api.getEnvironmentConfig()`](#api.getEnvironmentConfig)
+- [`api.getPackageConfig()`](#api.getPackageConfig)
+- [`api.getTaskConfig()`](#api.getTaskConfig)
 
 
 ### Asynchronous methods
 
-- [`skivvy.initProject()`](#skivvy.initProject)
-- [`skivvy.installPackage()`](#skivvy.installPackage)
-- [`skivvy.uninstallPackage()`](#skivvy.uninstallPackage)
-- [`skivvy.updatePackage()`](#skivvy.updatePackage)
-- [`skivvy.listPackages()`](#skivvy.listPackages)
-- [`skivvy.updateEnvironmentConfig()`](#skivvy.updateEnvironmentConfig)
-- [`skivvy.updatePackageConfig()`](#skivvy.updatePackageConfig)
-- [`skivvy.updateTaskConfig()`](#skivvy.updateTaskConfig)
-- [`skivvy.run()`](#skivvy.run)
+- [`api.installPackage()`](#api.installPackage)
+- [`api.uninstallPackage()`](#api.uninstallPackage)
+- [`api.updatePackage()`](#api.updatePackage)
+- [`api.listPackages()`](#api.listPackages)
+- [`api.updateEnvironmentConfig()`](#api.updateEnvironmentConfig)
+- [`api.updatePackageConfig()`](#api.updatePackageConfig)
+- [`api.updateTaskConfig()`](#api.updateTaskConfig)
+- [`api.run()`](#api.run)
 
 
-### Event dispatcher methods
+### Event emitter methods
 
-- [`skivvy.on()`](#skivvy.on)
-- [`skivvy.removeListener()`](#skivvy.removeListener)
+- [`api.on()`](#api.on)
+- [`api.once()`](#api.once)
+- [`api.off()`](#api.off)
+- [`api.addListener()`](#api.addListener)
+- [`api.removeListener()`](#api.removeListener)
+- [`api.removeAllListeners()`](#api.removeAllListeners)
+- [`api.listeners()`](#api.listeners)
+- [`api.setMaxListeners()`](#api.setMaxListeners)
 
 
 ### Utility methods
 
-- [`skivvy.utils`](#skivvy.utils) is an instance of the [`skivvy-utils`](https://github.com/skivvyjs/skivvy-utils) package:
-	- [`skivvy.utils.log()`](https://github.com/skivvyjs/skivvy-utils#utils.log)
-	- [`skivvy.utils.log.debug()`](https://github.com/skivvyjs/skivvy-utils#utils.log.debug)
-	- [`skivvy.utils.log.info()`](https://github.com/skivvyjs/skivvy-utils#utils.log.info)
-	- [`skivvy.utils.log.warn()`](https://github.com/skivvyjs/skivvy-utils#utils.log.warn)
-	- [`skivvy.utils.log.error()`](https://github.com/skivvyjs/skivvy-utils#utils.log.error)
-	- [`skivvy.utils.log.success()`](https://github.com/skivvyjs/skivvy-utils#utils.log.success)
-	- [`skivvy.utils.colors`](https://github.com/skivvyjs/skivvy-utils#utils.colors)
-	- [`skivvy.utils.timer.start()`](https://github.com/skivvyjs/skivvy-utils#utils.timer.start)
-	- [`skivvy.utils.timer.end()`](https://github.com/skivvyjs/skivvy-utils#utils.timer.end)
+- [`api.utils`](#api.utils) is an instance of the [`skivvy-utils`](https://github.com/skivvyjs/skivvy-utils) package:
+	- [`api.utils.log()`](https://github.com/skivvyjs/skivvy-utils#utils.log)
+	- [`api.utils.log.debug()`](https://github.com/skivvyjs/skivvy-utils#utils.log.debug)
+	- [`api.utils.log.info()`](https://github.com/skivvyjs/skivvy-utils#utils.log.info)
+	- [`api.utils.log.warn()`](https://github.com/skivvyjs/skivvy-utils#utils.log.warn)
+	- [`api.utils.log.error()`](https://github.com/skivvyjs/skivvy-utils#utils.log.error)
+	- [`api.utils.log.success()`](https://github.com/skivvyjs/skivvy-utils#utils.log.success)
+	- [`api.utils.colors`](https://github.com/skivvyjs/skivvy-utils#utils.colors)
+	- [`api.utils.timer.start()`](https://github.com/skivvyjs/skivvy-utils#utils.timer.start)
+	- [`api.utils.timer.end()`](https://github.com/skivvyjs/skivvy-utils#utils.timer.end)
 
 -
 
-<a name="skivvy.getEnvironmentConfig"></a>
-### `skivvy.getEnvironmentConfig(options)`
+<a name="api.getEnvironmentConfig"></a>
+### `api.getEnvironmentConfig(options)`
 
 Get the Skivvy environment configuration
 
@@ -151,11 +206,10 @@ Get the Skivvy environment configuration
 | ----- | ---- | -------- | ------- | ----------- |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 | `environment` | `string` | No | `"default"` | Which environment configuration to retrieve |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.getPackageConfig"></a>
-### `skivvy.getPackageConfig(options)`
+<a name="api.getPackageConfig"></a>
+### `api.getPackageConfig(options)`
 
 Get a package's configuration
 
@@ -168,25 +222,10 @@ Get a package's configuration
 | `package` | `string` | Yes | N/A | Package name |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 | `environment` | `string` | No | `"default"` | Environment to use when expanding placeholder variables |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.initProject"></a>
-### `skivvy.initProject(options, [callback])`
-
-Create a new Skivvy project
-
-**Returns:** `Promise`
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `path` | `string` | No | `process.cwd()` | Path at which to initialize the project |
-
-
-<a name="skivvy.installPackage"></a>
-### `skivvy.installPackage(options, [callback])`
+<a name="api.installPackage"></a>
+### `api.installPackage(options, [callback])`
 
 Install a package in a Skivvy project
 
@@ -197,11 +236,10 @@ Install a package in a Skivvy project
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.uninstallPackage"></a>
-### `skivvy.uninstallPackage(options, [callback])`
+<a name="api.uninstallPackage"></a>
+### `api.uninstallPackage(options, [callback])`
 
 Uninstall a package from a Skivvy project
 
@@ -212,11 +250,10 @@ Uninstall a package from a Skivvy project
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.updatePackage"></a>
-### `skivvy.updatePackage(options, [callback])`
+<a name="api.updatePackage"></a>
+### `api.updatePackage(options, [callback])`
 
 Update installed packages
 
@@ -226,12 +263,12 @@ Update installed packages
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `package` | `string` `array` | No | `null` | Package name(s) to update, or `null` to update all packages |
+| `package` | `string` | Yes | N/A | Package name to update |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.listPackages"></a>
-### `skivvy.listPackages(options, [callback])`
+<a name="api.listPackages"></a>
+### `api.listPackages(options, [callback])`
 
 List the installed packages and tasks
 
@@ -270,8 +307,8 @@ List the installed packages and tasks
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.updateEnvironmentConfig"></a>
-### `skivvy.updateEnvironmentConfig(options, [callback])`
+<a name="api.updateEnvironmentConfig"></a>
+### `api.updateEnvironmentConfig(options, [callback])`
 
 Update the Skivvy project configuration
 
@@ -286,8 +323,8 @@ Update the Skivvy project configuration
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.updatePackageConfig"></a>
-### `skivvy.updatePackageConfig(options, [callback])`
+<a name="api.updatePackageConfig"></a>
+### `api.updatePackageConfig(options, [callback])`
 
 Update a package's configuration
 
@@ -302,8 +339,8 @@ Update a package's configuration
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.updateTaskConfig"></a>
-### `skivvy.updateTaskConfig(options, [callback])`
+<a name="api.updateTaskConfig"></a>
+### `api.updateTaskConfig(options, [callback])`
 
 Update a task's configuration
 
@@ -320,8 +357,8 @@ Update a task's configuration
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.run"></a>
-### `skivvy.run(options, [callback])`
+<a name="api.run"></a>
+### `api.run(options, [callback])`
 
 Run a task
 
@@ -337,71 +374,103 @@ Run a task
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
-<a name="skivvy.on"></a>
-### `skivvy.on(event, listener)`
+<a name="api.on"></a>
+### `api.on(event, listener)`
 
-Register a global event listener.
+<a name="api.once"></a>
+### `api.once(event, listener)`
 
-`event` can take one of the following values, found in the `skivvy.events` namespace:
+<a name="api.off"></a>
+### `api.off(event, listener)`
+
+<a name="api.addListener"></a>
+### `api.addListener(event, listener)`
+
+<a name="api.removeListener"></a>
+### `api.removeListener(event, listener)`
+
+<a name="api.removeAllListeners"></a>
+### `api.removeAllListeners([event])`
+
+<a name="api.listeners"></a>
+### `api.listeners(event)`
+
+<a name="api.setMaxListeners"></a>
+### `api.setMaxListeners(n)`
+
+Event emitter methods
+
+The Skivvy API instance implements the `EventEmitter` interface. This allows you to listen to Skivvy lifecycle events as follows:
+
+```javascript
+var skivvy = require('skivvy');
+
+var api = skivvy.api();
+
+api.run({ task: 'build' })
+	.on(api.events.TASK_STARTED, function(event) {
+		console.log('Started task' + event.task.displayName);
+	})
+	.on(api.events.TASK_COMPLETED, function(event) {
+		console.log('Finished task' + event.task.displayName);
+	})
+	.then(function() {
+		console.log('Build completed');
+	});
+```
+
+All Skivvy events are also redispatched throught the global `skivvy` object, for convenience:
+
+```javascript
+var skivvy = require('skivvy');
+
+skivvy.on(skivvy.events.TASK_STARTED, function(event) {
+   console.log('Started task: ' + event.task.displayName);
+}).on(skivvy.events.TASK_COMPLETED, function(event) {
+	console.log('Finished task' + event.task.displayName);
+});
+
+var api = skivvy.api();
+
+api.run({ task: 'build' })
+	.then(function() {
+		console.log('Build completed');
+	});
+```
+
+All the emitted event types can be found in the `api.events` namespace (these are duplicated in the `skivvy.events` namespace):
 
 | Event |
 | ----- |
-| `skivvy.events.INIT_PROJECT_STARTED` |
-| `skivvy.events.INIT_PROJECT_FAILED` |
-| `skivvy.events.INIT_PROJECT_COMPLETED` |
-| `skivvy.events.INIT_PROJECT_COMPLETED` |
-| `skivvy.events.INIT_PROJECT_NPM_INIT_NEEDED` |
-| `skivvy.events.INSTALL_PACKAGE_STARTED` |
-| `skivvy.events.INSTALL_PACKAGE_FAILED` |
-| `skivvy.events.INSTALL_PACKAGE_COMPLETED` |
-| `skivvy.events.UNINSTALL_PACKAGE_STARTED` |
-| `skivvy.events.UNINSTALL_PACKAGE_FAILED` |
-| `skivvy.events.UNINSTALL_PACKAGE_COMPLETED` |
-| `skivvy.events.UPDATE_PACKAGE_STARTED` |
-| `skivvy.events.UPDATE_PACKAGE_FAILED` |
-| `skivvy.events.UPDATE_PACKAGE_COMPLETED` |
-| `skivvy.events.UPDATE_ENVIRONMENT_CONFIG_STARTED` |
-| `skivvy.events.UPDATE_ENVIRONMENT_CONFIG_FAILED` |
-| `skivvy.events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED` |
-| `skivvy.events.UPDATE_PACKAGE_CONFIG_STARTED` |
-| `skivvy.events.UPDATE_PACKAGE_CONFIG_FAILED` |
-| `skivvy.events.UPDATE_PACKAGE_CONFIG_COMPLETED` |
-| `skivvy.events.UPDATE_TASK_CONFIG_STARTED` |
-| `skivvy.events.UPDATE_TASK_CONFIG_FAILED` |
-| `skivvy.events.UPDATE_TASK_CONFIG_COMPLETED` |
-| `skivvy.events.TASK_STARTED` |
-| `skivvy.events.TASK_FAILED` |
-| `skivvy.events.TASK_COMPLETED` |
-
-The `listener` callback expects one argument, which is a key-value object containing any data that is relevant to the event.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `event` | `string` | Yes | N/A | Event type (from `skivvy.events`) |
-| `listener` | `function` | Yes | N/A | Callback to invoke when event is encountered |
+| `api.events.INIT_PROJECT_STARTED` |
+| `api.events.INIT_PROJECT_FAILED` |
+| `api.events.INIT_PROJECT_COMPLETED` |
+| `api.events.INIT_PROJECT_COMPLETED` |
+| `api.events.INIT_PROJECT_NPM_INIT_NEEDED` |
+| `api.events.INSTALL_PACKAGE_STARTED` |
+| `api.events.INSTALL_PACKAGE_FAILED` |
+| `api.events.INSTALL_PACKAGE_COMPLETED` |
+| `api.events.UNINSTALL_PACKAGE_STARTED` |
+| `api.events.UNINSTALL_PACKAGE_FAILED` |
+| `api.events.UNINSTALL_PACKAGE_COMPLETED` |
+| `api.events.UPDATE_PACKAGE_STARTED` |
+| `api.events.UPDATE_PACKAGE_FAILED` |
+| `api.events.UPDATE_PACKAGE_COMPLETED` |
+| `api.events.UPDATE_ENVIRONMENT_CONFIG_STARTED` |
+| `api.events.UPDATE_ENVIRONMENT_CONFIG_FAILED` |
+| `api.events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED` |
+| `api.events.UPDATE_PACKAGE_CONFIG_STARTED` |
+| `api.events.UPDATE_PACKAGE_CONFIG_FAILED` |
+| `api.events.UPDATE_PACKAGE_CONFIG_COMPLETED` |
+| `api.events.UPDATE_TASK_CONFIG_STARTED` |
+| `api.events.UPDATE_TASK_CONFIG_FAILED` |
+| `api.events.UPDATE_TASK_CONFIG_COMPLETED` |
+| `api.events.TASK_STARTED` |
+| `api.events.TASK_FAILED` |
+| `api.events.TASK_COMPLETED` |
 
 
-<a name="skivvy.removeListener"></a>
-### `skivvy.removeListener(event, listener)`
-
-Remove a listener that has previously been registered using the [`skivvy.on()`](#skivvy.on) method.
-
-**Returns:** N/A
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `event` | `string` | Yes | N/A | Event type (from `skivvy.events`) |
-| `listener` | `function` | Yes | N/A | Registered callback |
-
-
-
-<a name="skivvy.utils"></a>
-### `skivvy.utils`
+<a name="api.utils"></a>
+### `api.utils`
 
 Instance of the [`skivvy-utils`](https://github.com/skivvyjs/skivvy-utils) package

@@ -9,71 +9,61 @@ var Promise = require('promise');
 var rewire = require('rewire');
 
 var mockFiles = require('../../utils/mock-files');
+
+var mockApiFactory = require('../../fixtures/mockApiFactory');
 var mockNpmCommandsFactory = require('../../fixtures/mockNpmCommandsFactory');
 
-var api = require('../../../lib/api');
 var events = require('../../../lib/events');
 
 var InvalidPackageError = require('../../../lib/errors').InvalidPackageError;
 
-var sharedTests = require('../sharedTests');
-var uninstallPackage = rewire('../../../lib/api/uninstallPackage');
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
-sharedTests.addAsyncProjectTests(uninstallPackage, 'api.uninstallPackage()');
-
 describe('api.uninstallPackage()', function() {
-	var npmCommands = mockNpmCommandsFactory();
-	var resetNpmCommands;
-	var unmockFiles;
+	var uninstallPackage;
+	var MockApi;
+	var mockApi;
+	var mockNpmCommands;
 
 	before(function() {
-		resetNpmCommands = uninstallPackage.__set__('npmCommands', npmCommands);
+		MockApi = mockApiFactory();
+		mockApi = new MockApi('/project');
+		mockNpmCommands = mockNpmCommandsFactory();
+		uninstallPackage = rewire('../../../lib/api/uninstallPackage');
+		uninstallPackage.__set__('npmCommands', mockNpmCommands);
+		uninstallPackage = uninstallPackage.bind(mockApi);
 	});
 
-	after(function() {
-		resetNpmCommands();
-	});
-
+	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
+		mockApi.reset();
+		mockNpmCommands.reset();
 	});
 
 	it('should throw an error if no package is specified', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'goodbye-world': {
-					message: 'Goodbye, world!'
-				}
-			}
-		};
+		var pkg = {};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = InvalidPackageError;
 		actual = [
-			uninstallPackage({ path: '/project' }),
-			uninstallPackage({ path: '/project', package: undefined }),
-			uninstallPackage({ path: '/project', package: null }),
-			uninstallPackage({ path: '/project', package: false }),
-			uninstallPackage({ path: '/project', package: '' })
+			uninstallPackage({}),
+			uninstallPackage({ package: undefined }),
+			uninstallPackage({ package: null }),
+			uninstallPackage({ package: false }),
+			uninstallPackage({ package: '' })
 		];
 		return Promise.all(actual.map(function(actual) {
 			return expect(actual).to.be.rejectedWith(expected);
@@ -81,279 +71,30 @@ describe('api.uninstallPackage()', function() {
 	});
 
 	it('should throw an error if the specified package does not exist', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'goodbye-world': {
-					message: 'Goodbye, world!'
-				}
-			}
-		};
+		var pkg = {};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = InvalidPackageError;
-		actual = uninstallPackage({ path: '/project', package: 'hello-world' });
+		actual = uninstallPackage({
+			package: 'nonexistent'
+		});
 		return expect(actual).to.be.rejectedWith(expected);
 	});
 
 	it('should run npm uninstall [package] in the specified directory', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'@my-packages/hello-world': {
-					message: 'Hello, world!'
-				},
-				'goodbye-world': {
-					message: 'Goodbye, world!'
-				}
-			}
-		};
+		var pkg = {};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
-		};
-		unmockFiles = mockFiles(files);
-		var options = {
-			package: 'goodbye-world',
-			path: '/project'
-		};
-
-		var expected, actual;
-		return uninstallPackage(options)
-			.then(function(returnValue) {
-				expected = undefined;
-				actual = returnValue;
-				expect(actual).to.equal(expected);
-
-				var npmOptions = {
-					'save-dev': true
-				};
-				expect(npmCommands.uninstall).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/project');
-			});
-	});
-
-	it('should remove the package namespace from the config file', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'@my-packages/hello-world': {
-					message: 'Hello, world!'
-				},
-				'goodbye-world': {
-					message: 'Goodbye, world!'
-				}
-			}
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
-		};
-		unmockFiles = mockFiles(files);
-		var options = {
-			package: 'goodbye-world',
-			path: '/project'
-		};
-
-		var expected, actual;
-		return uninstallPackage(options)
-			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
-				expected = {
-					environment: {
-						default: {}
-					},
-					packages: {
-						'@my-packages/hello-world': {
-							message: 'Hello, world!'
-						}
-					}
-				};
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should handle scoped packages correctly', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'@my-packages/hello-world': {
-					message: 'Hello, world!'
-				},
-				'goodbye-world': {
-					message: 'Goodbye, world!'
-				}
-			}
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
-		};
-		unmockFiles = mockFiles(files);
-		var options = {
-			package: '@my-packages/hello-world',
-			path: '/project'
-		};
-
-		var expected, actual;
-		return uninstallPackage(options)
-			.then(function(returnValue) {
-				expected = undefined;
-				actual = returnValue;
-				expect(actual).to.equal(expected);
-
-				var npmOptions = {
-					'save-dev': true
-				};
-				expect(npmCommands.uninstall).to.have.been.calledWith('@my-packages/skivvy-package-hello-world', npmOptions, '/project');
-
-				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
-				expected = {
-					environment: {
-						default: {}
-					},
-					packages: {
-						'goodbye-world': {
-							message: 'Goodbye, world!'
-						}
-					}
-				};
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should not modify the config file if the namespace does not exist', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'@my-packages/hello-world': {
-					message: 'Hello, world!'
-				}
-			}
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
-		};
-		unmockFiles = mockFiles(files);
-		var options = {
-			package: 'goodbye-world',
-			path: '/project'
-		};
-
-		var expected, actual;
-		return uninstallPackage(options)
-			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
-				expected = config;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should not modify the config file if no namespaces exist', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			}
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
-			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
-		};
-		unmockFiles = mockFiles(files);
-		var options = {
-			package: 'goodbye-world',
-			path: '/project'
-		};
-
-		var expected, actual;
-		return uninstallPackage(options)
-			.then(function(returnValue) {
-				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
-				expected = config;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-
-	it('should default to process.cwd() if no path is specified', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {
-				'@my-packages/hello-world': {
-					message: 'Hello, world!'
-				},
-				'goodbye-world': {
-					message: 'Goodbye, world!'
-				}
-			}
-		};
-		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
-			'node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
-			'node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
-			'node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{}',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 		var options = {
@@ -370,13 +111,126 @@ describe('api.uninstallPackage()', function() {
 				var npmOptions = {
 					'save-dev': true
 				};
-				expect(npmCommands.uninstall).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/');
+				expect(mockNpmCommands.uninstall).to.have.been.calledWith('@skivvy/skivvy-package-goodbye-world', npmOptions, '/project');
+			});
+	});
 
-				actual = JSON.parse(fs.readFileSync('.skivvyrc', 'utf8'));
+	it('should remove the package namespace from the config file', function() {
+		var pkg = {};
+		var config = {
+			packages: {
+				'@package/hello-world': {
+					message: 'Hello, world!'
+				},
+				'goodbye-world': {
+					message: 'Goodbye, world!'
+				}
+			}
+		};
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@package/skivvy-package-hello-world/package.json': '{}',
+			'/project/node_modules/@package/skivvy-package-hello-world/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{}',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {};'
+		};
+		unmockFiles = mockFiles(files);
+		var options = {
+			package: 'goodbye-world'
+		};
+
+		var expected, actual;
+		return uninstallPackage(options)
+			.then(function(returnValue) {
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
 				expected = {
-					environment: {
-						default: {}
-					},
+					packages: {
+						'@package/hello-world': {
+							message: 'Hello, world!'
+						}
+					}
+				};
+				expect(actual).to.eql(expected);
+			});
+	});
+
+	it('should handle scoped packages correctly', function() {
+		var pkg = {};
+		var config = {
+			packages: {
+				'hello-world': {
+					message: 'Hello, world!'
+				},
+				'@package/goodbye-world': {
+					message: 'Goodbye, world!'
+				}
+			}
+		};
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@package/skivvy-package-goodbye-world/package.json': '{}',
+			'/project/node_modules/@package/skivvy-package-goodbye-world/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/package.json': '{}',
+			'/project/node_modules/@skivvy/skivvy-package-hello-world/index.js': 'exports.tasks = {};'
+		};
+		unmockFiles = mockFiles(files);
+		var options = {
+			package: '@package/goodbye-world'
+		};
+
+		var expected, actual;
+		return uninstallPackage(options)
+			.then(function(returnValue) {
+				expected = undefined;
+				actual = returnValue;
+				expect(actual).to.equal(expected);
+
+				var npmOptions = {
+					'save-dev': true
+				};
+				expect(mockNpmCommands.uninstall).to.have.been.calledWith('@package/skivvy-package-goodbye-world', npmOptions, '/project');
+
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
+				expected = {
+					packages: {
+						'hello-world': {
+							message: 'Hello, world!'
+						}
+					}
+				};
+				expect(actual).to.eql(expected);
+			});
+	});
+
+	it('should not modify the config file if the namespace does not exist', function() {
+		var pkg = {};
+		var config = {
+			packages: {
+				'@my-packages/hello-world': {
+					message: 'Hello, world!'
+				}
+			}
+		};
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@my-packages/skivvy-package-hello-world/package.json': '{ "name": "@my-packages/skivvy-package-hello-world", "version": "1.2.3" }',
+			'/project/node_modules/@my-packages/skivvy-package-hello-world/index.js': 'exports.tasks = {}; exports.description = \'Hello World package\';',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+		};
+		unmockFiles = mockFiles(files);
+		var options = {
+			package: 'goodbye-world'
+		};
+
+		var expected, actual;
+		return uninstallPackage(options)
+			.then(function(returnValue) {
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
+				expected = {
 					packages: {
 						'@my-packages/hello-world': {
 							message: 'Hello, world!'
@@ -387,16 +241,32 @@ describe('api.uninstallPackage()', function() {
 			});
 	});
 
+	it('should not modify the config file if no namespaces exist', function() {
+		var pkg = {};
+		var config = {};
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/package.json': '{ "name": "skivvy-package-goodbye-world", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye-world/index.js': 'exports.tasks = {}; exports.description = \'Goodbye World package\';'
+		};
+		unmockFiles = mockFiles(files);
+		var options = {
+			package: 'goodbye-world'
+		};
+
+		var expected, actual;
+		return uninstallPackage(options)
+			.then(function(returnValue) {
+				actual = JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
+				expected = {};
+				expect(actual).to.eql(expected);
+			});
+	});
+
 	it('should have tests for events', function() {
-		var pkg = {
-			name: 'my-package'
-		};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var pkg = {};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
@@ -420,9 +290,9 @@ describe('api.uninstallPackage()', function() {
 		];
 		actual = [];
 
-		api.on(events.UNINSTALL_PACKAGE_STARTED, onStarted);
-		api.on(events.UNINSTALL_PACKAGE_COMPLETED, onCompleted);
-		api.on(events.UNINSTALL_PACKAGE_FAILED, onFailed);
+		mockApi.on(events.UNINSTALL_PACKAGE_STARTED, onStarted);
+		mockApi.on(events.UNINSTALL_PACKAGE_COMPLETED, onCompleted);
+		mockApi.on(events.UNINSTALL_PACKAGE_FAILED, onFailed);
 
 
 		function onStarted(data) {
@@ -451,16 +321,10 @@ describe('api.uninstallPackage()', function() {
 		}
 
 		return uninstallPackage({
-			package: 'goodbye-world',
-			path: '/project'
+			package: 'goodbye-world'
 		})
 			.then(function() {
 				return expect(actual).to.eql(expected);
-			})
-			.finally(function() {
-				api.removeListener(events.UNINSTALL_PACKAGE_STARTED, onStarted);
-				api.removeListener(events.UNINSTALL_PACKAGE_COMPLETED, onCompleted);
-				api.removeListener(events.UNINSTALL_PACKAGE_FAILED, onFailed);
 			});
 	});
 });

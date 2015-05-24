@@ -9,25 +9,22 @@ var rewire = require('rewire');
 var InvalidArgumentsError = require('../../../lib/errors').InvalidArgumentsError;
 
 var mockApiFactory = require('../../fixtures/mockApiFactory');
-var cliInstall = rewire('../../../lib/cli/install');
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 describe('cli.install()', function() {
-	var api = mockApiFactory();
-	var resetApi;
+	var cliInstall;
+	var MockApi;
 
 	before(function() {
-		resetApi = cliInstall.__set__('api', api);
-	});
-
-	after(function() {
-		resetApi();
+		MockApi = mockApiFactory();
+		cliInstall = rewire('../../../lib/cli/install');
+		cliInstall.__set__('Api', MockApi);
 	});
 
 	afterEach(function() {
-		api.reset();
+		MockApi.reset();
 	});
 
 	it('should throw an error if no packages are specified', function() {
@@ -51,7 +48,7 @@ describe('cli.install()', function() {
 		};
 		return cliInstall(args, options)
 			.then(function() {
-				expect(api.installPackage).to.have.been.calledWith(expected);
+				expect(MockApi.instance.installPackage).to.have.been.calledWith(expected);
 			});
 	});
 
@@ -75,8 +72,28 @@ describe('cli.install()', function() {
 		return cliInstall(args, options)
 			.then(function() {
 				expected.forEach(function(expected) {
-					expect(api.installPackage).to.have.been.calledWith(expected);
+					expect(MockApi.instance.installPackage).to.have.been.calledWith(expected);
 				});
+			});
+	});
+
+	it('should pass the project path to the API', function() {
+		var args = ['my-package'];
+		var options = {
+			path: '/project'
+		};
+		return cliInstall(args, options)
+			.then(function(returnValue) {
+				expect(MockApi.instance.path).to.equal('/project');
+			});
+	});
+
+	it('should default to process.cwd() if no project path is specified', function() {
+		var args = ['my-package'];
+		var options = {};
+		return cliInstall(args, options)
+			.then(function(returnValue) {
+				expect(MockApi.instance.path).to.equal(process.cwd());
 			});
 	});
 });

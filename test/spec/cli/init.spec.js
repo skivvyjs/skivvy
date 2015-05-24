@@ -11,29 +11,25 @@ var events = require('../../../lib/events');
 
 var mockApiFactory = require('../../fixtures/mockApiFactory');
 var mockInitPackageJsonFactory = require('../../fixtures/mockInitPackageJsonFactory');
-var cliInit = rewire('../../../lib/cli/init');
 
 
 chai.use(sinonChai);
 
 describe('cli.init()', function() {
-	var api = mockApiFactory();
-	var initPackageJson = mockInitPackageJsonFactory(function(error, data) {
-		if (initPackageJsonCallback) { initPackageJsonCallback(error, data); }
-	});
-	var resetApi;
-	var resetInitPackageJson;
+	var cliInit;
+	var MockApi;
+	var mockInitPackageJson;
 	var initPackageJsonCallback;
 	var unmockFiles;
 
 	before(function() {
-		resetApi = cliInit.__set__('api', api);
-		resetInitPackageJson = cliInit.__set__('initPackageJson', initPackageJson);
-	});
-
-	after(function() {
-		resetApi();
-		resetInitPackageJson();
+		MockApi = mockApiFactory();
+		mockInitPackageJson = mockInitPackageJsonFactory(function(error, data) {
+			if (initPackageJsonCallback) { initPackageJsonCallback(error, data); }
+		});
+		cliInit = rewire('../../../lib/cli/init');
+		cliInit.__set__('Api', MockApi);
+		cliInit.__set__('initPackageJson', mockInitPackageJson);
 	});
 
 	afterEach(function() {
@@ -44,8 +40,8 @@ describe('cli.init()', function() {
 		if (initPackageJsonCallback) {
 			initPackageJsonCallback = null;
 		}
-		api.reset();
-		initPackageJson.reset();
+		MockApi.reset();
+		mockInitPackageJson.reset();
 	});
 
 	it('should call API method with correct arguments if package.json is present and local npm module is present', function() {
@@ -68,8 +64,8 @@ describe('cli.init()', function() {
 		};
 		return cliInit(args, options)
 			.then(function() {
-				expect(api.initProject).to.have.been.calledWith(expected);
-				expect(api.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
+				expect(MockApi.initProject).to.have.been.calledWith(expected);
+				expect(MockApi.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
 			});
 	});
 
@@ -91,8 +87,8 @@ describe('cli.init()', function() {
 		};
 		return cliInit(args, options)
 			.then(function() {
-				expect(api.initProject).to.have.been.calledWith(expected);
-				expect(api.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
+				expect(MockApi.initProject).to.have.been.calledWith(expected);
+				expect(MockApi.emit).not.to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
 			});
 	});
 
@@ -101,7 +97,7 @@ describe('cli.init()', function() {
 		unmockFiles = mockFiles(files);
 
 		initPackageJsonCallback = function(error, data) {
-			expect(api.initProject).not.to.have.been.called;
+			expect(MockApi.initProject).not.to.have.been.called;
 		};
 
 		var args = [];
@@ -113,9 +109,9 @@ describe('cli.init()', function() {
 		};
 		return cliInit(args, options)
 			.then(function() {
-				expect(initPackageJson).to.have.been.calledWith('/project');
-				expect(api.initProject).to.have.been.calledWith(expected);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
+				expect(mockInitPackageJson).to.have.been.calledWith('/project');
+				expect(MockApi.initProject).to.have.been.calledWith(expected);
+				expect(MockApi.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
 			});
 	});
 
@@ -136,7 +132,7 @@ describe('cli.init()', function() {
 		unmockFiles = mockFiles(files);
 
 		initPackageJsonCallback = function(error, data) {
-			expect(api.initProject).not.to.have.been.called;
+			expect(MockApi.initProject).not.to.have.been.called;
 		};
 
 		var args = [];
@@ -148,9 +144,9 @@ describe('cli.init()', function() {
 		};
 		return cliInit(args, options)
 			.then(function() {
-				expect(initPackageJson).to.have.been.calledWith('/project');
-				expect(api.initProject).to.have.been.calledWith(expected);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
+				expect(mockInitPackageJson).to.have.been.calledWith('/project');
+				expect(MockApi.initProject).to.have.been.calledWith(expected);
+				expect(MockApi.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
 			});
 	});
 
@@ -159,7 +155,7 @@ describe('cli.init()', function() {
 		unmockFiles = mockFiles(files);
 
 		initPackageJsonCallback = function(error, data) {
-			expect(api.initProject).not.to.have.been.called;
+			expect(MockApi.initProject).not.to.have.been.called;
 		};
 
 		var args = [];
@@ -169,9 +165,9 @@ describe('cli.init()', function() {
 		};
 		return cliInit(args, options)
 			.then(function() {
-				expect(initPackageJson).to.have.been.calledWith('/');
-				expect(api.initProject).to.have.been.calledWith(expected);
-				expect(api.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
+				expect(mockInitPackageJson).to.have.been.calledWith('/');
+				expect(MockApi.initProject).to.have.been.calledWith(expected);
+				expect(MockApi.emit).to.have.been.calledWith(events.INIT_PROJECT_NPM_INIT_NEEDED);
 			});
 	});
 });

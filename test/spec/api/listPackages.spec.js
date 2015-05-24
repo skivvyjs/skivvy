@@ -3,40 +3,42 @@
 var chai = require('chai');
 var expect = chai.expect;
 var chaiAsPromised = require('chai-as-promised');
-var Promise = require('promise');
 
 var mockFiles = require('../../utils/mock-files');
-var sharedTests = require('../sharedTests');
 
-var listPackages = require('../../../lib/api/listPackages');
+var mockApiFactory = require('../../fixtures/mockApiFactory');
 
 chai.use(chaiAsPromised);
 
-sharedTests.addAsyncProjectTests(listPackages, 'api.listPackages()');
-
 describe('api.listPackages()', function() {
+	var listPackages;
+	var MockApi;
+	var mockApi;
+	before(function() {
+		MockApi = mockApiFactory();
+		mockApi = new MockApi('/project');
+		listPackages = require('../../../lib/api/listPackages');
+		listPackages = listPackages.bind(mockApi);
+	});
+
 	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
+		mockApi.reset();
 	});
 
 	it('should retrieve local task package', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/my-tasks/unused.js': 'module.exports = function() { console.warn(\'Unused task\'); }; module.exports.description = \'Unused task\';',
-			'/project/skivvy_tasks/goodbye.js': 'module.exports = function() { console.log(\'Goodbye, world!\'); }; module.exports.description = \'Goodbye World task\';',
-			'/project/skivvy_tasks/hello.js': 'module.exports = function() { console.log(\'Hello, world!\'); }; module.exports.description = \'Hello World task\';'
+			'/project/skivvy_tasks/goodbye.js': 'module.exports = function() { };',
+			'/project/skivvy_tasks/hello.js': 'module.exports = function() { };'
 		};
 		unmockFiles = mockFiles(files);
 
@@ -57,11 +59,7 @@ describe('api.listPackages()', function() {
 	it('should retrieve local task package in custom location', function() {
 		var pkg = {};
 		var config = {
-			include: 'my-tasks',
-			environment: {
-				default: {}
-			},
-			packages: {}
+			include: 'my-tasks'
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -89,11 +87,7 @@ describe('api.listPackages()', function() {
 	it('should retrieve all installed packages and tasks', function() {
 		var pkg = {};
 		var config = {
-			include: 'my-tasks',
-			environment: {
-				default: {}
-			},
-			packages: {}
+			include: 'my-tasks'
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -143,11 +137,7 @@ describe('api.listPackages()', function() {
 	it('should retrieve version numbers if specified', function() {
 		var pkg = {};
 		var config = {
-			include: 'my-tasks',
-			environment: {
-				default: {}
-			},
-			packages: {}
+			include: 'my-tasks'
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
@@ -206,12 +196,7 @@ describe('api.listPackages()', function() {
 
 	it('should return an empty array when no packages are installed', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
@@ -229,49 +214,5 @@ describe('api.listPackages()', function() {
 		];
 		actual = listPackages({ path: '/project' });
 		return expect(actual).to.eventually.eql(expected);
-	});
-
-	it('should default to process.cwd() if no path is specified', function() {
-		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
-		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};',
-			'node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = [
-			{
-				name: null,
-				tasks: {}
-			},
-			{
-				name: 'goodbye',
-				tasks: {}
-			},
-			{
-				name: 'hello',
-				tasks: {}
-			}
-		];
-		actual = [
-			listPackages(),
-			listPackages({}),
-			listPackages({ path: undefined }),
-			listPackages({ path: null }),
-			listPackages({ path: false }),
-			listPackages({ path: '' })
-		];
-		return Promise.all(actual.map(function(actual) {
-			return expect(actual).to.eventually.eql(expected);
-		}));
 	});
 });

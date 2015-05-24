@@ -6,7 +6,7 @@ var chalk = require('chalk');
 
 var normalizeArgs = require('../lib/helpers/normalizeArgs');
 var reporter = require('../lib/cli/utils/reporter');
-var api = require('../lib/api');
+var Api = require('../lib/api');
 
 var cliConfig = require('../lib/cli/config');
 var cliInit = require('../lib/cli/init');
@@ -18,7 +18,7 @@ var cliUpdate = require('../lib/cli/update');
 
 var pkg = require('../package.json');
 
-reporter(api);
+reporter(Api);
 
 var numPrimaryArgs = 1;
 var argv = normalizeArgs(process.argv, numPrimaryArgs);
@@ -262,8 +262,8 @@ function getCommands() {
 
 
 			function getIsUserError(error) {
-				return Object.keys(api.errors).some(function(errorName) {
-					var errorClass = api.errors[errorName];
+				return Object.keys(Api.errors).some(function(errorName) {
+					var errorClass = Api.errors[errorName];
 					return error instanceof errorClass;
 				});
 			}

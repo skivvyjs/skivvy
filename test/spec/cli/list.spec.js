@@ -7,12 +7,13 @@ var chalk = require('chalk');
 
 var mockFiles = require('../../utils/mock-files');
 
-var cliList = require('../../../lib/cli/list');
-
 describe('cli.list()', function() {
+	var cliList;
 	var unmockCli = null;
 	var unmockFiles = null;
-
+	before(function() {
+		cliList = require('../../../lib/cli/list');
+	});
 
 	var pkg = {
 		name: 'hello-world',
@@ -38,13 +39,14 @@ describe('cli.list()', function() {
 
 	it('should handle empty projects (quiet)', function(done) {
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config)
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
 		var args = [];
 		var options = {
+			path: '/project',
 			quiet: true
 		};
 		var expected, actual;
@@ -69,13 +71,15 @@ describe('cli.list()', function() {
 
 	it('should handle empty projects (verbose)', function(done) {
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config)
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config)
 		};
 		unmockFiles = mockFiles(files);
 
 		var args = [];
-		var options = {};
+		var options = {
+			path: '/project'
+		};
 		var expected, actual;
 		expected = [
 			'hello-world@1.0.0',
@@ -102,15 +106,16 @@ describe('cli.list()', function() {
 
 	it('should handle empty packages (quiet)', function(done) {
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'node_modules/@skivvy/skivvy-package-empty-package/index.js': 'exports.tasks = {};',
-			'node_modules/@my-packages/skivvy-package-empty-package/index.js': 'exports.tasks = {};'
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@skivvy/skivvy-package-empty-package/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@my-packages/skivvy-package-empty-package/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
 		var args = [];
 		var options = {
+			path: '/project',
 			quiet: true
 		};
 		var expected, actual;
@@ -135,17 +140,19 @@ describe('cli.list()', function() {
 
 	it('should handle empty packages (verbose)', function(done) {
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'node_modules/@skivvy/skivvy-package-empty-package/package.json': '{ "name": "skivvy-package-empty-package", "version": "1.2.3" }',
-			'node_modules/@skivvy/skivvy-package-empty-package/index.js': 'exports.tasks = {};',
-			'node_modules/@my-packages/skivvy-package-empty-package/package.json': '{ "name": "@my-packages/skivvy-package-empty-package", "version": "1.2.3" }',
-			'node_modules/@my-packages/skivvy-package-empty-package/index.js': 'exports.tasks = {};'
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@skivvy/skivvy-package-empty-package/package.json': '{ "name": "skivvy-package-empty-package", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-empty-package/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@my-packages/skivvy-package-empty-package/package.json': '{ "name": "@my-packages/skivvy-package-empty-package", "version": "1.2.3" }',
+			'/project/node_modules/@my-packages/skivvy-package-empty-package/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
 		var args = [];
-		var options = {};
+		var options = {
+			path: '/project'
+		};
 		var expected, actual;
 		expected = [
 			'hello-world@1.0.0',
@@ -175,21 +182,22 @@ describe('cli.list()', function() {
 
 	it('should list installed packages (quiet)', function(done) {
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'skivvy_tasks/local1.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 1\';',
-			'skivvy_tasks/local2.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 2\';',
-			'node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external1\': require(\'./tasks/external1\'), \'external2\': require(\'./tasks/external2\') };',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/external1.js': 'module.exports = function(config) { }; module.exports.description = \'External task 1\';',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/external2.js': 'module.exports = function(config) { }; module.exports.description = \'External task 2\';',
-			'node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped1\': require(\'./tasks/scoped1\'), \'scoped2\': require(\'./tasks/scoped2\') };',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped1.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 1\';',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped2.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 2\';'
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/skivvy_tasks/local1.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 1\';',
+			'/project/skivvy_tasks/local2.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 2\';',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external1\': require(\'./tasks/external1\'), \'external2\': require(\'./tasks/external2\') };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external1.js': 'module.exports = function(config) { }; module.exports.description = \'External task 1\';',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external2.js': 'module.exports = function(config) { }; module.exports.description = \'External task 2\';',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped1\': require(\'./tasks/scoped1\'), \'scoped2\': require(\'./tasks/scoped2\') };',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped1.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 1\';',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped2.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 2\';'
 		};
 		unmockFiles = mockFiles(files);
 
 		var args = [];
 		var options = {
+			path: '/project',
 			quiet: true
 		};
 		var expected, actual;
@@ -222,23 +230,25 @@ describe('cli.list()', function() {
 
 	it('should list installed packages (verbose)', function(done) {
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'skivvy_tasks/local1.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 1\';',
-			'skivvy_tasks/local2.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 2\';',
-			'node_modules/@skivvy/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package", "version": "1.2.3" }',
-			'node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external1\': require(\'./tasks/external1\'), \'external2\': require(\'./tasks/external2\') };',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/external1.js': 'module.exports = function(config) { }; module.exports.description = \'External task 1\';',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/external2.js': 'module.exports = function(config) { }; module.exports.description = \'External task 2\';',
-			'node_modules/@my-packages/skivvy-package-my-package/package.json': '{ "name": "@my-packages/skivvy-package-my-package", "version": "1.2.3" }',
-			'node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped1\': require(\'./tasks/scoped1\'), \'scoped2\': require(\'./tasks/scoped2\') };',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped1.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 1\';',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped2.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 2\';'
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/skivvy_tasks/local1.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 1\';',
+			'/project/skivvy_tasks/local2.js': 'module.exports = function(config) { }; module.exports.description = \'Local task 2\';',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/package.json': '{ "name": "skivvy-package-my-package", "version": "1.2.3" }',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external1\': require(\'./tasks/external1\'), \'external2\': require(\'./tasks/external2\') };',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external1.js': 'module.exports = function(config) { }; module.exports.description = \'External task 1\';',
+			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external2.js': 'module.exports = function(config) { }; module.exports.description = \'External task 2\';',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/package.json': '{ "name": "@my-packages/skivvy-package-my-package", "version": "1.2.3" }',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped1\': require(\'./tasks/scoped1\'), \'scoped2\': require(\'./tasks/scoped2\') };',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped1.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 1\';',
+			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped2.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } }; module.exports.callback = null; module.exports.description = \'Scoped task 2\';'
 		};
 		unmockFiles = mockFiles(files);
 
 		var args = [];
-		var options = {};
+		var options = {
+			path: '/project'
+		};
 		var expected, actual;
 		expected = [
 			'hello-world@1.0.0',
@@ -252,6 +262,37 @@ describe('cli.list()', function() {
 			'  └── external2 - External task 2',
 			''
 		].join('\n');
+
+		unmockCli = mockCli(['node', 'script.js']);
+		cliList(args, options, function(error, output) {
+			var cli = unmockCli();
+			unmockCli = null;
+
+			if (error) { return done(error); }
+
+			actual = output;
+			expect(actual).to.equal(expected);
+
+			actual = cli.stdout;
+			expect(actual).to.equal(expected);
+
+			done();
+		});
+	});
+
+	it('should default to process.cwd() if no path is specified', function(done) {
+		var files = {
+			'package.json': JSON.stringify(pkg),
+			'.skivvyrc': JSON.stringify(config)
+		};
+		unmockFiles = mockFiles(files);
+
+		var args = [];
+		var options = {
+			quiet: true
+		};
+		var expected, actual;
+		expected = '\n';
 
 		unmockCli = mockCli(['node', 'script.js']);
 		cliList(args, options, function(error, output) {

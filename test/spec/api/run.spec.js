@@ -9,1660 +9,1289 @@ var Promise = require('promise');
 var Stream = require('stream');
 
 var mockFiles = require('../../utils/mock-files');
+var mockApiFactory = require('../../fixtures/mockApiFactory');
 
 var InvalidTaskError = require('../../../lib/errors').InvalidTaskError;
-var InvalidProjectError = require('../../../lib/errors').InvalidProjectError;
 
-var api = require('../../../lib/api');
 var events = require('../../../lib/events');
 
-var run = require('../../../lib/api/run');
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 describe('api.run()', function() {
-	var unmockFiles;
-
-	beforeEach(function() {
-		var pkg = {
-			name: 'hello-world'
-		};
-		var config = {
-			environment: {
-				default: {
-					greeting: 'Hello',
-					user: 'world'
-				},
-				'goodbye': {
-					greeting: 'Goodbye',
-					user: 'world'
-				}
-			},
-			tasks: {
-				'local': {
-					targets: {
-						default: {
-							message: 'local - Hello, world!'
-						}
-					}
-				},
-				'expander': {
-					targets: {
-						default: {
-							message: 'local:expander:default - <%= environment.greeting %>, <%= environment.user %>!'
-						},
-						alternate: {
-							message: 'local:expander:alternate - <%= environment.greeting %>, <%= environment.user %>!'
-						}
-					}
-				},
-				'defaulter': {
-					targets: {
-						default: 'alternate',
-						alternate: {
-							message: 'local:defaulter:alternate - <%= environment.greeting %>, <%= environment.user %>!'
-						},
-						custom: 'customalternate',
-						customalternate: {
-							message: 'local:defaulter:customalternate - <%= environment.greeting %>, <%= environment.user %>!'
-						}
-					}
-				},
-				'chainer': {
-					targets: {
-						default: ['step0', 'step1', 'step3'],
-						step0: {
-							message: 'local:chainer:step0 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 0
-						},
-						step1: {
-							message: 'local:chainer:step1 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 1
-						},
-						step2: {
-							message: 'local:chainer:step2 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 2
-						},
-						step3: {
-							message: 'local:chainer:step3 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 3
-						},
-						custom: ['customstep0', 'customstep1', 'customstep3'],
-						customstep0: {
-							message: 'local:chainer:customstep0 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 0
-						},
-						customstep1: {
-							message: 'local:chainer:customstep1 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 1
-						},
-						customstep2: {
-							message: 'local:chainer:customstep2 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 2
-						},
-						customstep3: {
-							message: 'local:chainer:customstep3 - <%= environment.greeting %>, <%= environment.user %>!',
-							index: 3
-						}
-					}
-				},
-				'series': {
-					targets: {
-						default: {
-							message: 'series - <%= environment.greeting %>, <%= environment.user %>!'
-						}
-					}
-				}
-			},
-			packages: {
-				'my-package': {
-					config: {
-						message: '<%= environment.greeting %>, <%= environment.user %>!'
-					},
-					tasks: {
-						'external': {
-							targets: {
-								default: {
-									message: 'external - Hello, world!'
-								}
-							}
-						},
-						'expander': {
-							targets: {
-								default: {
-									message: 'external:expander:default - <%= package.message %>'
-								},
-								alternate: {
-									message: 'external:expander:alternate - <%= package.message %>'
-								}
-							}
-						},
-						'defaulter': {
-							targets: {
-								default: 'alternate',
-								alternate: {
-									message: 'external:defaulter:alternate - <%= package.message %>'
-								},
-								custom: 'customalternate',
-								customalternate: {
-									message: 'external:defaulter:customalternate - <%= package.message %>'
-								}
-							}
-						},
-						'chainer': {
-							targets: {
-								default: ['step0', 'step1', 'step3'],
-								step0: {
-									message: 'external:chainer:step0 - <%= package.message %>',
-									index: 0
-								},
-								step1: {
-									message: 'external:chainer:step1 - <%= package.message %>',
-									index: 1
-								},
-								step2: {
-									message: 'external:chainer:step2 - <%= package.message %>',
-									index: 2
-								},
-								step3: {
-									message: 'external:chainer:step3 - <%= package.message %>',
-									index: 3
-								},
-								custom: ['customstep0', 'customstep1', 'customstep3'],
-								customstep0: {
-									message: 'external:chainer:customstep0 - <%= package.message %>',
-									index: 0
-								},
-								customstep1: {
-									message: 'external:chainer:customstep1 - <%= package.message %>',
-									index: 1
-								},
-								customstep2: {
-									message: 'external:chainer:customstep2 - <%= package.message %>',
-									index: 2
-								},
-								customstep3: {
-									message: 'external:chainer:customstep3 - <%= package.message %>',
-									index: 3
-								}
-							}
-						},
-						'series': {
-							targets: {
-								default: {
-									message: 'external:series - <%= environment.greeting %>, <%= environment.user %>!'
-								}
-							}
-						}
-					}
-				},
-				'@my-packages/my-package': {
-					config: {
-						message: '<%= environment.greeting %>, <%= environment.user %>!'
-					},
-					tasks: {
-						'scoped': {
-							targets: {
-								default: {
-									message: 'scoped - Hello, world!'
-								}
-							}
-						},
-						'expander': {
-							targets: {
-								default: {
-									message: 'scoped:expander:default - <%= package.message %>'
-								},
-								alternate: {
-									message: 'scoped:expander:alternate - <%= package.message %>'
-								}
-							}
-						},
-						'defaulter': {
-							targets: {
-								default: 'alternate',
-								alternate: {
-									message: 'scoped:defaulter:alternate - <%= package.message %>'
-								},
-								custom: 'customalternate',
-								customalternate: {
-									message: 'scoped:defaulter:customalternate - <%= package.message %>'
-								}
-							}
-						},
-						'chainer': {
-							targets: {
-								default: ['step0', 'step1', 'step3'],
-								step0: {
-									message: 'scoped:chainer:step0 - <%= package.message %>',
-									index: 0
-								},
-								step1: {
-									message: 'scoped:chainer:step1 - <%= package.message %>',
-									index: 1
-								},
-								step2: {
-									message: 'scoped:chainer:step2 - <%= package.message %>',
-									index: 2
-								},
-								step3: {
-									message: 'scoped:chainer:step3 - <%= package.message %>',
-									index: 3
-								},
-								custom: ['customstep0', 'customstep1', 'customstep3'],
-								customstep0: {
-									message: 'scoped:chainer:customstep0 - <%= package.message %>',
-									index: 0
-								},
-								customstep1: {
-									message: 'scoped:chainer:customstep1 - <%= package.message %>',
-									index: 1
-								},
-								customstep2: {
-									message: 'scoped:chainer:customstep2 - <%= package.message %>',
-									index: 2
-								},
-								customstep3: {
-									message: 'scoped:chainer:customstep3 - <%= package.message %>',
-									index: 3
-								}
-							}
-						},
-						'series': {
-							targets: {
-								default: {
-									message: 'scoped:series - <%= environment.greeting %>, <%= environment.user %>!'
-								}
-							}
-						}
-					}
-				}
-			}
-		};
-		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'skivvy_tasks/local.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local\'; }; module.exports.callback = null;',
-			'skivvy_tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:expander\'; }; module.exports.callback = null;',
-			'skivvy_tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:defaulter\'; }; module.exports.callback = null;',
-			'skivvy_tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:chainer\' + config.index; }; module.exports.callback = null;',
-			'skivvy_tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local:series\'; }; module.exports.callback = null;',
-			'node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'external\': require(\'./tasks/external\'), \'expander\': require(\'./tasks/expander\'), \'defaulter\': require(\'./tasks/defaulter\'), \'chainer\': require(\'./tasks/chainer\'), \'series\': require(\'./tasks/series\') };',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:expander\'; }; module.exports.callback = null;',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:defaulter\'; }; module.exports.callback = null;',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:chainer\' + config.index; }; module.exports.callback = null;',
-			'node_modules/@skivvy/skivvy-package-my-package/tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external:series\'; }; module.exports.callback = null;',
-			'node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped\': require(\'./tasks/scoped\'), \'expander\': require(\'./tasks/expander\'), \'defaulter\': require(\'./tasks/defaulter\'), \'chainer\': require(\'./tasks/chainer\'), \'series\': require(\'./tasks/series\') };',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/scoped.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped\'; }; module.exports.callback = null;',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/expander.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:expander\'; }; module.exports.callback = null;',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/defaulter.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:defaulter\'; }; module.exports.callback = null;',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/chainer.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:chainer\' + config.index; }; module.exports.callback = null;',
-			'node_modules/@my-packages/skivvy-package-my-package/tasks/series.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped:series\'; }; module.exports.callback = null;',
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/skivvy_tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'local\'; }; module.exports.callback = null;',
-			'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
-			'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'external\'; }; module.exports.callback = null;',
-			'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'custom\': require(\'./tasks/custom\') };',
-			'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/custom.js': 'module.exports = function(config) { if (module.exports.callback) { module.exports.callback(config); } return \'scoped\'; }; module.exports.callback = null;'
-		};
-		unmockFiles = mockFiles(files);
+	var MockApi;
+	var mockApi;
+	var run;
+	before(function() {
+		MockApi = mockApiFactory();
+		mockApi = new MockApi('/project');
+		run = require('../../../lib/api/run');
+		run = run.bind(mockApi);
+		global.sinon = sinon;
 	});
 
+	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
+		mockApi.reset();
 	});
 
-	it('should throw an error if no task was specified', function() {
-		var expected, actual;
-		expected = InvalidTaskError;
-		actual = [
-			run(),
-			run({ task: undefined }),
-			run({ task: null }),
-			run({ task: false }),
-			run({ task: '' })
-		];
-		return Promise.all(actual.map(function(actual) {
-			return expect(actual).to.be.rejectedWith(expected);
-		}));
+	after(function() {
+		delete global.sinon;
 	});
 
-	it('should throw an error if an invalid task name was specified', function() {
-		var expected, actual;
-		expected = InvalidTaskError;
-		actual = run({
-			task: 'nonexistent'
-		});
-		return expect(actual).to.be.rejectedWith(expected);
-	});
+	describe('local tasks', function() {
 
-	it('should throw an error if an invalid path was specified', function() {
-		var expected = InvalidProjectError;
-		var actual = run({
-			task: 'local',
-			path: '/invalid'
-		});
-		return expect(actual).to.be.rejectedWith(expected);
-	});
-
-	it('should run local tasks with default target config', function() {
-		var expectedTask = require('/skivvy_tasks/local');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local - Hello, world!'
-		};
-		return run({
-			task: 'local'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should expand default environment placeholders in local task config', function() {
-		var expectedTask = require('/skivvy_tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:expander:default - Hello, world!'
-		};
-		return run({
-			task: 'expander'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should expand custom environment placeholders in local task config', function() {
-		var expectedTask = require('/skivvy_tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:expander:default - Goodbye, world!'
-		};
-		return run({
-			task: 'expander',
-			environment: 'goodbye'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run local tasks with custom target config', function() {
-		var expectedTask = require('/skivvy_tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:expander:alternate - Goodbye, world!'
-		};
-		return run({
-			task: 'expander',
-			target: 'alternate',
-			environment: 'goodbye'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run local tasks with overridden config', function() {
-		var expectedTask = require('/skivvy_tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:expander:default - Hello, world!',
-			override: true
-		};
-		return run({
-			task: 'expander',
-			config: {
-				override: true
-			}
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run local tasks with overridden custom environment config', function() {
-		var expectedTask = require('/skivvy_tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:expander:default - Goodbye, world!',
-			override: true
-		};
-		return run({
-			task: 'expander',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run local tasks with named default target', function() {
-		var expectedTask = require('/skivvy_tasks/defaulter');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:defaulter:alternate - Goodbye, world!',
-			override: true
-		};
-		var expectedResults = 'local:defaulter';
-		return run({
-			task: 'defaulter',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run local tasks with named custom target', function() {
-		var expectedTask = require('/skivvy_tasks/defaulter');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'local:defaulter:customalternate - Goodbye, world!',
-			override: true
-		};
-		var expectedResults = 'local:defaulter';
-		return run({
-			task: 'defaulter',
-			target: 'custom',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run local tasks with multiple default targets', function() {
-		var expectedTask = require('/skivvy_tasks/chainer');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = [
-			{
-				message: 'local:chainer:step0 - Goodbye, world!',
-				index: 0,
-				override: true
-			},
-			{
-				message: 'local:chainer:step1 - Goodbye, world!',
-				index: 1,
-				override: true
-			},
-			{
-				message: 'local:chainer:step3 - Goodbye, world!',
-				index: 3,
-				override: true
-			}
-		];
-		var expectedResults = [
-			'local:chainer0',
-			'local:chainer1',
-			'local:chainer3'
-		];
-		return run({
-			task: 'chainer',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.callCount(3);
-				expect(spy).to.have.been.calledWith(expectedConfig[0]);
-				expect(spy).to.have.been.calledWith(expectedConfig[1]);
-				expect(spy).to.have.been.calledWith(expectedConfig[2]);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run local tasks with multiple custom targets', function() {
-		var expectedTask = require('/skivvy_tasks/chainer');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = [
-			{
-				message: 'local:chainer:customstep0 - Goodbye, world!',
-				index: 0
-			},
-			{
-				message: 'local:chainer:customstep1 - Goodbye, world!',
-				index: 1
-			},
-			{
-				message: 'local:chainer:customstep3 - Goodbye, world!',
-				index: 3
-			}
-		];
-		var expectedResults = [
-			'local:chainer0',
-			'local:chainer1',
-			'local:chainer3'
-		];
-		return run({
-			task: 'chainer',
-			target: 'custom',
-			environment: 'goodbye'
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.callCount(3);
-				expect(spy).to.have.been.calledWith(expectedConfig[0]);
-				expect(spy).to.have.been.calledWith(expectedConfig[1]);
-				expect(spy).to.have.been.calledWith(expectedConfig[2]);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run external tasks with default target config', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/external');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external - Hello, world!'
-		};
-		return run({
-			task: 'external',
-			package: 'my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should expand default environment placeholders in external task config', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:expander:default - Hello, world!'
-		};
-		return run({
-			task: 'expander',
-			package: 'my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should expand custom environment placeholders in external task config', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:expander:default - Goodbye, world!'
-		};
-		return run({
-			task: 'expander',
-			environment: 'goodbye',
-			package: 'my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run external tasks with custom target config', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:expander:alternate - Goodbye, world!'
-		};
-		return run({
-			task: 'expander',
-			target: 'alternate',
-			environment: 'goodbye',
-			package: 'my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run external tasks with overridden config', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:expander:default - Goodbye, world!',
-			override: true
-		};
-		return run({
-			task: 'expander',
-			package: 'my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run external tasks with overridden custom environment config', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:expander:default - Goodbye, world!',
-			override: true
-		};
-		return run({
-			task: 'expander',
-			package: 'my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run external tasks with named default target', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/defaulter');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:defaulter:alternate - Goodbye, world!',
-			override: true
-		};
-		var expectedResults = 'external:defaulter';
-		return run({
-			task: 'defaulter',
-			package: 'my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run external tasks with named custom target', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/defaulter');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'external:defaulter:customalternate - Goodbye, world!',
-			override: true
-		};
-		var expectedResults = 'external:defaulter';
-		return run({
-			task: 'defaulter',
-			target: 'custom',
-			package: 'my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run external tasks with multiple default targets', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/chainer');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = [
-			{
-				message: 'external:chainer:step0 - Goodbye, world!',
-				index: 0,
-				override: true
-			},
-			{
-				message: 'external:chainer:step1 - Goodbye, world!',
-				index: 1,
-				override: true
-			},
-			{
-				message: 'external:chainer:step3 - Goodbye, world!',
-				index: 3,
-				override: true
-			}
-		];
-		var expectedResults = [
-			'external:chainer0',
-			'external:chainer1',
-			'external:chainer3'
-		];
-		return run({
-			task: 'chainer',
-			package: 'my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.callCount(3);
-				expect(spy).to.have.been.calledWith(expectedConfig[0]);
-				expect(spy).to.have.been.calledWith(expectedConfig[1]);
-				expect(spy).to.have.been.calledWith(expectedConfig[2]);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run external tasks with multiple custom targets', function() {
-		var expectedTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/chainer');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = [
-			{
-				message: 'external:chainer:customstep0 - Goodbye, world!',
-				index: 0,
-				override: true
-			},
-			{
-				message: 'external:chainer:customstep1 - Goodbye, world!',
-				index: 1,
-				override: true
-			},
-			{
-				message: 'external:chainer:customstep3 - Goodbye, world!',
-				index: 3,
-				override: true
-			}
-		];
-		var expectedResults = [
-			'external:chainer0',
-			'external:chainer1',
-			'external:chainer3'
-		];
-		return run({
-			task: 'chainer',
-			target: 'custom',
-			package: 'my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.callCount(3);
-				expect(spy).to.have.been.calledWith(expectedConfig[0]);
-				expect(spy).to.have.been.calledWith(expectedConfig[1]);
-				expect(spy).to.have.been.calledWith(expectedConfig[2]);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-
-
-	it('should run scoped tasks with default target config', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped - Hello, world!'
-		};
-		return run({
-			task: 'scoped',
-			package: '@my-packages/my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should expand default environment placeholders in scoped task config', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:expander:default - Hello, world!'
-		};
-		return run({
-			task: 'expander',
-			package: '@my-packages/my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should expand custom environment placeholders in scoped task config', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:expander:default - Goodbye, world!'
-		};
-		return run({
-			task: 'expander',
-			environment: 'goodbye',
-			package: '@my-packages/my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run scoped tasks with custom target config', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:expander:alternate - Goodbye, world!'
-		};
-		return run({
-			task: 'expander',
-			target: 'alternate',
-			environment: 'goodbye',
-			package: '@my-packages/my-package'
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run scoped tasks with overridden config', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:expander:default - Goodbye, world!',
-			override: true
-		};
-		return run({
-			task: 'expander',
-			package: '@my-packages/my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run scoped tasks with overridden custom environment config', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/expander');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:expander:default - Goodbye, world!',
-			override: true
-		};
-		return run({
-			task: 'expander',
-			package: '@my-packages/my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function() {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-			});
-	});
-
-	it('should run scoped tasks with named default target', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/defaulter');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:defaulter:alternate - Goodbye, world!',
-			override: true
-		};
-		var expectedResults = 'scoped:defaulter';
-		return run({
-			task: 'defaulter',
-			package: '@my-packages/my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run scoped tasks with named custom target', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/defaulter');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = {
-			message: 'scoped:defaulter:customalternate - Goodbye, world!',
-			override: true
-		};
-		var expectedResults = 'scoped:defaulter';
-		return run({
-			task: 'defaulter',
-			target: 'custom',
-			package: '@my-packages/my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.been.calledWith(expectedConfig);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run scoped tasks with multiple default targets', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/chainer');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = [
-			{
-				message: 'scoped:chainer:step0 - Goodbye, world!',
-				index: 0,
-				override: true
-			},
-			{
-				message: 'scoped:chainer:step1 - Goodbye, world!',
-				index: 1,
-				override: true
-			},
-			{
-				message: 'scoped:chainer:step3 - Goodbye, world!',
-				index: 3,
-				override: true
-			}
-		];
-		var expectedResults = [
-			'scoped:chainer0',
-			'scoped:chainer1',
-			'scoped:chainer3'
-		];
-		return run({
-			task: 'chainer',
-			package: '@my-packages/my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.callCount(3);
-				expect(spy).to.have.been.calledWith(expectedConfig[0]);
-				expect(spy).to.have.been.calledWith(expectedConfig[1]);
-				expect(spy).to.have.been.calledWith(expectedConfig[2]);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run scoped tasks with multiple custom targets', function() {
-		var expectedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/chainer');
-		var spy = sinon.spy();
-		expectedTask.callback = spy;
-		var expectedConfig = [
-			{
-				message: 'scoped:chainer:customstep0 - Goodbye, world!',
-				index: 0,
-				override: true
-			},
-			{
-				message: 'scoped:chainer:customstep1 - Goodbye, world!',
-				index: 1,
-				override: true
-			},
-			{
-				message: 'scoped:chainer:customstep3 - Goodbye, world!',
-				index: 3,
-				override: true
-			}
-		];
-		var expectedResults = [
-			'scoped:chainer0',
-			'scoped:chainer1',
-			'scoped:chainer3'
-		];
-		return run({
-			task: 'chainer',
-			target: 'custom',
-			package: '@my-packages/my-package',
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(returnValue) {
-				expect(spy).to.have.callCount(3);
-				expect(spy).to.have.been.calledWith(expectedConfig[0]);
-				expect(spy).to.have.been.calledWith(expectedConfig[1]);
-				expect(spy).to.have.been.calledWith(expectedConfig[2]);
-
-				var expected = expectedResults;
-				var actual = returnValue;
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should run function tasks with the provided config', function() {
-		var config = { user: 'world' };
-		var task = sinon.spy(function(config) {});
-
-		var actual, expected;
-		expected = config;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return actual.then(function() {
-			expect(task).to.have.been.calledWith(expected);
-		});
-	});
-
-	it('should run { function, config } tasks with their own config', function() {
-		var config = { message: 'hello', user: 'world' };
-		var taskConfig = { message: 'goodbye' };
-		var task = {
-			task: sinon.spy(function(config) {}),
-			config: taskConfig
-		};
-		var expectedTask = task.task;
-		var expectedConfig = task.config;
-		return run({
-			task: task,
-			config: config
-		}).then(function() {
-			expect(expectedTask).to.have.been.calledWith(expectedConfig);
-		});
-	});
-
-	it('should resolve with a value for synchronous tasks', function() {
-		var config = { user: 'world' };
-		var output = 'Hello, world!';
-		var task = function(config) {
-			return output;
-		};
-
-		var actual, expected;
-		expected = output;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.eventually.equal(expected);
-	});
-
-	it('should reject with an error for synchronous tasks', function() {
-		var config = { user: 'world' };
-		var output = new Error('Goodbye, world!');
-		var task = function(config) {
-			throw output;
-		};
-
-		var actual, expected;
-		expected = output;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.be.rejectedWith(expected);
-	});
-
-	it('should handle asynchronous tasks by returning a promise (success)', function() {
-		var config = { user: 'world' };
-		var output = 'Hello, world!';
-		var task = sinon.spy(function(config) {
-			return new Promise(function(resolve, reject) {
-				setTimeout(function() {
-					resolve(output);
-				});
-			});
-		});
-
-		var actual, expected;
-		expected = output;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return Promise.all([
-			actual.then(function() {
-				expect(task).to.have.been.calledWith(config);
-			}),
-			expect(actual).to.eventually.equal(expected)
-		]);
-	});
-
-	it('should handle asynchronous tasks by returning a promise (failure)', function() {
-		var config = { user: 'world' };
-		var output = new Error('Goodbye, world!');
-		var task = function(config) {
-			return new Promise(function(resolve, reject) {
-				setTimeout(function() {
-					reject(output);
-				});
-			});
-		};
-
-		var actual, expected;
-		expected = Error;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.be.rejectedWith(expected);
-	});
-
-	it('should handle asynchronous functions by returning a stream (success)', function() {
-		var config = {
-			chunks: ['hello', 'world']
-		};
-		var dataSpy = sinon.spy();
-		var completedSpy = sinon.spy();
-		var task = sinon.spy(function(config) {
-			var chunks = config.chunks.slice();
-			var stream = new Stream.Readable({ objectMode: true, highWaterMark: 1 });
-			stream._read = function() {
-				if (chunks.length === 0) {
-					completedSpy();
-					this.push(null);
-				} else {
-					dataSpy();
-					this.push(chunks.shift());
-				}
+		it('should run local tasks with default target and environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
 			};
-			return stream;
-		});
+			unmockFiles = mockFiles(files);
 
-		var actual, expected;
-		expected = undefined;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.eventually.equal(expected)
-			.then(function(returnValue) {
-				expect(dataSpy).to.have.callCount(config.chunks.length);
-				expect(completedSpy).to.have.been.calledOnce;
-
-				actual = returnValue;
-				expected = undefined;
-				expect(actual).to.equal(expected);
-			});
-	});
-
-	it('should handle asynchronous functions by returning a stream (failure)', function() {
-		var config = {
-			chunks: ['hello', 'world']
-		};
-		var dataSpy = sinon.spy();
-		var completedSpy = sinon.spy();
-		var task = sinon.spy(function(config) {
-			var chunks = config.chunks.slice();
-			var stream = new Stream.Readable({ objectMode: true, highWaterMark: 1 });
-			stream._read = function() {
-				if (chunks.length === 0) {
-					completedSpy();
-					this.emit('error', new Error('Goodbye, world!'));
-				} else {
-					dataSpy();
-					this.push(chunks.shift());
-				}
-			};
-			return stream;
-		});
-
-		var actual, expected;
-		expected = 'Goodbye, world!';
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.be.rejectedWith(expected)
-			.then(function(returnValue) {
-				expect(dataSpy).to.have.callCount(config.chunks.length);
-				expect(completedSpy).to.have.been.calledOnce;
-
-				actual = returnValue;
-				expected = undefined;
-				expect(actual).to.equal(expected);
-			});
-	});
-
-	it('should handle asynchronous tasks by providing a callback (success)', function() {
-		var config = { user: 'world' };
-		var output = 'Hello, world!';
-		var task = sinon.spy(function(config, callback) {
-			setTimeout(function() {
-				callback(null, output);
-			});
-		});
-
-		var actual, expected;
-		expected = output;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return Promise.all([
-			actual.then(function() {
-				expect(task).to.have.been.calledWith(config);
-			}),
-			expect(actual).to.eventually.equal(expected)
-		]);
-	});
-
-	it('should handle asynchronous tasks by providing a callback (void)', function() {
-		var config = { user: 'world' };
-		var task = sinon.spy(function(config, callback) {
-			setTimeout(function() {
-				callback();
-			});
-		});
-
-		var actual, expected;
-		expected = undefined;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return Promise.all([
-			actual.then(function() {
-				expect(task).to.have.been.calledWith(config);
-			}),
-			expect(actual).to.eventually.equal(expected)
-		]);
-	});
-
-	it('should handle asynchronous tasks by providing a callback (failure)', function() {
-		var config = { user: 'world' };
-		var output = new Error('Goodbye, world!');
-		var task = function(config, callback) {
-			setTimeout(function() {
-				callback(output);
-			});
-		};
-
-		var actual, expected;
-		expected = output;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.be.rejectedWith(expected);
-	});
-
-	it('should pass the API as the \'this\' object', function() {
-		var config = {};
-		var task = function(config) {
-			var skivvy = this;
-			return skivvy;
-		};
-
-		var actual, expected;
-		expected = api;
-		actual = run({
-			task: task,
-			config: config
-		});
-		return expect(actual).to.eventually.equal(expected);
-	});
-
-	it('should run an array of function tasks in series', function() {
-		var task1 = sinon.spy(function(config, callback) {
-			setTimeout(function() {
-				callback(null, 'task1');
-			});
-		});
-		var task2 = sinon.spy(function(config, callback) {
-			setTimeout(function() {
-				callback(null, 'task2');
-			});
-		});
-		var task3 = sinon.spy(function(config, callback) {
-			setTimeout(function() {
-				callback(null, 'task3');
-			});
-		});
-
-		var expected = ['task1', 'task2', 'task3'];
-		return run({
-			task: [task1, task2, task3],
-			config: {
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
 				user: 'world'
-			}
-		})
-			.then(function(actual) {
-				var expectedConfig = {
-					user: 'world'
-				};
-				expect(task1).to.have.been.calledOnce;
-				expect(task2).to.have.been.calledOnce;
-				expect(task3).to.have.been.calledOnce;
-				expect(task1).to.have.been.calledWith(expectedConfig);
-				expect(task2).to.have.been.calledWith(expectedConfig);
-				expect(task3).to.have.been.calledWith(expectedConfig);
-				expect(actual).to.eql(expected);
-			});
-	});
+			};
 
-	it('should run an array of named tasks in series', function() {
-		var localTask = require('/skivvy_tasks/series.js');
-		var localSpy = sinon.spy();
-		localTask.callback = localSpy;
-
-		var externalTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/series.js');
-		var externalSpy = sinon.spy();
-		externalTask.callback = externalSpy;
-
-		var scopedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/series.js');
-		var scopedSpy = sinon.spy();
-		scopedTask.callback = scopedSpy;
-
-		var expected = ['local:series', 'external:series', 'scoped:series'];
-		return run({
-			task: [
-				'series',
-				{ task: 'series', package: 'my-package' },
-				{ task: 'series', package: '@my-packages/my-package' }
-			]
-		})
-			.then(function(actual) {
-				var expectedLocalConfig = {
-					message: 'series - Hello, world!'
-				};
-				var expectedExternalConfig = {
-					message: 'external:series - Hello, world!'
-				};
-				var expectedScopedConfig = {
-					message: 'scoped:series - Hello, world!'
-				};
-				expect(localSpy).to.have.been.calledOnce;
-				expect(externalSpy).to.have.been.calledOnce;
-				expect(scopedSpy).to.have.been.calledOnce;
-				expect(localSpy).to.have.been.calledWith(expectedLocalConfig);
-				expect(externalSpy).to.have.been.calledWith(expectedExternalConfig);
-				expect(scopedSpy).to.have.been.calledWith(expectedScopedConfig);
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should pass config overrides through to local array subtasks', function() {
-		var expectedLocalConfig = {
-			message: 'series - Hello, world!',
-			override: true
-		};
-		var expectedExternalConfig = {
-			message: 'external:series - Hello, world!'
-		};
-		var expectedScopedConfig = {
-			message: 'scoped:series - Hello, world!'
-		};
-
-		var localTask = require('/skivvy_tasks/series.js');
-		var localSpy = sinon.spy();
-		localTask.callback = localSpy;
-
-		var externalTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/series.js');
-		var externalSpy = sinon.spy();
-		externalTask.callback = externalSpy;
-
-		var scopedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/series.js');
-		var scopedSpy = sinon.spy();
-		scopedTask.callback = scopedSpy;
-
-		var expected = ['local:series', 'external:series', 'scoped:series'];
-		return run({
-			task: [
-				'series',
-				{ task: 'series', package: 'my-package' },
-				{ task: 'series', package: '@my-packages/my-package' }
-			],
-			config: {
-				override: true
-			}
-		})
-			.then(function(actual) {
-				expect(localSpy).to.have.been.calledOnce;
-				expect(externalSpy).to.have.been.calledOnce;
-				expect(scopedSpy).to.have.been.calledOnce;
-				expect(localSpy).to.have.been.calledWith(expectedLocalConfig);
-				expect(externalSpy).to.have.been.calledWith(expectedExternalConfig);
-				expect(scopedSpy).to.have.been.calledWith(expectedScopedConfig);
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should pass environment setting through to array subtasks', function() {
-		var expectedLocalConfig = {
-			message: 'series - Goodbye, world!',
-			override: true
-		};
-		var expectedExternalConfig = {
-			message: 'external:series - Goodbye, world!'
-		};
-		var expectedScopedConfig = {
-			message: 'scoped:series - Goodbye, world!'
-		};
-
-		var localTask = require('/skivvy_tasks/series.js');
-		var localSpy = sinon.spy();
-		localTask.callback = localSpy;
-
-		var externalTask = require('/node_modules/@skivvy/skivvy-package-my-package/tasks/series.js');
-		var externalSpy = sinon.spy();
-		externalTask.callback = externalSpy;
-
-		var scopedTask = require('/node_modules/@my-packages/skivvy-package-my-package/tasks/series.js');
-		var scopedSpy = sinon.spy();
-		scopedTask.callback = scopedSpy;
-
-		var expected = ['local:series', 'external:series', 'scoped:series'];
-		return run({
-			task: [
-				'series',
-				{ task: 'series', package: 'my-package' },
-				{ task: 'series', package: '@my-packages/my-package' }
-			],
-			environment: 'goodbye',
-			config: {
-				override: true
-			}
-		})
-			.then(function(actual) {
-				expect(localSpy).to.have.been.calledOnce;
-				expect(externalSpy).to.have.been.calledOnce;
-				expect(scopedSpy).to.have.been.calledOnce;
-				expect(localSpy).to.have.been.calledWith(expectedLocalConfig);
-				expect(externalSpy).to.have.been.calledWith(expectedExternalConfig);
-				expect(scopedSpy).to.have.been.calledWith(expectedScopedConfig);
-				expect(actual).to.eql(expected);
-			});
-	});
-
-	it('should dispatch task start and end events', function() {
-		var expectedConfig = { user: 'world' };
-		var actualConfig = { user: 'world' };
-		var task1 = function(config, callback) {
-			setTimeout(function() {
-				callback(null, 'task1');
-			});
-		};
-		var task2 = function(config, callback) {
-			setTimeout(function() {
-				callback(null, 'task2');
-			});
-		};
-		var task3 = function(config, callback) {
-			setTimeout(function() {
-				callback(null, 'task3');
-			});
-		};
-		var compositeTask = [task1, task2, task3];
-
-		var expected, actual;
-		expected = [
-			{
-				event: events.TASK_STARTED,
-				task: compositeTask,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_STARTED,
-				task: task1,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_COMPLETED,
-				result: 'task1',
-				task: task1,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_STARTED,
-				task: task2,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_COMPLETED,
-				result: 'task2',
-				task: task2,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_STARTED,
-				task: task3,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_COMPLETED,
-				result: 'task3',
-				task: task3,
-				config: expectedConfig
-			},
-			{
-				event: events.TASK_COMPLETED,
-				result: ['task1', 'task2', 'task3'],
-				task: compositeTask,
-				config: expectedConfig
-			}
-		];
-		actual = [];
-
-		api.on(events.TASK_STARTED, onStarted);
-		api.on(events.TASK_COMPLETED, onCompleted);
-		api.on(events.TASK_FAILED, onFailed);
-
-
-		function onStarted(data) {
-			actual.push({
-				event: events.TASK_STARTED,
-				task: data.task,
-				config: data.config
-			});
-		}
-
-		function onCompleted(data) {
-			actual.push({
-				event: events.TASK_COMPLETED,
-				result: data.result,
-				task: data.task,
-				config: data.config
-			});
-		}
-
-		function onFailed(data) {
-			actual.push({
-				event: events.TASK_FAILED,
-				error: data.error,
-				task: data.task,
-				config: data.config
-			});
-		}
-
-		return run({
-			task: compositeTask,
-			config: actualConfig
-		})
-			.then(function() {
-				return expect(actual).to.eql(expected);
+			return run({
+				task: 'task'
 			})
-			.finally(function() {
-				api.removeListener(events.TASK_STARTED, onStarted);
-				api.removeListener(events.TASK_COMPLETED, onCompleted);
-				api.removeListener(events.TASK_FAILED, onFailed);
-			});
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: null,
+						task: 'task',
+						target: 'default',
+						environment: 'default',
+						expand: true
+					});
+				});
+		});
+
+		it('should run local tasks with default target and custom environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				task: 'task',
+				environment: 'custom'
+			})
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: null,
+						task: 'task',
+						target: 'default',
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run local tasks with custom target and default environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				task: 'task',
+				target: 'custom'
+			})
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: null,
+						task: 'task',
+						target: 'custom',
+						environment: 'default',
+						expand: true
+					});
+				});
+		});
+
+		it('should run local tasks with custom target and custom environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				task: 'task',
+				target: 'custom',
+				environment: 'custom'
+			})
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: null,
+						task: 'task',
+						target: 'custom',
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run local tasks with overridden config', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				task: 'task',
+				target: 'custom',
+				environment: 'custom',
+				config: {
+					message: 'Goodbye, world!'
+				}
+			})
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Goodbye, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: null,
+						task: 'task',
+						target: 'custom',
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run local tasks with expanded placeholders in overridden config', function() {
+			var pkg = {
+				version: '1.0.1'
+			};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.environmentConfig = {
+				id: 'hello-world'
+			};
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				task: 'task',
+				target: 'custom',
+				environment: 'custom',
+				config: {
+					message: 'Goodbye, world!',
+					sender: '<%= environment.id %> v<%= project.version %>'
+				}
+			})
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Goodbye, world!',
+						user: 'world',
+						sender: 'hello-world v1.0.1'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: null,
+						task: 'task',
+						target: 'custom',
+						environment: 'custom',
+						expand: true
+					});
+
+					expect(mockApi.getEnvironmentConfig).to.have.been.calledOnce;
+					expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run local tasks with multiple targets', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = [
+				{
+					message: 'Hello, world!',
+					user: 'world'
+				},
+				{
+					message: 'Goodbye, world!',
+					user: 'world'
+				}
+			];
+
+			return run({
+				task: 'task'
+			})
+				.then(function() {
+					var task = require('/project/skivvy_tasks/task');
+					expect(task).to.have.been.calledTwice;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+					expect(task).to.have.been.calledWith({
+						message: 'Goodbye, world!',
+						user: 'world'
+					});
+				});
+		});
 	});
 
-	it('should allow custom project paths', function() {
-		var expected = ['local', 'external', 'scoped'];
-		return run({
-			task: [
-				'custom',
-				{ package: 'my-package', task: 'custom' },
-				{ package: '@my-packages/my-package', task: 'custom' }
-			],
-			path: '/project'
-		})
-			.then(function(actual) {
-				expect(actual).to.eql(expected);
+	describe('external tasks', function() {
+
+		it('should run external tasks with default target and environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				package: 'package',
+				task: 'task'
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: 'package',
+						task: 'task',
+						target: 'default',
+						environment: 'default',
+						expand: true
+					});
+				});
+		});
+
+		it('should run external tasks with default target and custom environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				package: 'package',
+				task: 'task',
+				environment: 'custom'
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: 'package',
+						task: 'task',
+						target: 'default',
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run external tasks with custom target and default environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				package: 'package',
+				task: 'task',
+				target: 'custom'
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: 'package',
+						task: 'task',
+						target: 'custom',
+						environment: 'default',
+						expand: true
+					});
+				});
+		});
+
+		it('should run external tasks with custom target and custom environment', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				package: 'package',
+				task: 'task',
+				target: 'custom',
+				environment: 'custom'
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: 'package',
+						task: 'task',
+						target: 'custom',
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run external tasks with overridden config', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				package: 'package',
+				task: 'task',
+				target: 'custom',
+				environment: 'custom',
+				config: {
+					message: 'Goodbye, world!'
+				}
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Goodbye, world!',
+						user: 'world'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: 'package',
+						task: 'task',
+						target: 'custom',
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run external tasks with expanded placeholders in overridden config', function() {
+			var pkg = {
+				version: '1.0.1'
+			};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.environmentConfig = {
+				id: 'hello-world'
+			};
+			mockApi.stubs.packageConfig = {
+				id: 'my-package'
+			};
+			mockApi.stubs.taskConfig = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+
+			return run({
+				package: 'package',
+				task: 'task',
+				target: 'custom',
+				environment: 'custom',
+				config: {
+					message: 'Goodbye, world!',
+					sender: '<%= environment.id %> <%= package.id %> v<%= project.version %>'
+				}
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledOnce;
+					expect(task).to.have.been.calledWith({
+						message: 'Goodbye, world!',
+						user: 'world',
+						sender: 'hello-world my-package v1.0.1'
+					});
+
+					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
+					expect(mockApi.getTaskConfig).to.have.been.calledWith({
+						package: 'package',
+						task: 'task',
+						target: 'custom',
+						environment: 'custom',
+						expand: true
+					});
+
+					expect(mockApi.getEnvironmentConfig).to.have.been.calledOnce;
+					expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
+						environment: 'custom',
+						expand: true
+					});
+				});
+		});
+
+		it('should run external tasks with multiple targets', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = [
+				{
+					message: 'Hello, world!',
+					user: 'world'
+				},
+				{
+					message: 'Goodbye, world!',
+					user: 'world'
+				}
+			];
+
+			return run({
+				package: 'package',
+				task: 'task'
+			})
+				.then(function() {
+					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
+					expect(task).to.have.been.calledTwice;
+					expect(task).to.have.been.calledWith({
+						message: 'Hello, world!',
+						user: 'world'
+					});
+					expect(task).to.have.been.calledWith({
+						message: 'Goodbye, world!',
+						user: 'world'
+					});
+				});
+		});
+	});
+
+	describe('anonymous tasks', function() {
+
+		it('should run function tasks with the provided config', function() {
+			var config = {
+				message: 'Hello, world!',
+				user: 'world'
+			};
+			var task = sinon.spy(function(config) {});
+
+			var promise = run({
+				task: task,
+				config: config
 			});
+			return promise.then(function() {
+				expect(task).to.have.been.calledWith({
+					message: 'Hello, world!',
+					user: 'world'
+				});
+			});
+		});
+
+		it('should run { function, config } tasks with their own config', function() {
+			var task = sinon.spy(function(config) {});
+			return run({
+				task: {
+					task: task,
+					config: {
+						message: 'Goodbye, world'
+					}
+				},
+				config: {
+					message: 'Hello, world!',
+					user: 'world'
+				}
+			}).then(function() {
+				expect(task).to.have.been.calledWith({
+					message: 'Goodbye, world'
+				});
+			});
+		});
+	});
+
+	describe('running tasks', function() {
+
+		it('should pass the API as the \'this\' object', function() {
+			var config = {};
+			var task = function(config) {
+				var api = this;
+				return api;
+			};
+
+			var promise = run({
+				task: task,
+				config: config
+			});
+			return expect(promise).to.eventually.equal(mockApi);
+		});
+
+		it('should resolve with a value for synchronous tasks', function() {
+			var task = function(config) {
+				return 'Hello, world!';
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.eventually.equal('Hello, world!');
+		});
+
+		it('should reject with an error for synchronous tasks', function() {
+			var task = function(config) {
+				throw new Error('Test error');
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.be.rejectedWith('Test error');
+		});
+
+		it('should handle asynchronous tasks by returning a promise (success)', function() {
+			var task = function(config) {
+				return new Promise(function(resolve, reject) {
+					setTimeout(function() {
+						resolve('Hello, world!');
+					});
+				});
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.eventually.equal('Hello, world!');
+		});
+
+		it('should handle asynchronous tasks by returning a promise (failure)', function() {
+			var task = function(config) {
+				return new Promise(function(resolve, reject) {
+					setTimeout(function() {
+						reject(new Error('Test error'));
+					});
+				});
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.be.rejectedWith('Test error');
+		});
+
+		it('should handle asynchronous functions by returning a stream (success)', function() {
+			var dataSpy = sinon.spy();
+			var completedSpy = sinon.spy();
+			var task = function(config) {
+				var chunks = ['hello', 'world'];
+				var stream = new Stream.Readable({ objectMode: true, highWaterMark: 0 });
+				stream._read = function() {
+					if (chunks.length === 0) {
+						completedSpy();
+						this.push(null);
+					} else {
+						dataSpy();
+						this.push(chunks.shift());
+					}
+				};
+				return stream;
+			};
+
+			var promise = run({
+				task: task
+			});
+			return promise
+				.then(function(returnValue) {
+					expect(returnValue).to.equal(undefined);
+
+					expect(dataSpy).to.have.callCount(['hello', 'world'].length);
+					expect(completedSpy).to.have.been.calledOnce;
+				});
+		});
+
+		it('should handle asynchronous functions by returning a stream (failure)', function() {
+			var task = function(config) {
+				var stream = new Stream.Readable({ objectMode: true, highWaterMark: 0 });
+				stream._read = function() {
+					this.emit('error', new Error('Test error'));
+				};
+				return stream;
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.be.rejectedWith('Test error');
+		});
+
+		it('should handle asynchronous tasks by providing a callback (success)', function() {
+			var task = function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'Hello, world!');
+				});
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.eventually.equal('Hello, world!');
+		});
+
+		it('should handle asynchronous tasks by providing a callback (void)', function() {
+			var task = function(config, callback) {
+				setTimeout(function() {
+					callback();
+				});
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.eventually.equal(undefined);
+		});
+
+		it('should handle asynchronous tasks by providing a callback (failure)', function() {
+			var task = function(config, callback) {
+				setTimeout(function() {
+					callback(new Error('Test error'));
+				});
+			};
+
+			var promise = run({
+				task: task
+			});
+			return expect(promise).to.be.rejectedWith('Test error');
+		});
+	});
+
+	describe('task arrays', function() {
+
+		it('should run an array of function tasks in series', function() {
+			var task1 = sinon.spy(function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'task1');
+				});
+			});
+			var task2 = sinon.spy(function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'task2');
+				});
+			});
+			var task3 = sinon.spy(function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'task3');
+				});
+			});
+
+			return run({
+				task: [task1, task2, task3],
+				config: {
+					user: 'world'
+				}
+			})
+				.then(function(returnValue) {
+					expect(returnValue).to.eql(['task1', 'task2', 'task3']);
+
+					expect(task1).to.have.been.calledOnce;
+					expect(task2).to.have.been.calledOnce;
+					expect(task3).to.have.been.calledOnce;
+					expect(task1).to.have.been.calledWith({ user: 'world' });
+					expect(task2).to.have.been.calledWith({ user: 'world' });
+					expect(task3).to.have.been.calledWith({ user: 'world' });
+				});
+		});
+
+		it('should run an array of named tasks in series (default environment)', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) { return "local"; });',
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "external"; }) }',
+				'/project/node_modules/@scoped/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@scoped/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "scoped"; }) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = function(options) {
+				return {
+					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+				};
+			};
+
+			return run({
+				task: [
+					'task',
+					{ task: 'task', target: 'target' },
+					{ task: 'task', package: 'package' },
+					{ task: 'task', package: 'package', target: 'target' },
+					{ task: 'task', package: '@scoped/package' },
+					{ task: 'task', package: '@scoped/package', target: 'target' }
+				]
+			})
+				.then(function(returnValue) {
+					expect(returnValue).to.eql(['local', 'local', 'external', 'external', 'scoped', 'scoped']);
+					var localTask = require('/project/skivvy_tasks/task.js');
+					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
+					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
+					expect(localTask).to.have.been.calledTwice;
+					expect(localTask).to.have.been.calledWith({
+						id: 'default:::null::task:default'
+					});
+					expect(localTask).to.have.been.calledWith({
+						id: 'default:::null::task:target'
+					});
+					expect(externalTask).to.have.been.calledTwice;
+					expect(externalTask).to.have.been.calledWith({
+						id: 'default:::package::task:default'
+					});
+					expect(externalTask).to.have.been.calledWith({
+						id: 'default:::package::task:target'
+					});
+					expect(scopedTask).to.have.been.calledTwice;
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'default:::@scoped/package::task:default'
+					});
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'default:::@scoped/package::task:target'
+					});
+				});
+		});
+
+		it('should run an array of named tasks in series (custom environment)', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) { return "local"; });',
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "external"; }) }',
+				'/project/node_modules/@scoped/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@scoped/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "scoped"; }) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = function(options) {
+				return {
+					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+				};
+			};
+
+			return run({
+				task: [
+					'task',
+					{ task: 'task', target: 'target' },
+					{ task: 'task', package: 'package' },
+					{ task: 'task', package: 'package', target: 'target' },
+					{ task: 'task', package: '@scoped/package' },
+					{ task: 'task', package: '@scoped/package', target: 'target' }
+				],
+				environment: 'environment'
+			})
+				.then(function(returnValue) {
+					expect(returnValue).to.eql(['local', 'local', 'external', 'external', 'scoped', 'scoped']);
+					var localTask = require('/project/skivvy_tasks/task.js');
+					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
+					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
+					expect(localTask).to.have.been.calledTwice;
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:default'
+					});
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:target'
+					});
+					expect(externalTask).to.have.been.calledTwice;
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:default'
+					});
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:target'
+					});
+					expect(scopedTask).to.have.been.calledTwice;
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'environment:::@scoped/package::task:default'
+					});
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'environment:::@scoped/package::task:target'
+					});
+				});
+		});
+
+		it('should pass config overrides through to local array subtasks', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) { return "local"; });',
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "external"; }) }',
+				'/project/node_modules/@scoped/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@scoped/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "scoped"; }) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = function(options) {
+				return {
+					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+				};
+			};
+
+			return run({
+				task: [
+					'task',
+					{ task: 'task', target: 'target' },
+					{ task: 'task', package: 'package' },
+					{ task: 'task', package: 'package', target: 'target' },
+					{ task: 'task', package: '@scoped/package' },
+					{ task: 'task', package: '@scoped/package', target: 'target' }
+				],
+				config: {
+					override: true
+				},
+				environment: 'environment'
+			})
+				.then(function(returnValue) {
+					expect(returnValue).to.eql(['local', 'local', 'external', 'external', 'scoped', 'scoped']);
+					var localTask = require('/project/skivvy_tasks/task.js');
+					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
+					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
+					expect(localTask).to.have.been.calledTwice;
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:default',
+						override: true
+					});
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:target',
+						override: true
+					});
+					expect(externalTask).to.have.been.calledTwice;
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:default'
+					});
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:target'
+					});
+					expect(scopedTask).to.have.been.calledTwice;
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'environment:::@scoped/package::task:default'
+					});
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'environment:::@scoped/package::task:target'
+					});
+				});
+		});
+
+		it('should pass expanded config overrides through to local array subtasks', function() {
+			var pkg = {
+				version: '1.0.1'
+			};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) { return "local"; });',
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "external"; }) }',
+				'/project/node_modules/@scoped/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@scoped/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "scoped"; }) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = function(options) {
+				return {
+					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+				};
+			};
+
+			mockApi.stubs.environmentConfig = {
+				id: 'hello-world'
+			};
+
+			return run({
+				task: [
+					'task',
+					{ task: 'task', target: 'target' },
+					{ task: 'task', package: 'package' },
+					{ task: 'task', package: 'package', target: 'target' },
+					{ task: 'task', package: '@scoped/package' },
+					{ task: 'task', package: '@scoped/package', target: 'target' }
+				],
+				config: {
+					sender: '<%= environment.id %> v<%= project.version %>'
+				},
+				environment: 'environment'
+			})
+				.then(function(returnValue) {
+					expect(returnValue).to.eql(['local', 'local', 'external', 'external', 'scoped', 'scoped']);
+					var localTask = require('/project/skivvy_tasks/task.js');
+					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
+					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
+					expect(localTask).to.have.been.calledTwice;
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:default',
+						sender: 'hello-world v1.0.1'
+					});
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:target',
+						sender: 'hello-world v1.0.1'
+					});
+					expect(externalTask).to.have.been.calledTwice;
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:default'
+					});
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:target'
+					});
+					expect(scopedTask).to.have.been.calledTwice;
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'environment:::@scoped/package::task:default'
+					});
+					expect(scopedTask).to.have.been.calledWith({
+						id: 'environment:::@scoped/package::task:target'
+					});
+				});
+		});
+	});
+
+	describe('error handling', function() {
+
+		it('should throw an error if no task was specified', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config)
+			};
+			unmockFiles = mockFiles(files);
+
+			var promises = [
+				run(),
+				run({ task: undefined }),
+				run({ task: null }),
+				run({ task: false }),
+				run({ task: '' })
+			];
+			return Promise.all(promises.map(function(promise) {
+				return expect(promise).to.be.rejectedWith(InvalidTaskError);
+			}));
+		});
+
+		it('should throw an error if an invalid task name was specified', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config)
+			};
+			unmockFiles = mockFiles(files);
+
+			var promise = run({
+				task: 'nonexistent'
+			});
+			return expect(promise).to.be.rejectedWith(InvalidTaskError);
+		});
+	});
+
+	describe('events', function() {
+
+		it('should dispatch task start and end events', function() {
+			var task1 = function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'task1');
+				});
+			};
+			var task2 = function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'task2');
+				});
+			};
+			var task3 = function(config, callback) {
+				setTimeout(function() {
+					callback(null, 'task3');
+				});
+			};
+			var compositeTask = [task1, task2, task3];
+
+			var eventLog = [];
+
+			mockApi.on(events.TASK_STARTED, onStarted);
+			mockApi.on(events.TASK_COMPLETED, onCompleted);
+			mockApi.on(events.TASK_FAILED, onFailed);
+
+
+			function onStarted(data) {
+				eventLog.push({
+					event: events.TASK_STARTED,
+					task: data.task,
+					config: data.config
+				});
+			}
+
+			function onCompleted(data) {
+				eventLog.push({
+					event: events.TASK_COMPLETED,
+					result: data.result,
+					task: data.task,
+					config: data.config
+				});
+			}
+
+			function onFailed(data) {
+				eventLog.push({
+					event: events.TASK_FAILED,
+					error: data.error,
+					task: data.task,
+					config: data.config
+				});
+			}
+
+			return run({
+				task: compositeTask,
+				config: {
+					user: 'world'
+				}
+			})
+				.then(function() {
+					return expect(eventLog).to.eql([
+						{
+							event: events.TASK_STARTED,
+							task: compositeTask,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_STARTED,
+							task: task1,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_COMPLETED,
+							result: 'task1',
+							task: task1,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_STARTED,
+							task: task2,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_COMPLETED,
+							result: 'task2',
+							task: task2,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_STARTED,
+							task: task3,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_COMPLETED,
+							result: 'task3',
+							task: task3,
+							config: {
+								user: 'world'
+							}
+						},
+						{
+							event: events.TASK_COMPLETED,
+							result: ['task1', 'task2', 'task3'],
+							task: compositeTask,
+							config: {
+								user: 'world'
+							}
+						}
+					]);
+				});
+		});
 	});
 });

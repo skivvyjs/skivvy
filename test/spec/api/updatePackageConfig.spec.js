@@ -7,37 +7,40 @@ var fs = require('fs');
 var Promise = require('promise');
 
 var mockFiles = require('../../utils/mock-files');
-var sharedTests = require('../sharedTests');
 
-var api = require('../../../lib/api');
+var mockApiFactory = require('../../fixtures/mockApiFactory');
+
 var events = require('../../../lib/events');
 
 var InvalidPackageError = require('../../../lib/errors').InvalidPackageError;
 var InvalidConfigError = require('../../../lib/errors').InvalidConfigError;
 
-var updatePackageConfig = require('../../../lib/api/updatePackageConfig');
-
 chai.use(chaiAsPromised);
 
-sharedTests.addAsyncProjectTests(updatePackageConfig, 'api.updatePackageConfig()');
-
 describe('api.updatePackageConfig()', function() {
+	var MockApi;
+	var mockApi;
+	var updatePackageConfig;
+	before(function() {
+		MockApi = mockApiFactory();
+		mockApi = new MockApi('/project');
+		updatePackageConfig = require('../../../lib/api/updatePackageConfig');
+		updatePackageConfig = updatePackageConfig.bind(mockApi);
+	});
+
 	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
+		mockApi.reset();
 	});
 
 	it('should throw an error if no package name was specified', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config)
@@ -47,11 +50,11 @@ describe('api.updatePackageConfig()', function() {
 		var expected, actual;
 		expected = InvalidPackageError;
 		actual = [
-			updatePackageConfig({ path: '/project' }),
-			updatePackageConfig({ package: undefined, path: '/project' }),
-			updatePackageConfig({ package: null, path: '/project' }),
-			updatePackageConfig({ package: false, path: '/project' }),
-			updatePackageConfig({ package: '', path: '/project' })
+			updatePackageConfig({}),
+			updatePackageConfig({ package: undefined }),
+			updatePackageConfig({ package: null }),
+			updatePackageConfig({ package: false }),
+			updatePackageConfig({ package: '' })
 		];
 		return Promise.all(actual.map(function(actual) {
 			return expect(actual).to.be.rejectedWith(expected);
@@ -60,12 +63,7 @@ describe('api.updatePackageConfig()', function() {
 
 	it('should throw an error if the specified package does not exist', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config)
@@ -75,8 +73,7 @@ describe('api.updatePackageConfig()', function() {
 		var expected, actual;
 		expected = InvalidPackageError;
 		actual = updatePackageConfig({
-			package: 'hello',
-			path: '/project',
+			package: 'nonexistent',
 			updates: {}
 		});
 		return expect(actual).to.be.rejectedWith(expected);
@@ -84,27 +81,22 @@ describe('api.updatePackageConfig()', function() {
 
 	it('should throw an error if no config object was specified', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = InvalidConfigError;
 		actual = [
-			updatePackageConfig({ package: 'hello', path: '/project' }),
-			updatePackageConfig({ package: 'hello', updates: undefined, path: '/project' }),
-			updatePackageConfig({ package: 'hello', updates: null, path: '/project' }),
-			updatePackageConfig({ package: 'hello', updates: false, path: '/project' }),
-			updatePackageConfig({ package: 'hello', updates: '', path: '/project' })
+			updatePackageConfig({ package: 'package' }),
+			updatePackageConfig({ package: 'package', updates: undefined }),
+			updatePackageConfig({ package: 'package', updates: null }),
+			updatePackageConfig({ package: 'package', updates: false }),
+			updatePackageConfig({ package: 'package', updates: '' })
 		];
 		return Promise.all(actual.map(function(actual) {
 			return expect(actual).to.be.rejectedWith(expected);
@@ -114,32 +106,27 @@ describe('api.updatePackageConfig()', function() {
 	it('should create the package config if it does not exist', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {
-				'goodbye': {
+				'hello': {
 					config: {
-						message: 'Goodbye, world!'
+						message: 'Hello, world!'
 					}
 				}
 			}
 		};
 		var updates = {
-			message: 'Hello, world!'
+			message: 'Goodbye, world!'
 		};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
@@ -154,9 +141,8 @@ describe('api.updatePackageConfig()', function() {
 			}
 		};
 		actual = updatePackageConfig({
-			package: 'hello',
-			updates: updates,
-			path: '/project'
+			package: 'goodbye',
+			updates: updates
 		})
 			.then(function(updatedConfig) {
 				return JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
@@ -167,9 +153,6 @@ describe('api.updatePackageConfig()', function() {
 	it('should update the package config if it already exists', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
@@ -179,7 +162,8 @@ describe('api.updatePackageConfig()', function() {
 				},
 				'goodbye': {
 					config: {
-						message: 'Goodbye, world!'
+						message: 'Goodbye, world!',
+						user: 'world'
 					}
 				}
 			}
@@ -190,15 +174,13 @@ describe('api.updatePackageConfig()', function() {
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};',
+			'/project/node_modules/@skivvy/skivvy-package-goodbye/index.js': 'exports.tasks = {};'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
@@ -208,15 +190,15 @@ describe('api.updatePackageConfig()', function() {
 				},
 				'goodbye': {
 					config: {
-						message: 'Goodbye, world!'
+						message: 'Goodbye, world!',
+						user: 'world'
 					}
 				}
 			}
 		};
 		actual = updatePackageConfig({
 			package: 'hello',
-			updates: updates,
-			path: '/project'
+			updates: updates
 		})
 			.then(function(updatedConfig) {
 				return JSON.parse(fs.readFileSync('/project/.skivvyrc', 'utf8'));
@@ -226,12 +208,7 @@ describe('api.updatePackageConfig()', function() {
 
 	it('should return the updated package config', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
+		var config = {};
 		var updates = {
 			message: 'Hello, world!'
 		};
@@ -246,60 +223,21 @@ describe('api.updatePackageConfig()', function() {
 		expected = {
 			message: 'Hello, world!'
 		};
-		actual = updatePackageConfig({ package: 'hello', updates: updates, path: '/project' });
+		actual = updatePackageConfig({
+			package: 'hello',
+			updates: updates
+		});
 		return expect(actual).to.eventually.eql(expected);
-	});
-
-	it('should default to process.cwd() if no path is specified', function() {
-		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			},
-			packages: {}
-		};
-		var updates = {
-			message: 'Hello, world!'
-		};
-		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = {
-			message: 'Hello, world!'
-		};
-		actual = [
-			updatePackageConfig({ package: 'hello', updates: updates }),
-			updatePackageConfig({ package: 'hello', updates: updates, path: undefined }),
-			updatePackageConfig({ package: 'hello', updates: updates, path: null }),
-			updatePackageConfig({ package: 'hello', updates: updates, path: false }),
-			updatePackageConfig({ package: 'hello', updates: updates, path: '' })
-		];
-		return Promise.all(actual.map(function(actual) {
-			return expect(actual).to.eventually.eql(expected);
-		}));
 	});
 
 	it('should dispatch task start and end events', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
 						message: 'Hello, world!',
 						user: 'world'
-					}
-				},
-				'goodbye': {
-					config: {
-						message: 'Goodbye, world!'
 					}
 				}
 			}
@@ -336,9 +274,9 @@ describe('api.updatePackageConfig()', function() {
 		];
 		actual = [];
 
-		api.on(events.UPDATE_PACKAGE_CONFIG_STARTED, onStarted);
-		api.on(events.UPDATE_PACKAGE_CONFIG_COMPLETED, onCompleted);
-		api.on(events.UPDATE_PACKAGE_CONFIG_FAILED, onFailed);
+		mockApi.on(events.UPDATE_PACKAGE_CONFIG_STARTED, onStarted);
+		mockApi.on(events.UPDATE_PACKAGE_CONFIG_COMPLETED, onCompleted);
+		mockApi.on(events.UPDATE_PACKAGE_CONFIG_FAILED, onFailed);
 
 
 		function onStarted(data) {
@@ -374,16 +312,10 @@ describe('api.updatePackageConfig()', function() {
 			package: 'hello',
 			updates: {
 				message: 'Goodbye, world!'
-			},
-			path: '/project'
+			}
 		})
 			.then(function() {
 				return expect(actual).to.eql(expected);
-			})
-			.finally(function() {
-				api.removeListener(events.UPDATE_PACKAGE_CONFIG_STARTED, onStarted);
-				api.removeListener(events.UPDATE_PACKAGE_CONFIG_COMPLETED, onCompleted);
-				api.removeListener(events.UPDATE_PACKAGE_CONFIG_FAILED, onFailed);
 			});
 	});
 });

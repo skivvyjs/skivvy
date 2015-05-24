@@ -2,31 +2,40 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var sinonChai = require('sinon-chai');
 
 var mockFiles = require('../../utils/mock-files');
-var sharedTests = require('../sharedTests');
+
+var mockApiFactory = require('../../fixtures/mockApiFactory');
 
 var InvalidPackageError = require('../../../lib/errors').InvalidPackageError;
 
-var getPackageConfig = require('../../../lib/api/getPackageConfig');
-
-sharedTests.addSyncProjectTests(getPackageConfig, 'api.getPackageConfig()');
+chai.use(sinonChai);
 
 describe('api.getPackageConfig()', function() {
+	var getPackageConfig;
+	var MockApi;
+	var mockApi;
+	before(function() {
+		MockApi = mockApiFactory();
+		mockApi = new MockApi('/project');
+		getPackageConfig = require('../../../lib/api/getPackageConfig');
+		getPackageConfig = getPackageConfig.bind(mockApi);
+	});
+
 	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
+		mockApi.reset();
 	});
 
 	it('should throw an error if no package name was specified', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {}
 		};
 		var files = {
@@ -38,11 +47,11 @@ describe('api.getPackageConfig()', function() {
 		var expected, actual;
 		expected = InvalidPackageError;
 		actual = [
-			function() { return getPackageConfig({ path: '/project' }); },
-			function() { return getPackageConfig({ package: undefined, path: '/project' }); },
-			function() { return getPackageConfig({ package: null, path: '/project' }); },
-			function() { return getPackageConfig({ package: false, path: '/project' }); },
-			function() { return getPackageConfig({ package: '', path: '/project' }); }
+			function() { return getPackageConfig({ }); },
+			function() { return getPackageConfig({ package: undefined }); },
+			function() { return getPackageConfig({ package: null }); },
+			function() { return getPackageConfig({ package: false }); },
+			function() { return getPackageConfig({ package: '' }); }
 		];
 		actual.forEach(function(actual) {
 			expect(actual).to.throw(expected);
@@ -52,9 +61,6 @@ describe('api.getPackageConfig()', function() {
 	it('should return the package config', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
@@ -74,16 +80,15 @@ describe('api.getPackageConfig()', function() {
 		expected = {
 			user: 'world'
 		};
-		actual = getPackageConfig({ package: 'hello', path: '/project' });
+		actual = getPackageConfig({
+			package: 'hello'
+		});
 		expect(actual).to.eql(expected);
 	});
 
 	it('should return an empty object if package config is undefined', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {}
 		};
 		var files = {
@@ -95,17 +100,15 @@ describe('api.getPackageConfig()', function() {
 
 		var expected, actual;
 		expected = {};
-		actual = getPackageConfig({ package: 'hello', path: '/project' });
+		actual = getPackageConfig({
+			package: 'hello'
+		});
 		expect(actual).to.eql(expected);
 	});
 
 	it('should return a copy of default package config if config contains no package config', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
@@ -117,7 +120,9 @@ describe('api.getPackageConfig()', function() {
 		expected = {
 			user: 'world'
 		};
-		actual = getPackageConfig({ package: 'hello', path: '/project' });
+		actual = getPackageConfig({
+			package: 'hello'
+		});
 		expect(actual).to.eql(expected);
 
 		expected = require('/project/node_modules/@skivvy/skivvy-package-hello').defaults;
@@ -127,11 +132,7 @@ describe('api.getPackageConfig()', function() {
 
 	it('should return an empty object if config contains no package config and no default package config exists', function() {
 		var pkg = {};
-		var config = {
-			environment: {
-				default: {}
-			}
-		};
+		var config = {};
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
@@ -141,16 +142,15 @@ describe('api.getPackageConfig()', function() {
 
 		var expected, actual;
 		expected = {};
-		actual = getPackageConfig({ package: 'hello', path: '/project' });
+		actual = getPackageConfig({
+			package: 'hello'
+		});
 		expect(actual).to.eql(expected);
 	});
 
 	it('should extend default package config with package config', function() {
 		var pkg = {};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
@@ -171,58 +171,17 @@ describe('api.getPackageConfig()', function() {
 			greeting: 'Goodbye',
 			user: 'world'
 		};
-		actual = getPackageConfig({ package: 'hello', path: '/project' });
-		expect(actual).to.eql(expected);
-	});
-
-	it('should expand placeholders in config', function() {
-		var pkg = {
-			author: 'A User <user@example.com>',
-			version: '1.0.1'
-		};
-		var config = {
-			environment: {
-				default: {
-					user: 'Mr <%= project.author %>',
-					message: 'Hello, <%= project.author %>!'
-				}
-			},
-			packages: {
-				'hello': {
-					config: {
-						welcome: 'Welcome, <%= environment.user %>!'
-					}
-				}
-			}
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { \'version\': \'v<%= project.version %>\' }'
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = {
-			welcome: 'Welcome, Mr A User <user@example.com>!',
-			version: 'v1.0.1'
-		};
-		actual = getPackageConfig({ package: 'hello', path: '/project', expand: true });
+		actual = getPackageConfig({
+			package: 'hello'
+		});
 		expect(actual).to.eql(expected);
 	});
 
 	it('should skip expanding placeholders in config', function() {
 		var pkg = {
-			author: 'A User <user@example.com>',
 			version: '1.0.1'
 		};
 		var config = {
-			environment: {
-				default: {
-					user: 'Mr <%= project.author %>',
-					message: 'Hello, <%= project.author %>!'
-				}
-			},
 			packages: {
 				'hello': {
 					config: {
@@ -231,6 +190,10 @@ describe('api.getPackageConfig()', function() {
 				}
 			}
 		};
+		mockApi.stubs.environmentConfig = {
+			user: 'A User <user@example.com>'
+		};
+
 		var files = {
 			'/project/package.json': JSON.stringify(pkg),
 			'/project/.skivvyrc': JSON.stringify(config),
@@ -244,51 +207,97 @@ describe('api.getPackageConfig()', function() {
 			version: 'v<%= project.version %>'
 		};
 		actual = [
-			getPackageConfig({ package: 'hello', path: '/project' }),
-			getPackageConfig({ package: 'hello', path: '/project', expand: undefined }),
-			getPackageConfig({ package: 'hello', path: '/project', expand: null }),
-			getPackageConfig({ package: 'hello', path: '/project', expand: false }),
-			getPackageConfig({ package: 'hello', path: '/project', expand: '' })
+			getPackageConfig({ package: 'hello' }),
+			getPackageConfig({ package: 'hello', expand: undefined }),
+			getPackageConfig({ package: 'hello', expand: null }),
+			getPackageConfig({ package: 'hello', expand: false }),
+			getPackageConfig({ package: 'hello', expand: '' })
 		];
 		actual.forEach(function(actual) {
 			expect(actual).to.eql(expected);
 		});
 	});
 
-	it('should default to process.cwd() if no path is specified', function() {
-		var pkg = {};
+	it('should expand placeholders in config (default environment)', function() {
+		var pkg = {
+			version: '1.0.1'
+		};
 		var config = {
-			environment: {
-				default: {}
-			},
 			packages: {
 				'hello': {
 					config: {
-						user: 'world'
+						welcome: 'Welcome, <%= environment.user %>!'
 					}
 				}
 			}
 		};
+		mockApi.stubs.environmentConfig = {
+			user: 'A User <user@example.com>'
+		};
+
 		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config),
-			'node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {};'
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { \'version\': \'v<%= project.version %>\' }'
 		};
 		unmockFiles = mockFiles(files);
 
 		var expected, actual;
 		expected = {
-			user: 'world'
+			welcome: 'Welcome, A User <user@example.com>!',
+			version: 'v1.0.1'
 		};
-		actual = [
-			getPackageConfig({ package: 'hello' }),
-			getPackageConfig({ package: 'hello', path: undefined }),
-			getPackageConfig({ package: 'hello', path: null }),
-			getPackageConfig({ package: 'hello', path: false }),
-			getPackageConfig({ package: 'hello', path: '' })
-		];
-		actual.forEach(function(actual) {
-			expect(actual).to.eql(expected);
+		actual = getPackageConfig({
+			package: 'hello',
+			expand: true
+		});
+		expect(actual).to.eql(expected);
+
+		expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
+			environment: 'default',
+			expand: true
+		});
+	});
+
+	it('should expand placeholders in config (custom environment)', function() {
+		var pkg = {
+			version: '1.0.1'
+		};
+		var config = {
+			packages: {
+				'hello': {
+					config: {
+						welcome: 'Welcome, <%= environment.user %>!'
+					}
+				}
+			}
+		};
+		mockApi.stubs.environmentConfig = {
+			user: 'A User <user@example.com>'
+		};
+
+		var files = {
+			'/project/package.json': JSON.stringify(pkg),
+			'/project/.skivvyrc': JSON.stringify(config),
+			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { \'version\': \'v<%= project.version %>\' }'
+		};
+		unmockFiles = mockFiles(files);
+
+		var expected, actual;
+		expected = {
+			welcome: 'Welcome, A User <user@example.com>!',
+			version: 'v1.0.1'
+		};
+		actual = getPackageConfig({
+			package: 'hello',
+			environment: 'custom',
+			expand: true
+		});
+		expect(actual).to.eql(expected);
+
+		expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
+			environment: 'custom',
+			expand: true
 		});
 	});
 });

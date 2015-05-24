@@ -4,19 +4,28 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var mockFiles = require('../../utils/mock-files');
-var sharedTests = require('../sharedTests');
 
-var getEnvironmentConfig = require('../../../lib/api/getEnvironmentConfig');
-
-sharedTests.addSyncProjectTests(getEnvironmentConfig, 'api.getEnvironmentConfig()');
+var mockApiFactory = require('../../fixtures/mockApiFactory');
 
 describe('api.getEnvironmentConfig()', function() {
+	var getEnvironmentConfig;
+	var MockApi;
+	var mockApi;
+	before(function() {
+		MockApi = mockApiFactory();
+		mockApi = new MockApi('/project');
+		getEnvironmentConfig = require('../../../lib/api/getEnvironmentConfig');
+		getEnvironmentConfig = getEnvironmentConfig.bind(mockApi);
+	});
+
 	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
 			unmockFiles = null;
 		}
+		MockApi.reset();
+		mockApi.reset();
 	});
 
 	it('should return the default environment config', function() {
@@ -70,9 +79,7 @@ describe('api.getEnvironmentConfig()', function() {
 
 		var expected, actual;
 		expected = config.environment.default;
-		actual = getEnvironmentConfig({
-			path: '/project'
-		});
+		actual = getEnvironmentConfig();
 		return expect(actual).to.eql(expected);
 	});
 
@@ -129,7 +136,6 @@ describe('api.getEnvironmentConfig()', function() {
 		var expected, actual;
 		expected = config.environment.production;
 		actual = getEnvironmentConfig({
-			path: '/project',
 			environment: 'production'
 		});
 		return expect(actual).to.eql(expected);
@@ -156,9 +162,7 @@ describe('api.getEnvironmentConfig()', function() {
 		expected = {
 			user: 'world'
 		};
-		actual = getEnvironmentConfig({
-			path: '/project'
-		});
+		actual = getEnvironmentConfig();
 		return expect(actual).to.eql(expected);
 	});
 
@@ -185,7 +189,6 @@ describe('api.getEnvironmentConfig()', function() {
 			message: 'Hello, A User <user@example.com>!'
 		};
 		actual = getEnvironmentConfig({
-			path: '/project',
 			expand: true
 		});
 		return expect(actual).to.eql(expected);
@@ -214,43 +217,11 @@ describe('api.getEnvironmentConfig()', function() {
 			message: 'Hello, <%= project.author %>!'
 		};
 		actual = [
-			getEnvironmentConfig({ path: '/project' }),
-			getEnvironmentConfig({ path: '/project', expand: undefined }),
-			getEnvironmentConfig({ path: '/project', expand: null }),
-			getEnvironmentConfig({ path: '/project', expand: false }),
-			getEnvironmentConfig({ path: '/project', expand: '' })
-		];
-		actual.forEach(function(actual) {
-			expect(actual).to.eql(expected);
-		});
-	});
-
-	it('should default to process.cwd() if no path is specified', function() {
-		var pkg = {};
-		var config = {
-			environment: {
-				default: {
-					message: 'hello'
-				}
-			},
-			packages: {}
-		};
-		var files = {
-			'package.json': JSON.stringify(pkg),
-			'.skivvyrc': JSON.stringify(config)
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = {
-			message: 'hello'
-		};
-		actual = [
-			getEnvironmentConfig(),
-			getEnvironmentConfig({}),
-			getEnvironmentConfig({ path: undefined }),
-			getEnvironmentConfig({ path: null }),
-			getEnvironmentConfig({ path: '' })
+			getEnvironmentConfig({ }),
+			getEnvironmentConfig({ expand: undefined }),
+			getEnvironmentConfig({ expand: null }),
+			getEnvironmentConfig({ expand: false }),
+			getEnvironmentConfig({ expand: '' })
 		];
 		actual.forEach(function(actual) {
 			expect(actual).to.eql(expected);
