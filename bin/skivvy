@@ -188,28 +188,28 @@ function getCommands() {
 			},
 			{
 				name: 'config',
-				usage: 'config [options]',
-				description: 'Set environment/package/task configuration',
+				usage: 'config <get|set> [options]',
+				description: 'Get/set environment/package/task configuration',
 				options: [
-						{
-						usage: '-c, --config <json>',
-						description: 'configuration updates'
-					},
 					{
 						usage: '-t, --task [name]',
-						description: 'task to configure'
+						description: 'task name'
 					},
 					{
 						usage: '-T, --target [name]',
-						description: 'target to configure'
+						description: 'task target name'
 					},
 					{
 						usage: '-p, --package [name]',
-						description: 'task package'
+						description: 'task package name'
 					},
 					{
 						usage: '-e, --env [name]',
-						description: 'environment to configure'
+						description: 'environment name'
+					},
+					{
+						usage: '-c, --config <json>',
+						description: 'configuration updates'
 					},
 					{
 						usage: '-P, --path [path]',
