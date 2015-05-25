@@ -22,9 +22,9 @@ This will make the `skivvy` command globally available. See the list of [availab
 There are 4 steps in the Skivvy workflow:
 
 1. Initialize a project: `skivvy init`
-2. Install task packages: `skivvy install [package]`
-3. Configure task packages: `skivvy config [package]`
-4. Run tasks from the installed packages: `skivvy run [task]`
+2. Install task packages: `skivvy install <package>`
+3. Configure task packages: `skivvy config [options]`
+4. Run tasks from the installed packages: `skivvy run <task>`
 
 ...this gives you a robust and highly configurable task system, all without having to write a single line of code.
 
