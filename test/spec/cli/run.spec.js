@@ -319,7 +319,7 @@ describe('cli.run()', function() {
 			config: {
 				user: 'world'
 			},
-			environment: 'alternate',
+			env: 'alternate',
 			path: '/project'
 		};
 		var expected;
