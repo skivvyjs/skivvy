@@ -2,7 +2,7 @@
 
 When a Skivvy project is initialized via `skivvy init`, a file named `.skivvyrc` is created in the project root. This contains configuration settings for the Skivvy task runner, as well as for the tasks themselves.
 
-This file can be edited manually or updated via the `skivvy config` command.
+This file can be edited manually or updated via the `skivvy config set` command, and its contents can be viewed using the `skivvy config get` command.
 
 
 ## Example `.skivvyrc` file

@@ -7,7 +7,8 @@
 - [`skivvy uninstall`](#uninstall)
 - [`skivvy update`](#update)
 - [`skivvy list`](#list)
-- [`skivvy config`](#config)
+- [`skivvy config get`](#config-get)
+- [`skivvy config set`](#config-set)
 - [`skivvy run`](#run)
 
 You can run `skivvy` (without any arguments) or `skivvy [command] --help` for help at any point.
@@ -79,8 +80,26 @@ List this project's installed tasks
 | `--path`, `-P` | No | Current path | Path to Skivvy project |
 
 
-<a name="config"></a>
-### `skivvy config`
+<a name="config-get"></a>
+### `skivvy config get`
+
+View project/package/task configuration (see [configuring tasks](guide/02-configuring-tasks.md))
+
+If no `--task`, `--package` or `--env` is specified, the default environment configuration will be used.
+
+**Options:**
+
+| Option | Required | Default | Description |
+| ------ | -------- | ------- | ----------- |
+| `-t`, `--task` | No | `null` | Task name |
+| `-T`, `--target` | No | `null` | Target name for the specified task |
+| `-p`, `--package` | No | `null` | Task package |
+| `-e`, `--env` | No | `null` | Environment name |
+| `--path`, `-P` | No | Current path | Path to Skivvy project |
+
+
+<a name="config-set"></a>
+### `skivvy config set`
 
 Update project/package/task configuration (see [configuring tasks](guide/02-configuring-tasks.md))
 
@@ -91,25 +110,25 @@ The `--config` option can be used to express complex objects in a number of ways
 - **Dot notation**
 
 	```bash
-	skivvy config --config.greeting=Hello --config.user=world
+	skivvy config set --config.greeting=Hello --config.user=world
 	```
 
 - **JSON objects**
 
 	```bash
-	skivvy config --config="{ \"greeting\": \"Hello\", \"user\": \"world\" }"
+	skivvy config set --config="{ \"greeting\": \"Hello\", \"user\": \"world\" }"
 	```
 
 - **Arrays**
 
 	```bash
-	skivvy config --task=greet --config=hello --config=goodbye
+	skivvy config set --task=greet --config=hello --config=goodbye
 	```
 
 - **JSON Arrays**
 
 	```bash
-	skivvy config --task=greet --config="[\"hello\", \"goodbye\"]"
+	skivvy config set --task=greet --config="[\"hello\", \"goodbye\"]"
 	```
 
 **Options:**
