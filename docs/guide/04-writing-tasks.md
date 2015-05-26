@@ -45,6 +45,8 @@ module.exports.defaults = {
 };
 ```
 
+> _You can also install the [utils](https://www.npmjs.com/package/@skivvy/skivvy-package-utils) package to help with creating tasks, rather than creating them manually_
+
 Now you are able to see the task straight away in the command-line tool:
 
 ```bash
