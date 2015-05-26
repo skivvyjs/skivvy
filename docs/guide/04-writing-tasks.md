@@ -2,8 +2,8 @@
 
 - [Introduction](00-introduction.md)
 - [Adding tasks](01-adding-tasks.md)
-- [Configuring tasks](02-configuring-tasks.md)
-- [Running tasks](03-running-tasks.md)
+- [Running tasks](02-running-tasks.md)
+- [Configuring tasks](03-configuring-tasks.md)
 - **Writing your own tasks**
 - [Creating packages](05-creating-packages.md)
 
@@ -12,6 +12,9 @@
 # Writing Skivvy tasks
 
 > Experience level: **Intermediate**
+
+While the existing packages are versatile enough to cover a lot of uses cases, sometimes you need to get your hands dirty and write your own specialized tasks. Luckily, it's surprisingly simple.
+
 
 ## Overview
 
@@ -49,13 +52,13 @@ skivvy list
 ```
 
 > _This will output something like the following:_
-> 
+>
 > ```
 > example-app@1.0.0
 > └─┬ [local tasks]
 >   └── hello - Greet the user
 > ```
-> 
+>
 
 You can also run the newly-created task:
 
@@ -66,13 +69,13 @@ skivvy hello # Outputs: "Hello, world!"
 
 ### The task `config` object
 
-When Skivvy calls the function it automatically passes in a `config` object as the first argument. The task's default configuration is specified by the task's `defaults` property, which can be overridden according to the rules discussed in the section on [configuring tasks](02-configuring-tasks.md):
+When Skivvy calls the function it automatically passes in a `config` object as the first argument. The task's default configuration is specified by the task's `defaults` property, which can be overridden according to the rules discussed in the section on [configuring tasks](03-configuring-tasks.md):
 
 ```bash
 skivvy hello --config.user="Skivvy" # Outputs: "Hello, Skivvy!"
 ```
 
-The task's `defaults` property can use [placeholders](02-configuring-tasks.md#using-placeholders-in-configuration-values) to reference project/environment/package configuration variables.
+The task's `defaults` property can use [placeholders](03-configuring-tasks.md#using-placeholders-in-configuration-values) to reference project/environment/package configuration variables.
 
 ## Synchronous vs asynchronous tasks
 
@@ -137,7 +140,7 @@ module.exports = ['test', 'build'];
 module.exports.description = 'Compile the application';
 ```
 
-In the example above, Skivvy will first run the local `test` task, then once it has successfully completed it will run the local `build` task. Each of the sub-tasks will load their task configuration automatically, according to the rules discussed in the [configuring tasks](02-configuring-tasks.md) section.
+In the example above, Skivvy will first run the local `test` task, then once it has successfully completed it will run the local `build` task. Each of the sub-tasks will load their task configuration automatically, according to the rules discussed in the [configuring tasks](03-configuring-tasks.md) section.
 
 
 ### Combining external tasks to form a composite task
@@ -161,7 +164,7 @@ Each task will wait for the previous one to complete successfully before continu
 
 Composite tasks can contain a mixture of local tasks, external tasks and anonymous tasks.
 
-An anonymous task is a function which takes a `config` argument, and optionally uses one of the methods described in the section on [asynchronous tasks](#synchronous-vs-asynchronous-tasks) to indicate that Skivvy should wait for it to complete before moving onto the next task:
+An **anonymous task** is a function which takes a `config` argument, and optionally uses one of the methods described in the section on [asynchronous tasks](#synchronous-vs-asynchronous-tasks) to indicate that Skivvy should wait for it to complete before moving onto the next task:
 
 ```javascript
 module.exports = [

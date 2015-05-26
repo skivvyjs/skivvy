@@ -2,8 +2,8 @@
 
 - [Introduction](00-introduction.md)
 - **Adding tasks**
-- [Configuring tasks](02-configuring-tasks.md)
-- [Running tasks](03-running-tasks.md)
+- [Running tasks](02-running-tasks.md)
+- [Configuring tasks](03-configuring-tasks.md)
 - [Writing your own tasks](04-writing-tasks.md)
 - [Creating packages](05-creating-packages.md)
 
@@ -26,14 +26,14 @@ External task packages can be installed into the current project using the `skiv
 skivvy install browserify
 ```
 
-> _This will install the npm module named `skivvy-package-browserify` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
+> _This will install the npm module named `@skivvy/skivvy-package-browserify` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
 
 After running this command, all the tasks defined in the `browserify` package are immediately available for use via `skivvy run [task]`.
 
 
 ### Adding tasks from scoped npm packages
 
-As well as globally-published packages, Skivvy was designed to integrate seamlessly with npm's [scoped packages](https://docs.npmjs.com/misc/scope). For example, your company might have various Skivvy packages that are not for public use and therefore have to be stored as private scoped npm modules.
+As well as supporting official packages within the `@skivvy` namespace, Skivvy was designed to integrate seamlessly with npm's [scoped packages](https://docs.npmjs.com/misc/scope). For example, your company might have various Skivvy packages that are not for public use and therefore have to be stored as private scoped npm modules, or you might have a collection of packages with tasks tailored to your particular needs.
 
 You can install a scoped Skivvy package as follows:
 
@@ -57,4 +57,4 @@ Take a look at the section on [writing your own tasks](04-writing-tasks.md) to l
 
 -
 
-**Next up:** [Configuring tasks](02-configuring-tasks.md)
+**Next up:** [Running tasks](02-running-tasks.md)

@@ -2,8 +2,8 @@
 
 - **Introduction**
 - [Adding tasks](01-adding-tasks.md)
-- [Configuring tasks](02-configuring-tasks.md)
-- [Running tasks](03-running-tasks.md)
+- [Running tasks](02-running-tasks.md)
+- [Configuring tasks](03-configuring-tasks.md)
 - [Writing your own tasks](04-writing-tasks.md)
 - [Creating packages](05-creating-packages.md)
 

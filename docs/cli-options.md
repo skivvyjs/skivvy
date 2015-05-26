@@ -83,7 +83,7 @@ List this project's installed tasks
 <a name="config-get"></a>
 ### `skivvy config get`
 
-View project/package/task configuration (see [configuring tasks](guide/02-configuring-tasks.md))
+View project/package/task configuration (see [configuring tasks](guide/03-configuring-tasks.md))
 
 If no `--task`, `--package` or `--env` is specified, the default environment configuration will be used.
 
@@ -101,7 +101,7 @@ If no `--task`, `--package` or `--env` is specified, the default environment con
 <a name="config-set"></a>
 ### `skivvy config set`
 
-Update project/package/task configuration (see [configuring tasks](guide/02-configuring-tasks.md))
+Update project/package/task configuration (see [configuring tasks](guide/03-configuring-tasks.md))
 
 If no `--task`, `--package` or `--env` is specified, the default environment configuration will be updated.
 
@@ -146,7 +146,7 @@ The `--config` option can be used to express complex objects in a number of ways
 <a name="run"></a>
 ### `skivvy run <task> [task...]`
 
-Run task(s) within the current project (see [running tasks](guide/03-running-tasks.md))
+Run task(s) within the current project (see [running tasks](guide/02-running-tasks.md))
 
 By default, the working directory is set to the project path. You can optionally specify a custom working directory by passing the `--cwd` argument, in which case the `--path` argument is relative to the custom working directory.
 

@@ -2,8 +2,8 @@
 
 - [Introduction](00-introduction.md)
 - [Adding tasks](01-adding-tasks.md)
+- [Running tasks](02-running-tasks.md)
 - **Configuring tasks**
-- [Running tasks](03-running-tasks.md)
 - [Writing your own tasks](04-writing-tasks.md)
 - [Creating packages](05-creating-packages.md)
 
@@ -20,7 +20,7 @@ Most tasks need to be given some kind of configuration in order to do anything u
 - At the **task** level, via `skivvy config set --task=[task]`
 - At **run-time**, via command-line arguments when running the task
 
-We'll deal with run-time configuration overrides in the section that discusses [running tasks](03-running-tasks.md#passing-additional-configuration-via-command-line-arguments). For now, let's concentrate on using the `skivvy config set` command to set configuration for environments, packages and tasks.
+We'll deal with run-time configuration overrides in the section that discusses [running tasks](02-running-tasks.md#passing-additional-configuration-via-command-line-arguments). For now, let's concentrate on using the `skivvy config set` command to set configuration for environments, packages and tasks.
 
 **Note: in the examples below, "environment" refers to a Skivvy environment, not your shell environment.** A Skivvy environment is a self-contained set of project-level configuration, and does not inherit any variables from your shell environment.
 
@@ -211,7 +211,7 @@ For an environment configuration object whose `"paths"` setting was set to `{ "s
 }
 ```
 
-For examples of using placeholders in run-time configuration, see the section on [running tasks](03-running-tasks.md#passing-additional-configuration-via-command-line-arguments).
+For examples of using placeholders in run-time configuration, see the section on [running tasks](02-running-tasks.md#passing-additional-configuration-via-command-line-arguments).
 
 
 ## Using multiple environments
@@ -290,7 +290,7 @@ skivvy config set --package=copy --task=copy --target=assets --config.source=./a
 skivvy config set --package=copy --task=copy --target=index --config.source=./index.html
 ```
 
-See the section on [running tasks](03-running-tasks.md#running-tasks-with-different-targets) to see how to run tasks with a different target.
+See the section on [running tasks](02-running-tasks.md#running-tasks-with-different-targets) to see how to run tasks with a different target.
 
 
 ### Specifying the default target for a task
@@ -339,4 +339,4 @@ All the project's configuration, including all the different environment configu
 
 -
 
-**Next up:** [Running tasks](03-running-tasks.md)
+**Next up:** [Writing your own tasks](04-writing-tasks.md)

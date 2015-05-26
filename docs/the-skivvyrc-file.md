@@ -148,4 +148,4 @@ Each package has two properties:
 
 -
 
-See the [Configuring tasks](guide/02-configuring-tasks.md) guide for more information on how to work with environment and package configuration.
+See the [Configuring tasks](guide/03-configuring-tasks.md) guide for more information on how to work with environment and package configuration.

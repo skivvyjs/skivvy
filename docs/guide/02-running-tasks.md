@@ -2,8 +2,8 @@
 
 - [Introduction](00-introduction.md)
 - [Adding tasks](01-adding-tasks.md)
-- [Configuring tasks](02-configuring-tasks.md)
 - **Running tasks**
+- [Configuring tasks](03-configuring-tasks.md)
 - [Writing your own tasks](04-writing-tasks.md)
 - [Creating packages](05-creating-packages.md)
 
@@ -30,7 +30,7 @@ You can override configuration settings at runtime, by adding extra `--config.ke
 skivvy run serve --config.source="<%=environment.paths.destination%>" --config.port=8000 --config.livereload=true --config.open=false
 ```
 
-> _As shown here, the `--config` arguments support strings, numbers, booleans and nested objects. They also support placeholders in strings. See the section on [configuring tasks](02-configuring-tasks.md) for instructions on setting configuration values._
+> _As shown here, the `--config` arguments support strings, numbers, booleans and nested objects. They also support placeholders in strings. See the section on [configuring tasks](03-configuring-tasks.md) for instructions on setting configuration values._
 
 ## Dealing with naming collisions
 
@@ -53,7 +53,7 @@ skivvy run hello-world::greet
 
 ## Running tasks with different targets
 
-As seen in the section on [configuring tasks](02-configuring-tasks.md#configuring-multiple-task-targets), each task can define multiple target configurations. Tasks usually run in their default target configuration, but you can tell a task to run in a different target configuration by suffixing the task name with a colon followed by the target name.
+As seen in the section on [configuring tasks](03-configuring-tasks.md#configuring-multiple-task-targets), each task can define multiple target configurations. Tasks usually run in their default target configuration, but you can tell a task to run in a different target configuration by suffixing the task name with a colon followed by the target name.
 
 For example, to run a task named `greet` which specifies a target configuration named `goodbye`, you can tell Skivvy to use the `goodbye` target configuration as follows:
 
@@ -71,4 +71,4 @@ skivvy run hello-world::greet:goodbye
 
 -
 
-**Next up:** [Writing your own tasks](04-writing-tasks.md)
+**Next up:** [Configuring tasks](03-configuring-tasks.md)
