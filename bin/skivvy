@@ -251,6 +251,8 @@ function getCommands() {
 						if (error.name === 'InvalidArgumentsError') {
 							console.error(chalk.red(error.message));
 							return options.help();
+						} else if (error.name === 'TaskError') {
+							console.error(chalk.red(error.message));
 						} else if (getIsUserError(error)) {
 							console.error(chalk.red(error.message));
 						} else {
