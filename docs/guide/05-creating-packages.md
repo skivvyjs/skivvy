@@ -11,6 +11,8 @@
 
 # Creating Skivvy packages
 
+> Experience level: **Pro**
+
 Skivvy packages are freestanding npm modules that contain tasks. Packages can be installed into any Skivvy project, and can range from very generic (e.g. a wrapper for a build tool) to very specific (e.g. a scaffolding tool for the company website).
 
 ## Developing a Skivvy package

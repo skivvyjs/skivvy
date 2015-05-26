@@ -11,6 +11,8 @@
 
 # Writing Skivvy tasks
 
+> Experience level: **Intermediate**
+
 ## Overview
 
 - Under the hood, a task is **just a plain JavaScript function** that takes a single `config` argument.

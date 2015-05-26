@@ -11,6 +11,8 @@
 
 # Running tasks
 
+> Experience level: **Beginner**
+
 To run a task, use the `skivvy run [task]` command. For example, to run a task named `serve`, do the following:
 
 ```bash

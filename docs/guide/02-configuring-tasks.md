@@ -11,6 +11,8 @@
 
 # Configuring tasks
 
+> Experience level: **Intermediate**
+
 Most tasks need to be given some kind of configuration in order to do anything useful. With Skivvy, task configuration can be set in four places:
 
 - At the **environment** level, via `skivvy config set`

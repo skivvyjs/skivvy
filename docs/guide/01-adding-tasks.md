@@ -11,6 +11,7 @@
 
 # Adding tasks
 
+> Experience level: **Beginner**
 
 Before you can start using your tasks, you need to add them to the current Skivvy project.
 
