@@ -51,6 +51,9 @@ To avoid naming collisions when trying to run external tasks, you can prefix the
 skivvy run hello-world::greet
 ```
 
+Naming collisions between tasks are relatively rare though, so luckily this namespacing isn't necessary most of the time.
+
+
 ## Running tasks with different targets
 
 As seen in the section on [configuring tasks](03-configuring-tasks.md#configuring-multiple-task-targets), each task can define multiple target configurations. Tasks usually run in their default target configuration, but you can tell a task to run in a different target configuration by suffixing the task name with a colon followed by the target name.
