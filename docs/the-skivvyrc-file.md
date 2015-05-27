@@ -84,23 +84,24 @@ This file can be edited manually or updated via the `skivvy config set` command,
 				}
 			}
 		},
-		"serve": {
+		"browser-sync": {
 			"config": {
-				"livereload": "<%= environment.debug %>"
+				"debug": "<%= environment.debug %>"
 			},
 			"tasks": {
 				"serve": {
 					"targets": {
 						"default": "app",
 						"app": {
-							"mount": "<%= environment.dest %>",
+							"server": "<%= environment.dest %>",
 							"port": "<%= environment.port %>",
-							"livereload": "<%= package.livereload %>"
+							"directory": "<%= package.debug %>",
+							"logLevel": "<%= package.debug ? 'debug' : 'info' %>"
 						},
 						"docs": {
-							"mount": "<%= environment.docs %>",
+							"server": "<%= environment.docs %>",
 							"port": "<%= environment.port + 1 %>",
-							"livereload": "<%= package.livereload %>"
+							"directory": "<%= package.debug %>"
 						}
 					}
 				}

@@ -151,8 +151,8 @@ External tasks can also be composed into a sequence, as follows:
 
 ```javascript
 module.exports = [
-	{ package: 'browserify', task: 'compile' },
-	{ package: 'copy-files', task: 'copy', target: 'assets' },
+	{ package: 'browserify', task: 'browserify' },
+	{ package: 'copy', task: 'copy', target: 'assets' },
 	{ package: 'browser-sync', task: 'serve' }
 ];
 

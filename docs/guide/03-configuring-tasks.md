@@ -72,7 +72,7 @@ The `skivvy config set --package=[package]` command is used to set package-level
 
 ```bash
 # Update the "browser-sync" package configuration
-skivvy config set --package=browser-sync --config.port=8000 --config.livereload=true
+skivvy config set --package=browser-sync --config.port=8000 --config.directory=true
 ```
 
 You can then view the updated configuration using the `skivvy config get` command:
@@ -87,14 +87,14 @@ skivvy config get --package=browser-sync
 ```json
 {
 	"port": 8000,
-	"livereload": true
+	"directory": true
 }
 ```
 
 Package configuration does **not** automatically inherit the environment configuration. If you want to refer to environment configuration settings in your package configuration, you can achieve this by using placeholders in the package configuration, referencing the `environment` placeholder variable:
 
 ```bash
-skivvy config set browser-sync --config.port="<%=environment.port%>" --config.livereload="<%=environment.debug%>"
+skivvy config set --package=browser-sync --config.port="<%=environment.port%>" --config.directory="<%=environment.debug%>"
 ```
 
 
@@ -155,7 +155,7 @@ skivvy config get --package=browser-sync --task=serve
 Task configuration does **not** automatically inherit package configuration or environment configuration. If you want to refer to package configuration or environment configuration settings in your task configuration, you can achieve this by using placeholders in the package configuration, referencing the `package` and `environment` placeholder variable:
 
 ```bash
-skivvy config set browser-sync --config.port="<%=package.port%>" --config.livereload="<%=package.livereload%>" --config.source="<%=environment.paths.destination%>"
+skivvy config set browser-sync --config.port="<%=package.port%>" --config.server="<%=environment.paths.destination%>" --config.directory="<%=package.debug%>"
 ```
 
 
@@ -200,7 +200,7 @@ For example, in version `1.0.3` of an npm package named `"my-project-name"`, thi
 You can reference the environment configuration when setting package configuration values and task configuration values, under the `environment` configuration variable:
 
 ```bash
-skivvy config set --package=browserify --config.source="<%=environment.paths.source%>/**/*.js"
+skivvy config set --package=browserify --config.directory="<%=environment.paths.source%>/**/*.js"
 ```
 
 For an environment configuration object whose `"paths"` setting was set to `{ "source": "src" }`, this would be equivalent to the following browserify package configuration:
@@ -327,7 +327,7 @@ This also works for external tasks:
 
 ```bash
 # Set the "assets" and "index" targets as the default for the "copy" package's "copy" task
-skivvy config set --package=filesystem --task=copy --config=assets --config=index
+skivvy config set --package=copy --task=copy --config=assets --config=index
 ```
 
 

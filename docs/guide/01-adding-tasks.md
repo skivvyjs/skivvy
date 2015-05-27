@@ -28,7 +28,7 @@ skivvy install browserify
 
 > _This will install the npm module named `@skivvy/skivvy-package-browserify` from the npm registry, and add it to the current project's `devDependencies` field in its `package.json` file._
 
-After running this command, all the tasks defined in the `browserify` package are immediately available for use via `skivvy run [task]`.
+After running this command, any tasks defined in the `browserify` package are immediately available for use via `skivvy run [task]`.
 
 
 ### Adding tasks from scoped npm packages
