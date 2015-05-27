@@ -29,75 +29,6 @@ describe('api.updateTaskConfig()', function() {
 		updateTaskConfig = updateTaskConfig.bind(mockApi);
 	});
 
-	// beforeEach(function() {
-	// 	var pkg = {};
-	// 	var config = {
-	// 		environment: {
-	// 			default: {}
-	// 		},
-	// 		tasks: {
-	// 			'existing': {
-	// 				targets: {
-	// 					default: {
-	// 						'status': 'pre-existing'
-	// 					},
-	// 					'alternate': {
-	// 						'state': 'pre-defined'
-	// 					}
-	// 				}
-	// 			}
-	// 		},
-	// 		packages: {
-	// 			'my-package': {
-	// 				config: {},
-	// 				tasks: {
-	// 					'~existing': {
-	// 						targets: {
-	// 							default: {
-	// 								'~status': '~pre-existing'
-	// 							},
-	// 							'~alternate': {
-	// 								'~state': '~pre-defined'
-	// 							}
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	};
-	// 	var rootPkg = {};
-	// 	var rootConfig = {
-	// 		environment: {
-	// 			default: {}
-	// 		},
-	// 		tasks: {
-	// 			'existing': {
-	// 				targets: {
-	// 					default: {
-	// 						'status': 'pre-existing'
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	};
-	// 	unmockFiles = mockFiles({
-	// 		'/package.json': JSON.stringify(rootPkg),
-	// 		'/.skivvyrc': JSON.stringify(rootConfig),
-	// 		'/skivvy_tasks/local.js': 'module.exports = function(config) { };',
-	// 		'/project/package.json': JSON.stringify(pkg),
-	// 		'/project/.skivvyrc': JSON.stringify(config),
-	// 		'/project/skivvy_tasks/local.js': 'module.exports = function(config) { };',
-	// 		'/project/skivvy_tasks/existing.js': 'module.exports = function(config) { };',
-	// 		'/project/node_modules/@skivvy/skivvy-package-my-package/index.js': 'exports.tasks = { \'~external\': require(\'./tasks/external\'), \'~existing\': require(\'./tasks/existing\') };',
-	// 		'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/external.js': 'module.exports = function(config) { };',
-	// 		'/project/node_modules/@skivvy/skivvy-package-my-package/tasks/existing.js': 'module.exports = function(config) { };',
-	// 		'/project/node_modules/@skivvy/skivvy-package-my-package-2/index.js': 'exports.tasks = { \'hidden\': require(\'./tasks/hidden\') };',
-	// 		'/project/node_modules/@skivvy/skivvy-package-my-package-2/tasks/hidden.js': 'module.exports = function(config) { };',
-	// 		'/project/node_modules/@my-packages/skivvy-package-my-package/index.js': 'exports.tasks = { \'scoped\': require(\'./tasks/scoped\') };',
-	// 		'/project/node_modules/@my-packages/skivvy-package-my-package/tasks/scoped.js': 'module.exports = function(config) { };'
-	// 	});
-	// });
-
 	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
@@ -270,7 +201,6 @@ describe('api.updateTaskConfig()', function() {
 							},
 							'task': {
 								targets: {
-									default: {},
 									'custom': {
 										user: 'world'
 									}
@@ -585,7 +515,6 @@ describe('api.updateTaskConfig()', function() {
 									},
 									'task': {
 										targets: {
-											default: {},
 											'custom': {
 												user: 'world'
 											}
