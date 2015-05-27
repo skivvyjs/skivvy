@@ -94,7 +94,7 @@ Check out the [Skivvy for gulp/Grunt users](docs/skivvy-for-gulp-grunt-users.md)
 4. Configure the `hello-world` package:
 
 	```bash
-	skivvy config set hello-world --config.user=Skivvy
+	skivvy config set --package=hello-world --config.user=Skivvy
 	```
 	> _This sets the `user` configuration variable within the `hello-world` package_
 
