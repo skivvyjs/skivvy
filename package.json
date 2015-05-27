@@ -1,6 +1,6 @@
 {
   "name": "skivvy",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Modular task runner for reusable build systems",
   "main": "index.js",
   "preferGlobal": true,
