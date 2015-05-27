@@ -101,11 +101,9 @@ Check out the [Skivvy for gulp/Grunt users](docs/skivvy-for-gulp-grunt-users.md)
 5. Run the `hello-world::greet` and `hello-world::welcome` tasks:
 
 	```bash
-	skivvy run hello-world::greet # Outputs: "Hello, Skivvy!"
-	skivvy run hello-world::welcome # Outputs: "Welcome to Skivvy!"
+	skivvy run greet # Outputs: "Hello, Skivvy!"
+	skivvy run welcome # Outputs: "Welcome to Skivvy!"
 	```
-
-	> _N.B. In the example above, the `hello-world::` package prefix is optional – `skivvy run greet` and `skivvy run welcome` would also work._
 
 
 ## More information
