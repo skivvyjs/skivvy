@@ -13,6 +13,13 @@
 
 This guide is all you need to master Skivvy. By the end of it you'll know how to add, configure and run tasks, write custom tasks, and even publish your own packages.
 
+Here's a guided tour of some of Skivvy's features. Starting from the basics, it demonstates how to link Skivvy's task packages together to create a fully-functioning Mocha/Browserify build system.
+
+[![asciicast](https://asciinema.org/a/20709.png)](https://asciinema.org/a/20709)
+
+
+# Getting started
+
 ---
 
 ### IMPORTANT BACKGROUND KNOWLEDGE
