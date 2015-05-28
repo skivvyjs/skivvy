@@ -17,6 +17,13 @@ npm install -g skivvy
 This will make the `skivvy` command globally available. See the list of [available commands](docs/cli-options.md).
 
 
+## What is Skivvy?
+
+Skivvy is a task runner. It comes with a simple command-line tool that lets you instantly launch your project's tasks without ever needing to write any plumbing code. Skivvy's task packages make it a piece of cake to add to your project's repertoire of available tasks, and allow you to create truly modular, reusable build systems.
+
+Skivvy will only go as far as launching your tasks though: what you choose to do within the tasks themselves is completely up to you. You can write tasks that scaffold components, switch branches, file issues, deploy builds, send emails… the sky's the limit. Under the hood, Skivvy tasks are [just plain functions](docs/guide/04-writing-tasks.md), so you're free to implement them however you like.
+
+
 ## The Skivvy workflow
 
 There are 4 steps in the Skivvy workflow:
@@ -26,17 +33,12 @@ There are 4 steps in the Skivvy workflow:
 3. Configure task packages: `skivvy config [options]`
 4. Run tasks from the installed packages: `skivvy run <task>`
 
-...this gives you a robust and highly configurable task system, all without having to write a single line of code.
+...this gives you a robust and highly configurable task system, all without having to write a single line of code. Take a look at Skivvy in action:
+
+[![asciicast](https://asciinema.org/a/20706.png)](https://asciinema.org/a/20706)
 
 
-## What is Skivvy?
-
-Skivvy is a task runner. It comes with a simple command-line tool that lets you instantly launch your project's tasks without ever needing to write any plumbing code. Skivvy's task packages make it a piece of cake to add to your project's repertoire of available tasks, and allow you to create truly modular, reusable build systems.
-
-Skivvy will only go as far as launching your tasks though: what you choose to do within the tasks themselves is completely up to you. You can write tasks that scaffold components, switch branches, file issues, deploy builds, send emails… the sky's the limit. Under the hood, Skivvy tasks are [just plain functions](docs/guide/04-writing-tasks.md), so you're free to implement them however you like.
-
-
-### How does it work?
+## How does it work?
 
 - Off-the-shelf task packages can be installed alongside your project-specific tasks
 - All tasks are automagically accessible from the command-line as soon as they are installed
