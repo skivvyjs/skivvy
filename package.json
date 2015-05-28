@@ -62,7 +62,7 @@
     "pretty-ms": "^1.1.0",
     "promise": "^7.0.1",
     "promise-map-series": "^0.2.1",
-    "skivvy-utils": "^1.1.0",
+    "skivvy-utils": "^1.1.1",
     "stream-consume": "^0.1.0"
   }
 }
