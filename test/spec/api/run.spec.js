@@ -993,6 +993,64 @@ describe('api.run()', function() {
 				});
 		});
 
+		it('should run named composite tasks', function() {
+			var pkg = {};
+			var config = {};
+			var files = {
+				'/project/package.json': JSON.stringify(pkg),
+				'/project/.skivvyrc': JSON.stringify(config),
+				'/project/skivvy_tasks/composite.js': 'module.exports = [sinon.spy(function(config) { return "anonymous"; }), "task", { task: "task" }, { task: "task", target: "custom" }, { package: "package", task: "task" }, { package: "package", task: "task", target: "custom" }];',
+				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) { return "local"; });',
+				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
+				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "external"; }) }'
+			};
+			unmockFiles = mockFiles(files);
+
+			mockApi.stubs.taskConfig = function(options) {
+				return {
+					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+				};
+			};
+
+			return run({
+				task: 'composite',
+				config: {
+					override: true
+				},
+				environment: 'environment'
+			})
+				.then(function(returnValue) {
+					expect(returnValue).to.eql(['anonymous', 'local', 'local', 'local', 'external', 'external']);
+					var anonymousTask = require('/project/skivvy_tasks/composite.js')[0];
+					var localTask = require('/project/skivvy_tasks/task.js');
+					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
+					expect(anonymousTask).to.have.been.calledOnce;
+					expect(anonymousTask).to.have.been.calledWith({
+						override: true
+					});
+					expect(localTask).to.have.been.calledThrice;
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:default',
+						override: true
+					});
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:default',
+						override: true
+					});
+					expect(localTask).to.have.been.calledWith({
+						id: 'environment:::null::task:custom',
+						override: true
+					});
+					expect(externalTask).to.have.been.calledTwice;
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:default'
+					});
+					expect(externalTask).to.have.been.calledWith({
+						id: 'environment:::package::task:custom'
+					});
+				});
+		});
+
 		it('should pass config overrides through to local array subtasks', function() {
 			var pkg = {};
 			var config = {};
