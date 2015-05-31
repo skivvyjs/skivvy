@@ -139,10 +139,29 @@ The easiest way to create a chain of tasks is to define your local task as an ar
 ```javascript
 module.exports = ['test', 'build'];
 
-module.exports.description = 'Compile the application';
+module.exports.description = 'Build the app';
 ```
 
-In the example above, Skivvy will first run the local `test` task, then once it has successfully completed it will run the local `build` task. Each of the sub-tasks will load their task configuration automatically, according to the rules discussed in the [configuring tasks](03-configuring-tasks.md) section.
+In the example above, Skivvy will first run the local `test` task, then once it has successfully completed it will run the local `build` task.
+
+You can also specify targets for the local tasks:
+
+```javascript
+module.exports = ['test:app', 'build:production'];
+
+module.exports.description = 'Build the app';
+```
+
+The local tasks will be launched with their standard configuration, as if they had been run independently of the composite task (see the [configuring tasks](03-configuring-tasks.md) section for more details). If you want to override configuration values that are passed to the local task, you can define `{task, config}` objects as follows:
+
+```javascript
+module.exports = [
+	{ task: 'test', config: { files: 'src/test/*.js' } },
+	{ task: 'build:production', config: { source: 'src', destination: 'dist' } }
+];
+
+module.exports.description = 'Build the app';
+```
 
 
 ### Combining external tasks to form a composite task
@@ -151,9 +170,10 @@ External tasks can also be composed into a sequence, as follows:
 
 ```javascript
 module.exports = [
-	{ package: 'browserify', task: 'browserify' },
-	{ package: 'copy', task: 'copy', target: 'assets' },
-	{ package: 'browser-sync', task: 'serve' }
+	'mocha::mocha',
+	'copy::copy',
+	'browserify::browserify',
+	'browser-sync::serve'
 ];
 
 module.exports.description = 'Build and serve the application';
@@ -161,23 +181,85 @@ module.exports.description = 'Build and serve the application';
 
 Each task will wait for the previous one to complete successfully before continuing.
 
+You can also specify targets for the external tasks:
+
+```javascript
+module.exports = [
+	'mocha::mocha:app',
+	'copy::copy:index',
+	'copy::copy:assets',
+	'browserify::browserify:app',
+	'browser-sync::serve:production'
+];
+
+module.exports.description = 'Build and serve the application';
+```
+
+The external tasks will be launched with their standard configuration, as if they had been run independently of the composite task (see the [configuring tasks](03-configuring-tasks.md) section for more details). If you want to override configuration values that are passed to the external task, you can define `{task, config}` objects as follows:
+
+
+```javascript
+module.exports = [
+	{ task: 'mocha::mocha', config: { files: 'src/test/*.js' } },
+	{ task: 'copy::copy', config: { source: 'src', destination: 'dist' } },
+	{ task: 'browserify::browserify:production', config: { source: 'src/app/index.js', destination: 'dist/app.js' } }
+];
+
+module.exports.description = 'Build the app';
+```
+
+
+### Combining anonymous tasks to form a composite task
+
+
+An **anonymous task** is a task function that is defined directly within a composite task. Anonymous tasks take a `config` argument, which contains the configuration that the composite task was launched with, and optionally uses one of the methods described in the section on [asynchronous tasks](#synchronous-vs-asynchronous-tasks) to indicate that Skivvy should wait for it to complete before moving onto the next task:
+
+```javascript
+module.exports = [
+	function(config, callback) {
+		console.info('Waiting a second...');
+		setTimeout(callback, 1000);
+	},
+	function(config) {
+		console.info('Done');
+	}
+];
+
+module.exports.description = 'Wait a second';
+```
+
+Anonymous tasks can be useful within a composite task for progress updates, debugging, etc.
+
 
 ### Combining local tasks, external tasks and anonymous tasks
 
 Composite tasks can contain a mixture of local tasks, external tasks and anonymous tasks.
 
-An **anonymous task** is a function which takes a `config` argument, and optionally uses one of the methods described in the section on [asynchronous tasks](#synchronous-vs-asynchronous-tasks) to indicate that Skivvy should wait for it to complete before moving onto the next task:
-
 ```javascript
 module.exports = [
-	'test',
-	function(config, callback) {
-		console.log('Wait a second...');
-		setTimeout(callback, 1000);
+	function(config) {
+		console.info('Step 1 of 3: test');
 	},
-	{ task: 'build', target: 'client-app' },
-	{ package: 'browser-sync', task: 'serve' }
-]
+
+	'eslint::lint',
+	'test',
+
+	function(config) {
+		console.info('Step 2 of 3: compile');
+	},
+
+	'stylus::stylus',
+	{ task: 'browserify::browserify', { debug: false } },
+
+	function(config) {
+		console.info('Step 3 of 3: copy');
+	},
+	
+	'copy::copy:index',
+	'copy::copy:assets'
+];
+
+module.exports.description = 'Build the app';
 ```
 
 ## Composing more complex task sequences
@@ -188,24 +270,28 @@ For more fine-grained control over task sequences, the [Skivvy API](../api.md) m
 
 module.exports = function(config, callback) {
 	// Within a task, the Skivvy API is available as 'this'
-	var skivvy = this;
+	var api = this;
 
 	// Run the 'build' task
-	skivvy.run({ task: 'build' }, function(error, result) {
+	api.run('build', function(error, result) {
 		if (error) {
 			callback(error);
 			return;
 		}
 
-		// Perform some intermediate operation
-		console.log('Build completed, about to deploy');
+		// [perform some intermediate operation]
+
+		api.utils.log.info('Build completed, about to deploy');
 
 		// Run the 'deploy' task
-		skivvy.run({ task: 'deploy', target: 'client-app' }, function(error, result) {
+		api.run('deploy:client-app', function(error, result) {
 			if (error) {
+				api.utils.log.error('Deploy failed');
 				callback(error);
 				return;
 			}
+
+			api.utils.log.success('Successfully deployed');
 
 			// Both tasks have completed successfully
 			callback(null);
@@ -222,17 +308,24 @@ The above example uses Node-style callbacks to handle the asynchronous operation
 ```javascript
 module.exports = function(config) {
 	// Get the Skivvy API
-	var skivvy = this;
+	var api = this;
 
 	// Run the 'build' task
-	return skivvy.run({ task: 'build' })
+	return api.run('build')
 		.then(function() {
-			// Perform some intermediate operation
-			console.log('Build completed, about to deploy');
+			// [perform some intermediate operation]
+			api.utils.log.info('Build completed, about to deploy');
 		})
 		.then(function() {
 			// Run the 'deploy' task
-			return skivvy.run({ task: 'deploy', target: 'client-app' });
+			return skivvy.run('deploy:client-app')
+				.then(function() {
+					api.utils.log.success('Successfully deployed');
+				})
+				.catch(function(error) {
+					api.utils.log.error('Deploy failed');
+					throw error;
+				});
 		});
 	});
 });
