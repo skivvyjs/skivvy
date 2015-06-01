@@ -84,9 +84,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'local',
-					target: null,
-					package: null,
+					task: 'local:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -102,9 +100,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'local',
-					target: 'custom',
-					package: null,
+					task: 'local:custom',
 					environment: null,
 					path: '/',
 					config: null
@@ -120,9 +116,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'external',
-					target: null,
-					package: 'my-package',
+					task: 'my-package::external:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -138,9 +132,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'external',
-					target: 'custom',
-					package: 'my-package',
+					task: 'my-package::external:custom',
 					environment: null,
 					path: '/',
 					config: null
@@ -156,9 +148,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'external',
-					target: null,
-					package: 'my-package',
+					task: 'my-package::external:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -174,9 +164,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'external',
-					target: 'custom',
-					package: 'my-package',
+					task: 'my-package::external:custom',
 					environment: null,
 					path: '/',
 					config: null
@@ -192,9 +180,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'scoped',
-					target: null,
-					package: '@my-packages/my-package',
+					task: '@my-packages/my-package::scoped:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -210,9 +196,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
-					task: 'scoped',
-					target: 'custom',
-					package: '@my-packages/my-package',
+					task: '@my-packages/my-package::scoped:custom',
 					environment: null,
 					path: '/',
 					config: null
@@ -229,9 +213,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expected = {
-					task: 'scoped',
-					target: null,
-					package: '@my-packages/my-package',
+					task: '@my-packages/my-package::scoped:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -249,9 +231,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expected = {
-					task: 'scoped',
-					target: 'custom',
-					package: '@my-packages/my-package',
+					task: '@my-packages/my-package::scoped:custom',
 					environment: null,
 					path: '/',
 					config: null
@@ -269,9 +249,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expected = {
-					task: 'local-conflict',
-					target: null,
-					package: null,
+					task: 'local-conflict:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -289,9 +267,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expected = {
-					task: 'local-conflict',
-					target: null,
-					package: 'my-package',
+					task: 'my-package::local-conflict:default',
 					environment: null,
 					path: '/',
 					config: null
@@ -326,9 +302,7 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function() {
 				expected = {
-					task: 'local',
-					target: null,
-					package: null,
+					task: 'local:default',
 					environment: 'alternate',
 					path: '/project',
 					config: {
@@ -368,25 +342,19 @@ describe('cli.run()', function() {
 				expect(returnValue).to.eql(['hello', 'hello', 'hello']);
 				var expectedCalls = [
 					{
-						task: 'series1',
-						target: null,
-						package: null,
+						task: 'series1:default',
 						environment: null,
 						path: '/',
 						config: null
 					},
 					{
-						task: 'series2',
-						target: null,
-						package: null,
+						task: 'series2:default',
 						environment: null,
 						path: '/',
 						config: null
 					},
 					{
-						task: 'series3',
-						target: null,
-						package: null,
+						task: 'series3:default',
 						environment: null,
 						path: '/',
 						config: null
@@ -413,9 +381,7 @@ describe('cli.run()', function() {
 			.then(function(returnValue) {
 				expect(returnValue).to.eql(['/other']);
 				expect(task).to.have.been.calledWith({
-					task: 'cwd1',
-					target: null,
-					package: null,
+					task: 'cwd1:default',
 					environment: null,
 					path: '/other',
 					config: null
@@ -439,9 +405,7 @@ describe('cli.run()', function() {
 			.then(function(returnValue) {
 				expect(returnValue).to.eql(['/other']);
 				expect(task).to.have.been.calledWith({
-					task: 'cwd2',
-					target: null,
-					package: null,
+					task: 'cwd2:default',
 					environment: null,
 					path: '/other/project',
 					config: null
