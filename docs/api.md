@@ -369,7 +369,6 @@ Run a task
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `task` | `string`,`function`,`array<string|function>` | Yes | N/A | Task name, task function, or array of task names/functions to run in series |
-| `package` | `string` | No | `null` | Package name, used to locate the task if `task` is a string |
 | `config` | `object` | No | `{}` | Run-time config overrides to merge into the task's config object |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
