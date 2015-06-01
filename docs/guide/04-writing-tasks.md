@@ -273,7 +273,7 @@ module.exports = function(config, callback) {
 	var api = this;
 
 	// Run the 'build' task
-	api.run('build', function(error, result) {
+	api.run({ task: 'build' }, function(error, result) {
 		if (error) {
 			callback(error);
 			return;
@@ -284,7 +284,7 @@ module.exports = function(config, callback) {
 		api.utils.log.info('Build completed, about to deploy');
 
 		// Run the 'deploy' task
-		api.run('deploy:client-app', function(error, result) {
+		api.run({ task: 'deploy:client-app' }, function(error, result) {
 			if (error) {
 				api.utils.log.error('Deploy failed');
 				callback(error);
@@ -311,14 +311,14 @@ module.exports = function(config) {
 	var api = this;
 
 	// Run the 'build' task
-	return api.run('build')
+	return api.run({ task: 'build' })
 		.then(function() {
 			// [perform some intermediate operation]
 			api.utils.log.info('Build completed, about to deploy');
 		})
 		.then(function() {
 			// Run the 'deploy' task
-			return skivvy.run('deploy:client-app')
+			return skivvy.run({ task: 'deploy:client-app' })
 				.then(function() {
 					api.utils.log.success('Successfully deployed');
 				})
