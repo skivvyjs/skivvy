@@ -127,7 +127,7 @@ function getCommands() {
 	function createSubCommands() {
 		var commonOptions = [
 			{
-				usage: '-p, --path [path]',
+				usage: '-P, --path [path]',
 				description: 'project path'
 			},
 			{
@@ -190,7 +190,7 @@ function getCommands() {
 						description: 'task target name'
 					},
 					{
-						usage: '-P, --package [name]',
+						usage: '-p, --package [name]',
 						description: 'task package name'
 					},
 					{
