@@ -361,6 +361,18 @@ List the installed packages and tasks
 ```json
 [
 	{
+		"name": null,
+		"version": null,
+		"tasks": {
+			"build": {
+				"description": "My local build task"
+			},
+			"deploy": {
+				"description": "Another local task"
+			}
+		}
+	},
+	{
 		"name": "react-seed",
 		"version": "1.0.1",
 		"tasks": {
