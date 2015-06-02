@@ -248,17 +248,22 @@ function getCommands() {
 						console.error(chalk.red(error.message));
 						return options.help();
 					} else if (error.name === 'TaskError') {
-						console.error(chalk.red(error.message));
-						if (options.verbose) {
-							console.error(error.stack);
-						}
+						logError(error, options.verbose);
 					} else if (getIsUserError(error)) {
-						console.error(chalk.red(error.message));
-						if (options.verbose) {
-							console.error(error.stack);
-						}
+						logError(error, options.verbose);
 					} else {
 						throw error;
+					}
+
+					function logError(error, verbose) {
+						console.error(chalk.red(error.message));
+						if (verbose) {
+							var originalError = error.cause || error;
+							console.error(originalError.stack);
+						} else {
+							var help = 'Use --verbose flag for more details';
+							console.error(help);
+						}
 					}
 				}
 			};
