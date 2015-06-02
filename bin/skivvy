@@ -129,6 +129,10 @@ function getCommands() {
 			{
 				usage: '-p, --path [path]',
 				description: 'project path'
+			},
+			{
+				usage: '-v, --verbose',
+				description: 'Verbose error output'
 			}
 		];
 		var subCommands = [
@@ -245,8 +249,14 @@ function getCommands() {
 						return options.help();
 					} else if (error.name === 'TaskError') {
 						console.error(chalk.red(error.message));
+						if (options.verbose) {
+							console.error(error.stack);
+						}
 					} else if (getIsUserError(error)) {
 						console.error(chalk.red(error.message));
+						if (options.verbose) {
+							console.error(error.stack);
+						}
 					} else {
 						throw error;
 					}
