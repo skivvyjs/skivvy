@@ -203,6 +203,23 @@ Get a Skivvy API instance for an existing Skivvy project
 
 -
 
+<a name="api.path"></a>
+### `api.path`
+
+**Type:** `string`
+
+Path to the Skivvy project folder
+
+
+<a name="api.environment"></a>
+### `api.environment`
+
+**Type:** `string`
+
+Skivvy configration environment name
+
+-
+
 <a name="api.getEnvironmentConfig"></a>
 ### `api.getEnvironmentConfig(options)`
 
