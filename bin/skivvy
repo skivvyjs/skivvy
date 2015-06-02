@@ -30,7 +30,7 @@ var activeCommand = getCommand(commandName, commands);
 if (!activeCommand) { activeCommand = getCommand(null, commands); }
 
 var app = createApp(activeCommand);
-
+argv = sanitizeBooleanArgs(argv, app);
 app.parse(argv);
 
 if (activeCommand.action) {
@@ -272,4 +272,23 @@ function getCommands() {
 			}
 		}
 	}
+}
+
+function sanitizeBooleanArgs(argv, app) {
+	var booleanArgs = app.options.filter(function(option) {
+		return option.bool;
+	}).map(function(option) {
+		return [option.short, option.long];
+	}).reduce(function(booleanArgs, optionVariants) {
+		return booleanArgs.concat(optionVariants);
+	}, []);
+	return argv.filter(function(arg, index, array) {
+		if (index === 0) { return true; }
+		if (typeof arg !== 'boolean') { return true; }
+		var previousArg = array[index - 1];
+		var previousArgIsFlag = (typeof previousArg === 'string') && (previousArg.charAt(0) === '-');
+		if (!previousArgIsFlag) { return true; }
+		var isBooleanArg = booleanArgs.indexOf(previousArg) !== -1;
+		return !isBooleanArg;
+	});
 }
