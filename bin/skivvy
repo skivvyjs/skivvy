@@ -230,20 +230,27 @@ function getCommands() {
 
 		function createCommandAction(command) {
 			return function(args, options) {
-				command(args, options, function(error) {
-					if (error) {
-						if (error.name === 'InvalidArgumentsError') {
-							console.error(chalk.red(error.message));
-							return options.help();
-						} else if (error.name === 'TaskError') {
-							console.error(chalk.red(error.message));
-						} else if (getIsUserError(error)) {
-							console.error(chalk.red(error.message));
-						} else {
-							throw error;
-						}
+				try {
+					command(args, options, function(error) {
+						if (error) { handleError(error); }
+					});
+				} catch (error) {
+					handleError(error);
+				}
+
+
+				function handleError(error) {
+					if (error.name === 'InvalidArgumentsError') {
+						console.error(chalk.red(error.message));
+						return options.help();
+					} else if (error.name === 'TaskError') {
+						console.error(chalk.red(error.message));
+					} else if (getIsUserError(error)) {
+						console.error(chalk.red(error.message));
+					} else {
+						throw error;
 					}
-				});
+				}
 			};
 
 
