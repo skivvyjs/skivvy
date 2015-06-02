@@ -277,7 +277,7 @@ List the installed packages and tasks
 [
 	{
 		"name": "react-seed",
-		"description": "React app package",
+		"version": "1.0.1",
 		"tasks": {
 			"test": {
 				"description": "Run automated tests"
@@ -289,10 +289,10 @@ List the installed packages and tasks
 	},
 	{
 		"name": "serve",
-		"description": "BrowserSync server tasks",
+		"version": "0.1.0",
 		"tasks": {
 			"serve": {
-				"description": "Launch a server"
+				"description": "Serve files using Browsersync"
 			}
 		}
 	}
@@ -303,6 +303,8 @@ List the installed packages and tasks
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
+| `versions` | `boolean` | No | `false` | Whether to include version numbers in package descriptions |
+
 
 
 <a name="api.updateEnvironmentConfig"></a>
