@@ -182,8 +182,7 @@ describe('api.updateTaskConfig()', function() {
 			unmockFiles = mockFiles(files);
 
 			return updateTaskConfig({
-				task: 'task',
-				target: 'custom',
+				task: 'task:custom',
 				updates: {
 					user: 'world'
 				}
@@ -288,8 +287,7 @@ describe('api.updateTaskConfig()', function() {
 
 			var expected, actual;
 			return updateTaskConfig({
-				task: 'task',
-				target: 'goodbye',
+				task: 'task:goodbye',
 				updates: {
 					user: 'world'
 				}
@@ -340,8 +338,7 @@ describe('api.updateTaskConfig()', function() {
 
 			var expected, actual;
 			return updateTaskConfig({
-				task: 'task',
-				target: 'bye',
+				task: 'task:bye',
 				updates: {
 					message: 'Bye, world!'
 				}
@@ -433,8 +430,7 @@ describe('api.updateTaskConfig()', function() {
 
 			var expected, actual;
 			return updateTaskConfig({
-				package: 'package',
-				task: 'task',
+				task: 'package::task',
 				updates: {
 					user: 'world'
 				}
@@ -493,9 +489,7 @@ describe('api.updateTaskConfig()', function() {
 			unmockFiles = mockFiles(files);
 
 			return updateTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'custom',
+				task: 'package::task:custom',
 				updates: {
 					user: 'world'
 				}
@@ -558,8 +552,7 @@ describe('api.updateTaskConfig()', function() {
 
 			var expected, actual;
 			return updateTaskConfig({
-				package: 'package',
-				task: 'task',
+				task: 'package::task',
 				updates: {
 					user: 'world'
 				}
@@ -619,9 +612,7 @@ describe('api.updateTaskConfig()', function() {
 
 			var expected, actual;
 			return updateTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'goodbye',
+				task: 'package::task:goodbye',
 				updates: {
 					user: 'world'
 				}
@@ -681,9 +672,7 @@ describe('api.updateTaskConfig()', function() {
 
 			var expected, actual;
 			return updateTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'bye',
+				task: 'package::task:bye',
 				updates: {
 					message: 'Bye, world!'
 				}
@@ -746,8 +735,7 @@ describe('api.updateTaskConfig()', function() {
 				user: 'world'
 			};
 			actual = updateTaskConfig({
-				package: 'package',
-				task: 'task',
+				task: 'package::task',
 				updates: {
 					user: 'world'
 				}
@@ -758,7 +746,7 @@ describe('api.updateTaskConfig()', function() {
 
 	describe('events', function() {
 
-		it('should dispatch task start and end events (local tasks)', function() {
+		it('should dispatch task start and end events', function() {
 			var pkg = {};
 			var config = {
 				tasks: {
@@ -785,9 +773,7 @@ describe('api.updateTaskConfig()', function() {
 			expected = [
 				{
 					event: events.UPDATE_TASK_CONFIG_STARTED,
-					task: 'task',
-					target: 'goodbye',
-					package: null,
+					task: 'task:goodbye',
 					updates: {
 						'user': 'world'
 					},
@@ -799,9 +785,7 @@ describe('api.updateTaskConfig()', function() {
 						'message': 'Goodbye, world!',
 						'user': 'world'
 					},
-					task: 'task',
-					target: 'goodbye',
-					package: null,
+					task: 'task:goodbye',
 					updates: {
 						'user': 'world'
 					},
@@ -819,8 +803,6 @@ describe('api.updateTaskConfig()', function() {
 				actual.push({
 					event: events.UPDATE_TASK_CONFIG_STARTED,
 					task: data.task,
-					target: data.target,
-					package: data.package,
 					updates: data.updates,
 					path: data.path
 				});
@@ -831,8 +813,6 @@ describe('api.updateTaskConfig()', function() {
 					event: events.UPDATE_TASK_CONFIG_COMPLETED,
 					config: data.config,
 					task: data.task,
-					target: data.target,
-					package: data.package,
 					updates: data.updates,
 					path: data.path
 				});
@@ -843,17 +823,13 @@ describe('api.updateTaskConfig()', function() {
 					event: events.UPDATE_TASK_CONFIG_FAILED,
 					error: data.error,
 					task: data.task,
-					target: data.target,
-					package: data.package,
 					updates: data.updates,
 					path: data.path
 				});
 			}
 
 			return updateTaskConfig({
-				task: 'task',
-				target: 'goodbye',
-				package: null,
+				task: 'task:goodbye',
 				updates: {
 					'user': 'world'
 				},

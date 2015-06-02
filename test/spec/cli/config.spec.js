@@ -124,8 +124,6 @@ describe('cli.config()', function() {
 					}, null, 2) + '\n');
 					expect(MockApi.instance.getTaskConfig).to.have.been.calledWith({
 						task: 'task',
-						target: null,
-						package: null,
 						expand: false
 					});
 				});
@@ -153,9 +151,7 @@ describe('cli.config()', function() {
 						message: 'Hello, world!'
 					}, null, 2) + '\n');
 					expect(MockApi.instance.getTaskConfig).to.have.been.calledWith({
-						task: 'task',
-						target: 'custom',
-						package: null,
+						task: 'task:custom',
 						expand: false
 					});
 				});
@@ -183,9 +179,7 @@ describe('cli.config()', function() {
 						message: 'Hello, world!'
 					}, null, 2) + '\n');
 					expect(MockApi.instance.getTaskConfig).to.have.been.calledWith({
-						task: 'task',
-						target: null,
-						package: 'package',
+						task: 'package::task',
 						expand: false
 					});
 				});
@@ -214,9 +208,7 @@ describe('cli.config()', function() {
 						message: 'Hello, world!'
 					}, null, 2) + '\n');
 					expect(MockApi.instance.getTaskConfig).to.have.been.calledWith({
-						task: 'task',
-						target: 'custom',
-						package: 'package',
+						task: 'package::task:custom',
 						expand: false
 					});
 				});
@@ -328,9 +320,7 @@ describe('cli.config()', function() {
 				.then(function(returnValue) {
 					expect(MockApi.instance.environment).to.equal('goodbye');
 					expect(MockApi.instance.updateTaskConfig).to.have.been.calledWith({
-						task: 'hello',
-						target: 'custom',
-						package: null,
+						task: 'hello:custom',
 						updates: {
 							hello: 'world'
 						}
@@ -353,9 +343,7 @@ describe('cli.config()', function() {
 				.then(function(returnValue) {
 					expect(MockApi.instance.environment).to.equal('goodbye');
 					expect(MockApi.instance.updateTaskConfig).to.have.been.calledWith({
-						task: 'hello',
-						target: 'custom',
-						package: 'my-package',
+						task: 'my-package::hello:custom',
 						updates: {
 							hello: 'world'
 						}

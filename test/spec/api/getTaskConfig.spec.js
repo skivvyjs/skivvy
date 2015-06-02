@@ -137,8 +137,7 @@ describe('api.getTaskConfig()', function() {
 				greeting: 'goodbye'
 			};
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'goodbye'
+				task: 'task:goodbye'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -203,8 +202,7 @@ describe('api.getTaskConfig()', function() {
 				greeting: 'bye'
 			};
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'goodbye'
+				task: 'task:goodbye'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -291,8 +289,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			];
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'custom'
+				task: 'task:custom'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -383,8 +380,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			];
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'custom'
+				task: 'task:custom'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -421,8 +417,7 @@ describe('api.getTaskConfig()', function() {
 				greeting: 'hello'
 			};
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task'
+				task: 'package::task'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -460,9 +455,7 @@ describe('api.getTaskConfig()', function() {
 				greeting: 'goodbye'
 			};
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'goodbye'
+				task: 'package::task:goodbye'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -498,8 +491,7 @@ describe('api.getTaskConfig()', function() {
 				greeting: 'goodbye'
 			};
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task'
+				task: 'package::task'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -538,9 +530,7 @@ describe('api.getTaskConfig()', function() {
 				greeting: 'bye'
 			};
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'goodbye'
+				task: 'package::task:goodbye'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -591,8 +581,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			];
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task'
+				task: 'package::task'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -638,9 +627,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			];
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'custom'
+				task: 'package::task:custom'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -690,8 +677,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			];
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task'
+				task: 'package::task'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -742,9 +728,7 @@ describe('api.getTaskConfig()', function() {
 				}
 			];
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task',
-				target: 'custom'
+				task: 'package::task:custom'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -797,8 +781,7 @@ describe('api.getTaskConfig()', function() {
 				user: 'world'
 			};
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'nonexistent'
+				task: 'task:nonexistent'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -863,8 +846,7 @@ describe('api.getTaskConfig()', function() {
 				user: 'world'
 			};
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'custom'
+				task: 'task:custom'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -890,8 +872,7 @@ describe('api.getTaskConfig()', function() {
 			var expected, actual;
 			expected = {};
 			actual = getTaskConfig({
-				task: 'task',
-				target: 'nonexistent'
+				task: 'task:nonexistent'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -1021,8 +1002,7 @@ describe('api.getTaskConfig()', function() {
 				'version': '<%= package.id %> v<%= project.version %>'
 			};
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task'
+				task: 'package::task'
 			});
 			expect(actual).to.eql(expected);
 		});
@@ -1068,8 +1048,7 @@ describe('api.getTaskConfig()', function() {
 				'version': 'hello-world v1.0.1'
 			};
 			actual = getTaskConfig({
-				package: 'package',
-				task: 'task',
+				task: 'package::task',
 				expand: true
 			});
 			expect(actual).to.eql(expected);

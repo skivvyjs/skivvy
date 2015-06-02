@@ -75,9 +75,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: null,
 						task: 'task',
-						target: 'default',
 						expand: true
 					});
 				});
@@ -111,9 +109,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: null,
-						task: 'task',
-						target: 'custom',
+						task: 'task:custom',
 						expand: true
 					});
 				});
@@ -150,9 +146,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: null,
-						task: 'task',
-						target: 'custom',
+						task: 'task:custom',
 						expand: true
 					});
 				});
@@ -196,9 +190,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: null,
-						task: 'task',
-						target: 'custom',
+						task: 'task:custom',
 						expand: true
 					});
 
@@ -279,9 +271,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: 'package',
-						task: 'task',
-						target: 'default',
+						task: 'package::task',
 						expand: true
 					});
 				});
@@ -316,9 +306,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: 'package',
-						task: 'task',
-						target: 'custom',
+						task: 'package::task:custom',
 						expand: true
 					});
 				});
@@ -356,9 +344,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: 'package',
-						task: 'task',
-						target: 'custom',
+						task: 'package::task:custom',
 						expand: true
 					});
 				});
@@ -406,9 +392,7 @@ describe('api.run()', function() {
 
 					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
 					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: 'package',
-						task: 'task',
-						target: 'custom',
+						task: 'package::task:custom',
 						expand: true
 					});
 
@@ -707,7 +691,7 @@ describe('api.run()', function() {
 
 			mockApi.stubs.taskConfig = function(options) {
 				return {
-					id: options.package + '::' + options.task + ':' + options.target
+					id: options.task
 				};
 			};
 
@@ -728,21 +712,21 @@ describe('api.run()', function() {
 					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
 					expect(localTask).to.have.been.calledTwice;
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:default'
+						id: 'task'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:target'
+						id: 'task:target'
 					});
 					expect(externalTask).to.have.been.calledTwice;
 					expect(externalTask).to.have.been.calledWith({
-						id: 'package::task:default'
+						id: 'package::task'
 					});
 					expect(externalTask).to.have.been.calledWith({
 						id: 'package::task:target'
 					});
 					expect(scopedTask).to.have.been.calledTwice;
 					expect(scopedTask).to.have.been.calledWith({
-						id: '@scoped/package::task:default'
+						id: '@scoped/package::task'
 					});
 					expect(scopedTask).to.have.been.calledWith({
 						id: '@scoped/package::task:target'
@@ -765,7 +749,7 @@ describe('api.run()', function() {
 
 			mockApi.stubs.taskConfig = function(options) {
 				return {
-					id: options.package + '::' + options.task + ':' + options.target
+					id: options.task
 				};
 			};
 
@@ -783,7 +767,7 @@ describe('api.run()', function() {
 					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
 					expect(anonymousTask).to.have.been.calledOnce;
 					expect(anonymousTask).to.have.been.calledWith({
-						id: 'null::composite:default',
+						id: 'composite',
 						override: true
 					});
 					expect(anonymousConfiguredTask).to.have.been.calledOnce;
@@ -792,28 +776,28 @@ describe('api.run()', function() {
 					});
 					expect(localTask.callCount).to.equal(4);
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:default'
+						id: 'task'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:custom'
+						id: 'task:custom'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:default',
+						id: 'task',
 						foo: 'bar'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:custom',
+						id: 'task:custom',
 						foo: 'bar'
 					});
 					expect(externalTask.callCount).to.equal(4);
 					expect(externalTask).to.have.been.calledWith({
-						id: 'package::task:default'
+						id: 'package::task'
 					});
 					expect(externalTask).to.have.been.calledWith({
 						id: 'package::task:custom'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'package::task:default',
+						id: 'package::task',
 						foo: 'bar'
 					});
 					expect(externalTask).to.have.been.calledWith({
@@ -840,7 +824,7 @@ describe('api.run()', function() {
 
 			mockApi.stubs.taskConfig = function(options) {
 				return {
-					id: options.package + '::' + options.task + ':' + options.target
+					id: options.task
 				};
 			};
 
@@ -862,7 +846,7 @@ describe('api.run()', function() {
 					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
 					expect(anonymousTask).to.have.been.calledOnce;
 					expect(anonymousTask).to.have.been.calledWith({
-						id: 'null::composite:default',
+						id: 'composite',
 						override: 'hello-world v1.0.1'
 					});
 					expect(anonymousConfiguredTask).to.have.been.calledOnce;
@@ -871,28 +855,28 @@ describe('api.run()', function() {
 					});
 					expect(localTask.callCount).to.equal(4);
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:default'
+						id: 'task'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:custom'
+						id: 'task:custom'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:default',
+						id: 'task',
 						foo: 'bar'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'null::task:custom',
+						id: 'task:custom',
 						foo: 'bar'
 					});
 					expect(externalTask.callCount).to.equal(4);
 					expect(externalTask).to.have.been.calledWith({
-						id: 'package::task:default'
+						id: 'package::task'
 					});
 					expect(externalTask).to.have.been.calledWith({
 						id: 'package::task:custom'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'package::task:default',
+						id: 'package::task',
 						foo: 'bar'
 					});
 					expect(externalTask).to.have.been.calledWith({
