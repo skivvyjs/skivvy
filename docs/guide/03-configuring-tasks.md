@@ -248,6 +248,20 @@ skivvy config get --env=production
 When it comes to running a task with `skivvy run [task]`, you can specify the `--env=production` argument to tell Skivvy to use this custom environment.
 
 
+### Setting a named environment as the default environment
+
+There must always be a default configuration environment, however that default environment can act as an alias for another environment.
+
+For example, if you had two different environments, named `dev` and `production`, you could make `dev` the default environment as follows:
+
+```bash
+# Set the "dev" environment as the default
+skivvy config set --config=dev
+```
+
+This means that by default, all tasks will now run under the `dev` environment.
+
+
 ## Configuring multiple task targets
 
 Sometimes you might want to run the same task several different times during the same build, with different configuration each time. This is achievable by defining multiple **target** configurations within the same task.
