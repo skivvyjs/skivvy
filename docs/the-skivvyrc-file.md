@@ -84,7 +84,7 @@ This file can be edited manually or updated via the `skivvy config set` command,
 				}
 			}
 		},
-		"browser-sync": {
+		"serve": {
 			"config": {
 				"debug": "<%= environment.debug %>"
 			},

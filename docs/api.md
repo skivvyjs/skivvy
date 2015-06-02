@@ -289,7 +289,7 @@ List the installed packages and tasks
 		}
 	},
 	{
-		"name": "browser-sync",
+		"name": "serve",
 		"description": "BrowserSync server tasks",
 		"tasks": {
 			"serve": {

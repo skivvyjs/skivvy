@@ -173,7 +173,7 @@ module.exports = [
 	'mocha::mocha',
 	'copy::copy',
 	'browserify::browserify',
-	'browser-sync::serve'
+	'serve::serve'
 ];
 
 module.exports.description = 'Build and serve the application';
@@ -189,7 +189,7 @@ module.exports = [
 	'copy::copy:index',
 	'copy::copy:assets',
 	'browserify::browserify:app',
-	'browser-sync::serve:production'
+	'serve::serve:production'
 ];
 
 module.exports.description = 'Build and serve the application';
