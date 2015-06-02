@@ -231,6 +231,21 @@ Get a package's configuration
 | `package` | `string` | Yes | N/A | Package name |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 
+
+<a name="api.getTaskConfig"></a>
+### `api.getTaskConfig(options)`
+
+Get a task's configuration
+
+**Returns:** `object` Task configuration object
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `task` | `string` | Yes | N/A | Task name |
+| `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
+
 -
 
 <a name="api.updateEnvironmentConfig"></a>
