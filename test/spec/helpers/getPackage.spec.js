@@ -121,7 +121,8 @@ describe('helpers.getPackage()', function() {
 		var expected, actual;
 		expected = {
 			name: 'hello',
-			tasks: {}
+			tasks: {},
+			defaults: {}
 		};
 		actual = getPackage('hello', '/project');
 		expect(actual).to.eql(expected);
@@ -147,7 +148,8 @@ describe('helpers.getPackage()', function() {
 
 		expected = {
 			name: '@my-packages/hello',
-			tasks: {}
+			tasks: {},
+			defaults: {}
 		};
 		actual = getPackage('@my-packages/hello', '/project');
 		expect(actual).to.eql(expected);
@@ -177,7 +179,8 @@ describe('helpers.getPackage()', function() {
 			tasks: {
 				'example1': require('/project/node_modules/@my-packages/skivvy-package-hello/tasks/example1'),
 				'example2': require('/project/node_modules/@my-packages/skivvy-package-hello/tasks/example2')
-			}
+			},
+			defaults: {}
 		};
 		actual = getPackage('@my-packages/hello', '/project');
 		expect(actual).to.eql(expected);

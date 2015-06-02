@@ -72,11 +72,13 @@ describe('helpers.getPackages()', function() {
 		expected = [
 			{
 				name: 'goodbye',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			},
 			{
 				name: 'hello',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			}
 		];
 		actual = getPackages('/project');
@@ -106,12 +108,14 @@ describe('helpers.getPackages()', function() {
 			{
 				name: 'goodbye',
 				version: '1.2.3',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			},
 			{
 				name: 'hello',
 				version: '1.2.3',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			}
 		];
 		var shouldIncludeVersions = true;
@@ -139,11 +143,13 @@ describe('helpers.getPackages()', function() {
 		expected = [
 			{
 				name: '@my-packages/goodbye',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			},
 			{
 				name: '@my-packages/hello',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			}
 		];
 		actual = getPackages('/project');
@@ -173,12 +179,14 @@ describe('helpers.getPackages()', function() {
 			{
 				name: '@my-packages/goodbye',
 				version: '1.2.3',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			},
 			{
 				name: '@my-packages/hello',
 				version: '1.2.3',
-				tasks: {}
+				tasks: {},
+				defaults: {}
 			}
 		];
 		var shouldIncludeVersions = true;
@@ -241,28 +249,32 @@ describe('helpers.getPackages()', function() {
 				tasks: {
 					'example1': require('/project/node_modules/@my-packages/skivvy-package-goodbye/tasks/example1'),
 					'example2': require('/project/node_modules/@my-packages/skivvy-package-goodbye/tasks/example2')
-				}
+				},
+				defaults: {}
 			},
 			{
 				name: '@my-packages/hello',
 				tasks: {
 					'example1': require('/project/node_modules/@my-packages/skivvy-package-hello/tasks/example1'),
 					'example2': require('/project/node_modules/@my-packages/skivvy-package-hello/tasks/example2')
-				}
+				},
+				defaults: {}
 			},
 			{
 				name: 'goodbye',
 				tasks: {
 					'example1': require('/project/node_modules/@skivvy/skivvy-package-goodbye/tasks/example1'),
 					'example2': require('/project/node_modules/@skivvy/skivvy-package-goodbye/tasks/example2')
-				}
+				},
+				defaults: {}
 			},
 			{
 				name: 'hello',
 				tasks: {
 					'example1': require('/project/node_modules/@skivvy/skivvy-package-hello/tasks/example1'),
 					'example2': require('/project/node_modules/@skivvy/skivvy-package-hello/tasks/example2')
-				}
+				},
+				defaults: {}
 			}
 		];
 		return getPackages('/project')

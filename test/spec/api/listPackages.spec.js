@@ -164,6 +164,7 @@ describe('api.listPackages()', function() {
 		expected = [
 			{
 				name: null,
+				version: null,
 				tasks: {
 					'goodbye': require('/project/my-tasks/goodbye.js'),
 					'hello': require('/project/my-tasks/hello.js')
