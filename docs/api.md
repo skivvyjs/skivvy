@@ -93,69 +93,77 @@ Get a Skivvy API instance for an existing Skivvy project
 
 
 
-## API instance methods
-
-All API instance methods are either **synchronous**, **asynchronous**, **event emitter** or **utility** methods.
+## API instance reference
 
 
-### Synchronous API methods
+> ### About the API instance methods
+> All API instance methods are either **synchronous**, **asynchronous**, **event emitter** or **utility** methods.
+>
+>
+> #### Synchronous API methods
+>
+> - Specify one argument:
+> 	- `options`: key/value object containing method arguments
+> - Return immediately with a value
+>
+>
+> #### Asynchronous API methods
+>
+> - Specify two arguments:
+> 	- `options`: key/value object containing method arguments
+> 	- `callback`: (optional) Callback to be invoked on success/error
+> - Return a promise to be settled on success/error
+>
+> 	This means you can call the API methods either using Node-style > callbacks or using promises:
+>
+> 	```javascript
+> 	// Example using Node-style callback
+> 	api.method(options, function(error, result) {
+> 		if (error) {
+> 			console.error('Called API Method, encountered error:', error);
+> 		} else {
+> 			console.log('Called API Method, returned value:', result);
+> 		}
+> 	});
+> 
+> 	// Example using promises:
+> 	api.method(options)
+> 		.then(function(result) {
+> 			console.log('Called API Method, returned value:', result);
+> 		})
+> 		.catch(function(error) {
+> 			console.error('Called API Method, encountered error:', error);
+> 		});
+>	```
+>
+>
+> #### Event emitter methods
+>
+> - Useful for listening to Skivvy lifecycle events
+>
+>
+> #### Utility methods
+>
+> - Useful for debugging and notification purposes
+> - Located inside the `api.utils` namespace
 
-- Specify one argument:
-	- `options`: key/value object containing method arguments
-- Return immediately with a value
+
+### Table of contents
+
+#### Properties
+
+- [`api.path`](#api.path)
+- [`api.environment`](#api.environment)
 
 
-### Asynchronous API methods
-
-- Specify two arguments:
-	- `options`: key/value object containing method arguments
-	- `callback`: (optional) Callback to be invoked on success/error
-- Return a promise to be settled on success/error
-
-	This means you can call the API methods either using Node-style callbacks or using promises:
-
-	```javascript
-	// Example using Node-style callback
-	api.method(options, function(error, result) {
-		if (error) {
-			console.error('Called API Method, encountered error:', error);
-		} else {
-			console.log('Called API Method, returned value:', result);
-		}
-	});
-
-	// Example using promises:
-	api.method(options)
-		.then(function(result) {
-			console.log('Called API Method, returned value:', result);
-		})
-		.catch(function(error) {
-			console.error('Called API Method, encountered error:', error);
-		});
-	```
-
-
-### Event emitter methods
-
-- Useful for listening to Skivvy lifecycle events
-
-
-### Utility methods
-
-- Useful for debugging and notification purposes
-- Located inside the `api.utils` namespace
-
-
-## API methods
-
-### Synchronous methods
+#### Synchronous methods
 
 - [`api.getEnvironmentConfig()`](#api.getEnvironmentConfig)
 - [`api.getPackageConfig()`](#api.getPackageConfig)
 - [`api.getTaskConfig()`](#api.getTaskConfig)
 
 
-### Asynchronous methods
+#### Asynchronous methods
 
 - [`api.installPackage()`](#api.installPackage)
 - [`api.uninstallPackage()`](#api.uninstallPackage)
@@ -167,7 +175,7 @@ All API instance methods are either **synchronous**, **asynchronous**, **event e
 - [`api.run()`](#api.run)
 
 
-### Event emitter methods
+#### Event emitter methods
 
 - [`api.on()`](#api.on)
 - [`api.once()`](#api.once)
@@ -179,7 +187,7 @@ All API instance methods are either **synchronous**, **asynchronous**, **event e
 - [`api.setMaxListeners()`](#api.setMaxListeners)
 
 
-### Utility methods
+#### Utility methods
 
 - [`api.utils`](#api.utils) is an instance of the [`skivvy-utils`](https://github.com/skivvyjs/skivvy-utils) package:
 	- [`api.utils.log()`](https://github.com/skivvyjs/skivvy-utils#utils.log)
@@ -223,6 +231,8 @@ Get a package's configuration
 | `package` | `string` | Yes | N/A | Package name |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 | `environment` | `string` | No | `"default"` | Environment to use when expanding placeholder variables |
+
+-
 
 
 <a name="api.installPackage"></a>
@@ -370,6 +380,7 @@ Run a task
 | `environment` | `string` | No | `"default"` | Config environment in which to run the task |
 | `config` | `object` | No | `{}` | Run-time config overrides to merge into the task's config object |
 
+-
 
 <a name="api.on"></a>
 ### `api.on(event, listener)`
@@ -466,6 +477,7 @@ All the emitted event types can be found in the `api.events` namespace (these ar
 | `api.events.TASK_FAILED` |
 | `api.events.TASK_COMPLETED` |
 
+-
 
 <a name="api.utils"></a>
 ### `api.utils`
