@@ -166,13 +166,13 @@ Get a Skivvy API instance for an existing Skivvy project
 
 #### Asynchronous methods
 
+- [`api.updateEnvironmentConfig()`](#api.updateEnvironmentConfig)
+- [`api.updatePackageConfig()`](#api.updatePackageConfig)
+- [`api.updateTaskConfig()`](#api.updateTaskConfig)
 - [`api.installPackage()`](#api.installPackage)
 - [`api.uninstallPackage()`](#api.uninstallPackage)
 - [`api.updatePackage()`](#api.updatePackage)
 - [`api.listPackages()`](#api.listPackages)
-- [`api.updateEnvironmentConfig()`](#api.updateEnvironmentConfig)
-- [`api.updatePackageConfig()`](#api.updatePackageConfig)
-- [`api.updateTaskConfig()`](#api.updateTaskConfig)
 - [`api.run()`](#api.run)
 
 
@@ -232,6 +232,49 @@ Get a package's configuration
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
 
 -
+
+<a name="api.updateEnvironmentConfig"></a>
+### `api.updateEnvironmentConfig(options, [callback])`
+
+Update the Skivvy environment configuration
+
+**Returns:** `Promise<object>` Updated environment configuration
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `updates` | `object` | Yes | N/A | Updates to merge into existing environment configuration |
+
+
+<a name="api.updatePackageConfig"></a>
+### `api.updatePackageConfig(options, [callback])`
+
+Update a package's configuration
+
+**Returns:** `Promise<object>` Updated package configuration
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `package` | `string` | Yes | N/A | Package name |
+| `updates` | `object` | Yes | N/A | Updates to merge into existing package configuration |
+
+
+<a name="api.updateTaskConfig"></a>
+### `api.updateTaskConfig(options, [callback])`
+
+Update a task's configuration
+
+**Returns:** `Promise<object>` Updated task target configuration
+
+**Options:**
+
+| Param | Type | Required | Default | Description |
+| ----- | ---- | -------- | ------- | ----------- |
+| `task` | `string` | Yes | N/A | Task name |
+| `updates` | `object` | Yes | N/A | Updates to merge into existing task configuration |
 
 
 <a name="api.installPackage"></a>
@@ -314,53 +357,6 @@ List the installed packages and tasks
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `versions` | `boolean` | No | `false` | Whether to include version numbers in package descriptions |
-
-
-
-<a name="api.updateEnvironmentConfig"></a>
-### `api.updateEnvironmentConfig(options, [callback])`
-
-Update the Skivvy project configuration
-
-**Returns:** `Promise<object>` Updated project configuration
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `updates` | `object` | Yes | N/A | Updates to merge into existing environment configuration |
-
-
-<a name="api.updatePackageConfig"></a>
-### `api.updatePackageConfig(options, [callback])`
-
-Update a package's configuration
-
-**Returns:** `Promise<object>` Updated package configuration
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `package` | `string` | Yes | N/A | Package name |
-| `updates` | `object` | Yes | N/A | Updates to merge into existing package configuration |
-
-
-<a name="api.updateTaskConfig"></a>
-### `api.updateTaskConfig(options, [callback])`
-
-Update a task's configuration
-
-**Returns:** `Promise<object>` Updated task target configuration
-
-**Options:**
-
-| Param | Type | Required | Default | Description |
-| ----- | ---- | -------- | ------- | ----------- |
-| `task` | `string` | Yes | N/A | Task name |
-| `updates` | `object` | Yes | N/A | Updates to merge into existing task configuration |
-| `package` | `string` | No | `null` | Task package name, or `null` for local tasks |
-| `target` | `string` | No | `"default"` | Target to update |
 
 
 <a name="api.run"></a>
