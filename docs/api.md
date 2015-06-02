@@ -1,4 +1,5 @@
 # Skivvy API
+![Stability](https://img.shields.io/badge/stability-unstable-yellow.svg)
 
 Skivvy comes with an API that can be used to control Skivvy programatically. This means you can run tasks, configure tasks, install packages: anything the command-line tool can do, can also be done via the Skivvy API.
 
