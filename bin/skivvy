@@ -125,53 +125,39 @@ function getCommands() {
 	}
 
 	function createSubCommands() {
-		return [
+		var commonOptions = [
+			{
+				usage: '-p, --path [path]',
+				description: 'project path'
+			}
+		];
+		var subCommands = [
 			{
 				name: 'init',
 				usage: 'init',
 				description: 'Initialize a project',
-				options: [
-					{
-						usage: '-P, --path [path] [options]',
-						description: 'project path'
-					}
-				],
+				options: [],
 				action: createCommandAction(cliInit)
 			},
 			{
 				name: 'install',
 				usage: 'install <package> [package...] [options]',
 				description: 'Install a package',
-				options: [
-					{
-						usage: '-P, --path [path]',
-						description: 'project path'
-					}
-				],
+				options: [],
 				action: createCommandAction(cliInstall)
 			},
 			{
 				name: 'uninstall',
 				usage: 'uninstall <package> [package...] [options]',
 				description: 'Uninstall a package',
-				options: [
-					{
-						usage: '-P, --path [path]',
-						description: 'project path'
-					}
-				],
+				options: [],
 				action: createCommandAction(cliUninstall)
 			},
 			{
 				name: 'update',
 				usage: 'update <package> [package...] [options]',
 				description: 'Update a package',
-				options: [
-					{
-						usage: '-P, --path [path]',
-						description: 'project path'
-					}
-				],
+				options: [],
 				action: createCommandAction(cliUpdate)
 			},
 			{
@@ -181,7 +167,7 @@ function getCommands() {
 				options: [
 					{
 						usage: '-q, --quiet',
-						description: 'non-verbose output'
+						description: 'simple output'
 					}
 				],
 				action: createCommandAction(cliList)
@@ -200,7 +186,7 @@ function getCommands() {
 						description: 'task target name'
 					},
 					{
-						usage: '-p, --package [name]',
+						usage: '-P, --package [name]',
 						description: 'task package name'
 					},
 					{
@@ -210,10 +196,6 @@ function getCommands() {
 					{
 						usage: '-c, --config <json>',
 						description: 'configuration updates'
-					},
-					{
-						usage: '-P, --path [path]',
-						description: 'project path'
 					}
 				],
 				action: createCommandAction(cliConfig)
@@ -234,15 +216,17 @@ function getCommands() {
 					{
 						usage: '-C, --cwd [path]',
 						description: 'custom working directory'
-					},
-					{
-						usage: '-P, --path [path]',
-						description: 'project path'
 					}
 				],
 				action: createCommandAction(cliRun)
 			}
 		];
+
+		return subCommands.map(function(subCommand) {
+			subCommand.options = subCommand.options.concat(commonOptions);
+			return subCommand;
+		});
+
 
 		function createCommandAction(command) {
 			return function(args, options) {
