@@ -937,7 +937,7 @@ describe('api.getTaskConfig()', function() {
 			expect(actual).to.eql(expected);
 		});
 
-		it('should expand local task config placeholders (default environment)', function() {
+		it('should expand local task config placeholders', function() {
 			var pkg = {
 				version: '1.0.1'
 			};
@@ -976,52 +976,6 @@ describe('api.getTaskConfig()', function() {
 			expect(actual).to.eql(expected);
 
 			expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-				environment: 'default',
-				expand: true
-			});
-		});
-
-		it('should expand local task config placeholders (custom environment)', function() {
-			var pkg = {
-				version: '1.0.1'
-			};
-			var config = {
-				tasks: {
-					'task': {
-						targets: {
-							default: {
-								message: 'Hello, <%= environment.user %>!',
-								version: 'v<%= project.version %>'
-							}
-						}
-					}
-				}
-			};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/skivvy_tasks/task.js': 'module.exports = function(config) { };'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.environmentConfig = {
-				user: 'world'
-			};
-
-			var expected, actual;
-			expected = {
-				'message': 'Hello, world!',
-				'version': 'v1.0.1'
-			};
-			actual = getTaskConfig({
-				task: 'task',
-				environment: 'custom',
-				expand: true
-			});
-			expect(actual).to.eql(expected);
-
-			expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-				environment: 'custom',
 				expand: true
 			});
 		});
@@ -1073,7 +1027,7 @@ describe('api.getTaskConfig()', function() {
 			expect(actual).to.eql(expected);
 		});
 
-		it('should expand external task config placeholders (default environment)', function() {
+		it('should expand external task config placeholders', function() {
 			var pkg = {
 				version: '1.0.1'
 			};
@@ -1121,71 +1075,10 @@ describe('api.getTaskConfig()', function() {
 			expect(actual).to.eql(expected);
 
 			expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-				environment: 'default',
 				expand: true
 			});
 			expect(mockApi.getPackageConfig).to.have.been.calledWith({
 				package: 'package',
-				environment: 'default',
-				expand: true
-			});
-		});
-
-		it('should expand external task config placeholders (custom environment)', function() {
-			var pkg = {
-				version: '1.0.1'
-			};
-			var config = {
-				packages: {
-					'package': {
-						tasks: {
-							'task': {
-								targets: {
-									default: {
-										message: 'Hello, <%= environment.user %>!',
-										version: '<%= package.id %> v<%= project.version %>'
-									}
-								}
-							}
-						}
-					}
-				}
-			};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
-				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: function(config) { } };'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.environmentConfig = {
-				user: 'world'
-			};
-			mockApi.stubs.packageConfig = {
-				id: 'hello-world'
-			};
-
-			var expected, actual;
-			expected = {
-				'message': 'Hello, world!',
-				'version': 'hello-world v1.0.1'
-			};
-			actual = getTaskConfig({
-				package: 'package',
-				task: 'task',
-				environment: 'custom',
-				expand: true
-			});
-			expect(actual).to.eql(expected);
-
-			expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-				environment: 'custom',
-				expand: true
-			});
-			expect(mockApi.getPackageConfig).to.have.been.calledWith({
-				package: 'package',
-				environment: 'custom',
 				expand: true
 			});
 		});

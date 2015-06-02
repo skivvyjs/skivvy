@@ -50,7 +50,18 @@ describe('api', function() {
 		expect(Api.setMaxListeners).to.be.a('function');
 	});
 
-	it('should set the project path', function() {
+	it('should set the project path and environment name', function() {
+		var files = {
+			'/project/.skivvyrc': '{}'
+		};
+		unmockFiles = mockFiles(files);
+
+		var api = new Api('/project', 'environment');
+		expect(api.path).to.equal('/project');
+		expect(api.environment).to.equal('environment');
+	});
+
+	it('should use default environment name if none is specified', function() {
 		var files = {
 			'/project/.skivvyrc': '{}'
 		};
@@ -58,6 +69,7 @@ describe('api', function() {
 
 		var api = new Api('/project');
 		expect(api.path).to.equal('/project');
+		expect(api.environment).to.equal('default');
 	});
 
 	it('should expose the correct instance members', function() {

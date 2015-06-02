@@ -218,7 +218,7 @@ describe('api.getPackageConfig()', function() {
 		});
 	});
 
-	it('should expand placeholders in config (default environment)', function() {
+	it('should expand placeholders in config', function() {
 		var pkg = {
 			version: '1.0.1'
 		};
@@ -254,49 +254,6 @@ describe('api.getPackageConfig()', function() {
 		expect(actual).to.eql(expected);
 
 		expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-			environment: 'default',
-			expand: true
-		});
-	});
-
-	it('should expand placeholders in config (custom environment)', function() {
-		var pkg = {
-			version: '1.0.1'
-		};
-		var config = {
-			packages: {
-				'hello': {
-					config: {
-						welcome: 'Welcome, <%= environment.user %>!'
-					}
-				}
-			}
-		};
-		mockApi.stubs.environmentConfig = {
-			user: 'A User <user@example.com>'
-		};
-
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config),
-			'/project/node_modules/@skivvy/skivvy-package-hello/index.js': 'exports.tasks = {}; exports.defaults = { \'version\': \'v<%= project.version %>\' }'
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = {
-			welcome: 'Welcome, A User <user@example.com>!',
-			version: 'v1.0.1'
-		};
-		actual = getPackageConfig({
-			package: 'hello',
-			environment: 'custom',
-			expand: true
-		});
-		expect(actual).to.eql(expected);
-
-		expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-			environment: 'custom',
 			expand: true
 		});
 	});

@@ -69,6 +69,21 @@ describe('cli.run()', function() {
 		MockApi.reset();
 	});
 
+	it('should pass project path and environment name to API', function() {
+		var args = [
+			'local'
+		];
+		var options = {
+			path: '/project',
+			env: 'production'
+		};
+		return cliRun(args, options)
+			.then(function() {
+				expect(MockApi.instance.path).to.equal('/project');
+				expect(MockApi.instance.environment).to.equal('production');
+			});
+	});
+
 	it('should throw an error if no tasks are specified', function() {
 		var args = [];
 		var options = {};
@@ -85,8 +100,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'local:default',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -101,8 +114,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'local:custom',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -117,8 +128,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'my-package::external:default',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -133,8 +142,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'my-package::external:custom',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -149,8 +156,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'my-package::external:default',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -165,8 +170,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: 'my-package::external:custom',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -181,8 +184,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: '@my-packages/my-package::scoped:default',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -197,8 +198,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expect(MockApi.instance.run).to.have.been.calledWith({
 					task: '@my-packages/my-package::scoped:custom',
-					environment: null,
-					path: '/',
 					config: null
 				});
 			});
@@ -214,8 +213,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expected = {
 					task: '@my-packages/my-package::scoped:default',
-					environment: null,
-					path: '/',
 					config: null
 				};
 				expect(MockApi.instance.run).to.have.been.calledWith(expected);
@@ -232,8 +229,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expected = {
 					task: '@my-packages/my-package::scoped:custom',
-					environment: null,
-					path: '/',
 					config: null
 				};
 				expect(MockApi.instance.run).to.have.been.calledWith(expected);
@@ -250,8 +245,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expected = {
 					task: 'local-conflict:default',
-					environment: null,
-					path: '/',
 					config: null
 				};
 				expect(MockApi.instance.run).to.have.been.calledWith(expected);
@@ -268,8 +261,6 @@ describe('cli.run()', function() {
 			.then(function() {
 				expected = {
 					task: 'my-package::local-conflict:default',
-					environment: null,
-					path: '/',
 					config: null
 				};
 				expect(MockApi.instance.run).to.have.been.calledWith(expected);
@@ -287,24 +278,20 @@ describe('cli.run()', function() {
 		return expect(actual).to.be.rejectedWith(expected);
 	});
 
-	it('should pass additional parameters to API method', function() {
+	it('should pass config to API method', function() {
 		var args = [
 			'local'
 		];
 		var options = {
 			config: {
 				user: 'world'
-			},
-			env: 'alternate',
-			path: '/project'
+			}
 		};
 		var expected;
 		return cliRun(args, options)
 			.then(function() {
 				expected = {
 					task: 'local:default',
-					environment: 'alternate',
-					path: '/project',
 					config: {
 						user: 'world'
 					}
@@ -343,20 +330,14 @@ describe('cli.run()', function() {
 				var expectedCalls = [
 					{
 						task: 'series1:default',
-						environment: null,
-						path: '/',
 						config: null
 					},
 					{
 						task: 'series2:default',
-						environment: null,
-						path: '/',
 						config: null
 					},
 					{
 						task: 'series3:default',
-						environment: null,
-						path: '/',
 						config: null
 					}
 				];
@@ -373,17 +354,16 @@ describe('cli.run()', function() {
 		var options = {
 			cwd: '/other'
 		};
-		var task = sinon.spy(function(options) {
+		var run = sinon.spy(function(options) {
 			return process.cwd();
 		});
-		MockApi.stubs.run = task;
+		MockApi.stubs.run = run;
 		return cliRun(args, options)
 			.then(function(returnValue) {
 				expect(returnValue).to.eql(['/other']);
-				expect(task).to.have.been.calledWith({
+				expect(MockApi.instance.path).to.equal('/other');
+				expect(run).to.have.been.calledWith({
 					task: 'cwd1:default',
-					environment: null,
-					path: '/other',
 					config: null
 				});
 			});
@@ -404,10 +384,9 @@ describe('cli.run()', function() {
 		return cliRun(args, options)
 			.then(function(returnValue) {
 				expect(returnValue).to.eql(['/other']);
+				expect(MockApi.instance.path).to.equal('/other/project');
 				expect(task).to.have.been.calledWith({
 					task: 'cwd2:default',
-					environment: null,
-					path: '/other/project',
 					config: null
 				});
 			});

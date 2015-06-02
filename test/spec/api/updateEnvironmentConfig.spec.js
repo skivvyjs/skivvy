@@ -24,7 +24,7 @@ describe('api.updateEnvironmentConfig()', function() {
 
 	before(function() {
 		MockApi = mockApiFactory();
-		mockApi = new MockApi('/project');
+		mockApi = new MockApi('/project', 'production');
 		updateEnvironmentConfig = require('../../../lib/api/updateEnvironmentConfig');
 		updateEnvironmentConfig = updateEnvironmentConfig.bind(mockApi);
 	});
@@ -65,7 +65,7 @@ describe('api.updateEnvironmentConfig()', function() {
 		var pkg = {};
 		var config = {
 			environment: {
-				default: {
+				production: {
 					message: 'Hello, world!',
 					user: 'world'
 				}
@@ -83,7 +83,7 @@ describe('api.updateEnvironmentConfig()', function() {
 		var expected, actual;
 		expected = {
 			environment: {
-				default: {
+				production: {
 					message: 'Goodbye, world!',
 					user: 'world'
 				}
@@ -102,7 +102,7 @@ describe('api.updateEnvironmentConfig()', function() {
 		var pkg = {};
 		var config = {
 			environment: {
-				default: {
+				production: {
 					message: 'Hello, world!',
 					user: 'world'
 				}
@@ -130,11 +130,11 @@ describe('api.updateEnvironmentConfig()', function() {
 		return expect(actual).to.eventually.eql(expected);
 	});
 
-	it('should dispatch task start and end events for default environment', function() {
+	it('should dispatch task start and end events', function() {
 		var pkg = {};
 		var config = {
 			environment: {
-				default: {
+				production: {
 					message: 'Hello, world!',
 					user: 'world'
 				}
@@ -155,8 +155,8 @@ describe('api.updateEnvironmentConfig()', function() {
 			{
 				event: events.UPDATE_ENVIRONMENT_CONFIG_STARTED,
 				updates: updates,
-				environment: 'default',
-				path: '/project'
+				path: '/project',
+				environment: 'production'
 			},
 			{
 				event: events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED,
@@ -165,8 +165,8 @@ describe('api.updateEnvironmentConfig()', function() {
 					user: 'world'
 				},
 				updates: updates,
-				environment: 'default',
-				path: '/project'
+				path: '/project',
+				environment: 'production'
 			}
 		];
 		actual = [];
@@ -180,8 +180,8 @@ describe('api.updateEnvironmentConfig()', function() {
 			actual.push({
 				event: events.UPDATE_ENVIRONMENT_CONFIG_STARTED,
 				updates: data.updates,
-				environment: data.environment,
-				path: data.path
+				path: data.path,
+				environment: data.environment
 			});
 		}
 
@@ -190,8 +190,8 @@ describe('api.updateEnvironmentConfig()', function() {
 				event: events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED,
 				config: data.config,
 				updates: data.updates,
-				environment: data.environment,
-				path: data.path
+				path: data.path,
+				environment: data.environment
 			});
 		}
 
@@ -200,8 +200,8 @@ describe('api.updateEnvironmentConfig()', function() {
 				event: events.UPDATE_ENVIRONMENT_CONFIG_FAILED,
 				error: data.error,
 				updates: data.updates,
-				environment: data.environment,
-				path: data.path
+				path: data.path,
+				environment: data.environment
 			});
 		}
 
@@ -215,91 +215,6 @@ describe('api.updateEnvironmentConfig()', function() {
 				mockApi.removeListener(events.UPDATE_ENVIRONMENT_CONFIG_STARTED, onStarted);
 				mockApi.removeListener(events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED, onCompleted);
 				mockApi.removeListener(events.UPDATE_ENVIRONMENT_CONFIG_FAILED, onFailed);
-			});
-	});
-
-	it('should dispatch task start and end events for custom environment', function() {
-		var pkg = {};
-		var config = {
-			environment: {
-				default: {},
-				custom: {
-					message: 'Hello, world!',
-					user: 'world'
-				}
-			},
-			packages: {}
-		};
-		var updates = {
-			message: 'Goodbye, world!'
-		};
-		var files = {
-			'/project/package.json': JSON.stringify(pkg),
-			'/project/.skivvyrc': JSON.stringify(config)
-		};
-		unmockFiles = mockFiles(files);
-
-		var expected, actual;
-		expected = [
-			{
-				event: events.UPDATE_ENVIRONMENT_CONFIG_STARTED,
-				updates: updates,
-				environment: 'custom',
-				path: '/project'
-			},
-			{
-				event: events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED,
-				config: {
-					message: 'Goodbye, world!',
-					user: 'world'
-				},
-				updates: updates,
-				environment: 'custom',
-				path: '/project'
-			}
-		];
-		actual = [];
-
-		mockApi.on(events.UPDATE_ENVIRONMENT_CONFIG_STARTED, onStarted);
-		mockApi.on(events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED, onCompleted);
-		mockApi.on(events.UPDATE_ENVIRONMENT_CONFIG_FAILED, onFailed);
-
-
-		function onStarted(data) {
-			actual.push({
-				event: events.UPDATE_ENVIRONMENT_CONFIG_STARTED,
-				environment: data.environment,
-				updates: data.updates,
-				path: data.path
-			});
-		}
-
-		function onCompleted(data) {
-			actual.push({
-				event: events.UPDATE_ENVIRONMENT_CONFIG_COMPLETED,
-				config: data.config,
-				environment: data.environment,
-				updates: data.updates,
-				path: data.path
-			});
-		}
-
-		function onFailed(data) {
-			actual.push({
-				event: events.UPDATE_ENVIRONMENT_CONFIG_FAILED,
-				error: data.error,
-				environment: data.environment,
-				updates: data.updates,
-				path: data.path
-			});
-		}
-
-		return updateEnvironmentConfig({
-			updates: updates,
-			environment: 'custom'
-		})
-			.then(function() {
-				return expect(actual).to.eql(expected);
 			});
 	});
 });

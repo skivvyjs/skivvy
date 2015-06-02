@@ -7,8 +7,9 @@ var skivvyUtils = require('skivvy-utils');
 
 module.exports = function() {
 
-	function MockApi(path) {
+	function MockApi(path, environment) {
 		this.path = path;
+		this.environment = environment || 'default';
 
 		this.events = MockApi.events;
 		this.utils = MockApi.utils;

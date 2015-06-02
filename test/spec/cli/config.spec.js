@@ -51,7 +51,7 @@ describe('cli.config()', function() {
 
 	describe('config get', function() {
 
-		it('should get the default environment configuration', function() {
+		it('should get environment configuration', function() {
 			unmockCli = mockCli();
 
 			var args = ['get'];
@@ -70,34 +70,6 @@ describe('cli.config()', function() {
 						message: 'Hello, world!'
 					}, null, 2) + '\n');
 					expect(MockApi.instance.getEnvironmentConfig).to.have.been.calledWith({
-						environment: null,
-						expand: false
-					});
-				});
-		});
-
-		it('should get custom environment configuration', function() {
-			unmockCli = mockCli();
-
-			var args = ['get'];
-			var options = {
-				env: 'custom'
-			};
-			MockApi.stubs.environmentConfig = {
-				message: 'Hello, world!'
-			};
-			return cliConfig(args, options)
-				.then(function(returnValue) {
-					var cli = unmockCli();
-
-					expect(returnValue).to.eql({
-						message: 'Hello, world!'
-					});
-					expect(cli.stdout).to.equal(JSON.stringify({
-						message: 'Hello, world!'
-					}, null, 2) + '\n');
-					expect(MockApi.instance.getEnvironmentConfig).to.have.been.calledWith({
-						environment: 'custom',
 						expand: false
 					});
 				});
@@ -125,7 +97,6 @@ describe('cli.config()', function() {
 					}, null, 2) + '\n');
 					expect(MockApi.instance.getPackageConfig).to.have.been.calledWith({
 						package: 'package',
-						environment: null,
 						expand: false
 					});
 				});
@@ -155,7 +126,6 @@ describe('cli.config()', function() {
 						task: 'task',
 						target: null,
 						package: null,
-						environment: null,
 						expand: false
 					});
 				});
@@ -186,7 +156,6 @@ describe('cli.config()', function() {
 						task: 'task',
 						target: 'custom',
 						package: null,
-						environment: null,
 						expand: false
 					});
 				});
@@ -217,7 +186,6 @@ describe('cli.config()', function() {
 						task: 'task',
 						target: null,
 						package: 'package',
-						environment: null,
 						expand: false
 					});
 				});
@@ -249,24 +217,24 @@ describe('cli.config()', function() {
 						task: 'task',
 						target: 'custom',
 						package: 'package',
-						environment: null,
 						expand: false
 					});
 				});
 		});
 
-		it('should pass the project path to the API', function() {
+		it('should pass the project path and environment to the API', function() {
 			unmockCli = mockCli();
 
 			var args = ['get'];
 			var options = {
-				config: {},
-				path: '/project'
+				path: '/project',
+				env: 'environment'
 			};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
 					unmockCli();
 					expect(MockApi.instance.path).to.equal('/project');
+					expect(MockApi.instance.environment).to.equal('environment');
 				});
 		});
 
@@ -274,13 +242,23 @@ describe('cli.config()', function() {
 			unmockCli = mockCli();
 
 			var args = ['get'];
-			var options = {
-				config: {}
-			};
+			var options = {};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
 					unmockCli();
 					expect(MockApi.instance.path).to.equal(process.cwd());
+				});
+		});
+
+		it('should default to default environment if no environment is specified', function() {
+			unmockCli = mockCli();
+
+			var args = ['get'];
+			var options = {};
+			return cliConfig(args, options)
+				.then(function(returnValue) {
+					unmockCli();
+					expect(MockApi.instance.environment).to.equal('default');
 				});
 		});
 	});
@@ -306,11 +284,11 @@ describe('cli.config()', function() {
 			};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
+					expect(MockApi.instance.environment).to.equal('goodbye');
 					expect(MockApi.instance.updateEnvironmentConfig).to.have.been.calledWith({
 						updates: {
 							hello: 'world'
-						},
-						environment: 'goodbye'
+						}
 					});
 				});
 		});
@@ -326,12 +304,12 @@ describe('cli.config()', function() {
 			};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
+					expect(MockApi.instance.environment).to.equal('goodbye');
 					expect(MockApi.instance.updatePackageConfig).to.have.been.calledWith({
 						package: 'my-package',
 						updates: {
 							hello: 'world'
-						},
-						environment: 'goodbye'
+						}
 					});
 				});
 		});
@@ -348,14 +326,14 @@ describe('cli.config()', function() {
 			};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
+					expect(MockApi.instance.environment).to.equal('goodbye');
 					expect(MockApi.instance.updateTaskConfig).to.have.been.calledWith({
 						task: 'hello',
 						target: 'custom',
 						package: null,
 						updates: {
 							hello: 'world'
-						},
-						environment: 'goodbye'
+						}
 					});
 				});
 		});
@@ -373,27 +351,29 @@ describe('cli.config()', function() {
 			};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
+					expect(MockApi.instance.environment).to.equal('goodbye');
 					expect(MockApi.instance.updateTaskConfig).to.have.been.calledWith({
 						task: 'hello',
 						target: 'custom',
 						package: 'my-package',
 						updates: {
 							hello: 'world'
-						},
-						environment: 'goodbye'
+						}
 					});
 				});
 		});
 
-		it('should pass the project path to the API', function() {
+		it('should pass the project path and environment to the API', function() {
 			var args = ['set'];
 			var options = {
 				config: {},
-				path: '/project'
+				path: '/project',
+				env: 'environment'
 			};
 			return cliConfig(args, options)
 				.then(function(returnValue) {
 					expect(MockApi.instance.path).to.equal('/project');
+					expect(MockApi.instance.environment).to.equal('environment');
 				});
 		});
 
@@ -405,6 +385,20 @@ describe('cli.config()', function() {
 			return cliConfig(args, options)
 				.then(function(returnValue) {
 					expect(MockApi.instance.path).to.equal(process.cwd());
+				});
+		});
+
+		it('should default to default environment if no environment is specified', function() {
+			unmockCli = mockCli();
+
+			var args = ['set'];
+			var options = {
+				config: {}
+			};
+			return cliConfig(args, options)
+				.then(function(returnValue) {
+					unmockCli();
+					expect(MockApi.instance.environment).to.equal('default');
 				});
 		});
 	});

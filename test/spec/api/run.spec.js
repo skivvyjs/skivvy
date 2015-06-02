@@ -25,7 +25,7 @@ describe('api.run()', function() {
 	var run;
 	before(function() {
 		MockApi = mockApiFactory();
-		mockApi = new MockApi('/project');
+		mockApi = new MockApi('/project', 'production');
 		run = require('../../../lib/api/run');
 		run = run.bind(mockApi);
 		global.sinon = sinon;
@@ -47,7 +47,7 @@ describe('api.run()', function() {
 
 	describe('local tasks', function() {
 
-		it('should run local tasks with default target and environment', function() {
+		it('should run local tasks with default target', function() {
 			var pkg = {};
 			var config = {};
 			var files = {
@@ -78,51 +78,12 @@ describe('api.run()', function() {
 						package: null,
 						task: 'task',
 						target: 'default',
-						environment: 'default',
 						expand: true
 					});
 				});
 		});
 
-		it('should run local tasks with default target and custom environment', function() {
-			var pkg = {};
-			var config = {};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.taskConfig = {
-				message: 'Hello, world!',
-				user: 'world'
-			};
-
-			return run({
-				task: 'task',
-				environment: 'custom'
-			})
-				.then(function() {
-					var task = require('/project/skivvy_tasks/task');
-					expect(task).to.have.been.calledOnce;
-					expect(task).to.have.been.calledWith({
-						message: 'Hello, world!',
-						user: 'world'
-					});
-
-					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
-					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: null,
-						task: 'task',
-						target: 'default',
-						environment: 'custom',
-						expand: true
-					});
-				});
-		});
-
-		it('should run local tasks with custom target and default environment', function() {
+		it('should run local tasks with custom target', function() {
 			var pkg = {};
 			var config = {};
 			var files = {
@@ -153,45 +114,6 @@ describe('api.run()', function() {
 						package: null,
 						task: 'task',
 						target: 'custom',
-						environment: 'default',
-						expand: true
-					});
-				});
-		});
-
-		it('should run local tasks with custom target and custom environment', function() {
-			var pkg = {};
-			var config = {};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) {});'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.taskConfig = {
-				message: 'Hello, world!',
-				user: 'world'
-			};
-
-			return run({
-				task: 'task:custom',
-				environment: 'custom'
-			})
-				.then(function() {
-					var task = require('/project/skivvy_tasks/task');
-					expect(task).to.have.been.calledOnce;
-					expect(task).to.have.been.calledWith({
-						message: 'Hello, world!',
-						user: 'world'
-					});
-
-					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
-					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: null,
-						task: 'task',
-						target: 'custom',
-						environment: 'custom',
 						expand: true
 					});
 				});
@@ -214,7 +136,6 @@ describe('api.run()', function() {
 
 			return run({
 				task: 'task:custom',
-				environment: 'custom',
 				config: {
 					message: 'Goodbye, world!'
 				}
@@ -232,7 +153,6 @@ describe('api.run()', function() {
 						package: null,
 						task: 'task',
 						target: 'custom',
-						environment: 'custom',
 						expand: true
 					});
 				});
@@ -260,7 +180,6 @@ describe('api.run()', function() {
 
 			return run({
 				task: 'task:custom',
-				environment: 'custom',
 				config: {
 					message: 'Goodbye, world!',
 					sender: '<%= environment.id %> v<%= project.version %>'
@@ -280,13 +199,11 @@ describe('api.run()', function() {
 						package: null,
 						task: 'task',
 						target: 'custom',
-						environment: 'custom',
 						expand: true
 					});
 
 					expect(mockApi.getEnvironmentConfig).to.have.been.calledOnce;
 					expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-						environment: 'custom',
 						expand: true
 					});
 				});
@@ -333,7 +250,7 @@ describe('api.run()', function() {
 
 	describe('external tasks', function() {
 
-		it('should run external tasks with default target and environment', function() {
+		it('should run external tasks with default target', function() {
 			var pkg = {};
 			var config = {};
 			var files = {
@@ -365,52 +282,12 @@ describe('api.run()', function() {
 						package: 'package',
 						task: 'task',
 						target: 'default',
-						environment: 'default',
 						expand: true
 					});
 				});
 		});
 
-		it('should run external tasks with default target and custom environment', function() {
-			var pkg = {};
-			var config = {};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
-				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.taskConfig = {
-				message: 'Hello, world!',
-				user: 'world'
-			};
-
-			return run({
-				task: 'package::task',
-				environment: 'custom'
-			})
-				.then(function() {
-					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
-					expect(task).to.have.been.calledOnce;
-					expect(task).to.have.been.calledWith({
-						message: 'Hello, world!',
-						user: 'world'
-					});
-
-					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
-					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: 'package',
-						task: 'task',
-						target: 'default',
-						environment: 'custom',
-						expand: true
-					});
-				});
-		});
-
-		it('should run external tasks with custom target and default environment', function() {
+		it('should run external tasks with custom target', function() {
 			var pkg = {};
 			var config = {};
 			var files = {
@@ -442,46 +319,6 @@ describe('api.run()', function() {
 						package: 'package',
 						task: 'task',
 						target: 'custom',
-						environment: 'default',
-						expand: true
-					});
-				});
-		});
-
-		it('should run external tasks with custom target and custom environment', function() {
-			var pkg = {};
-			var config = {};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
-				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) {}) }'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.taskConfig = {
-				message: 'Hello, world!',
-				user: 'world'
-			};
-
-			return run({
-				task: 'package::task:custom',
-				environment: 'custom'
-			})
-				.then(function() {
-					var task = require('/project/node_modules/@skivvy/skivvy-package-package').tasks['task'];
-					expect(task).to.have.been.calledOnce;
-					expect(task).to.have.been.calledWith({
-						message: 'Hello, world!',
-						user: 'world'
-					});
-
-					expect(mockApi.getTaskConfig).to.have.been.calledOnce;
-					expect(mockApi.getTaskConfig).to.have.been.calledWith({
-						package: 'package',
-						task: 'task',
-						target: 'custom',
-						environment: 'custom',
 						expand: true
 					});
 				});
@@ -505,7 +342,6 @@ describe('api.run()', function() {
 
 			return run({
 				task: 'package::task:custom',
-				environment: 'custom',
 				config: {
 					message: 'Goodbye, world!'
 				}
@@ -523,7 +359,6 @@ describe('api.run()', function() {
 						package: 'package',
 						task: 'task',
 						target: 'custom',
-						environment: 'custom',
 						expand: true
 					});
 				});
@@ -555,7 +390,6 @@ describe('api.run()', function() {
 
 			return run({
 				task: 'package::task:custom',
-				environment: 'custom',
 				config: {
 					message: 'Goodbye, world!',
 					sender: '<%= environment.id %> <%= package.id %> v<%= project.version %>'
@@ -575,13 +409,11 @@ describe('api.run()', function() {
 						package: 'package',
 						task: 'task',
 						target: 'custom',
-						environment: 'custom',
 						expand: true
 					});
 
 					expect(mockApi.getEnvironmentConfig).to.have.been.calledOnce;
 					expect(mockApi.getEnvironmentConfig).to.have.been.calledWith({
-						environment: 'custom',
 						expand: true
 					});
 				});
@@ -859,7 +691,7 @@ describe('api.run()', function() {
 				});
 		});
 
-		it('should run an array of named tasks in series (default environment)', function() {
+		it('should run an array of named tasks in series', function() {
 			var pkg = {};
 			var config = {};
 			var files = {
@@ -875,7 +707,7 @@ describe('api.run()', function() {
 
 			mockApi.stubs.taskConfig = function(options) {
 				return {
-					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+					id: options.package + '::' + options.task + ':' + options.target
 				};
 			};
 
@@ -896,84 +728,24 @@ describe('api.run()', function() {
 					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
 					expect(localTask).to.have.been.calledTwice;
 					expect(localTask).to.have.been.calledWith({
-						id: 'default:::null::task:default'
+						id: 'null::task:default'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'default:::null::task:target'
+						id: 'null::task:target'
 					});
 					expect(externalTask).to.have.been.calledTwice;
 					expect(externalTask).to.have.been.calledWith({
-						id: 'default:::package::task:default'
+						id: 'package::task:default'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'default:::package::task:target'
+						id: 'package::task:target'
 					});
 					expect(scopedTask).to.have.been.calledTwice;
 					expect(scopedTask).to.have.been.calledWith({
-						id: 'default:::@scoped/package::task:default'
+						id: '@scoped/package::task:default'
 					});
 					expect(scopedTask).to.have.been.calledWith({
-						id: 'default:::@scoped/package::task:target'
-					});
-				});
-		});
-
-		it('should run an array of named tasks in series (custom environment)', function() {
-			var pkg = {};
-			var config = {};
-			var files = {
-				'/project/package.json': JSON.stringify(pkg),
-				'/project/.skivvyrc': JSON.stringify(config),
-				'/project/skivvy_tasks/task.js': 'module.exports = sinon.spy(function(config) { return "local"; });',
-				'/project/node_modules/@skivvy/skivvy-package-package/package.json': '{}',
-				'/project/node_modules/@skivvy/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "external"; }) }',
-				'/project/node_modules/@scoped/skivvy-package-package/package.json': '{}',
-				'/project/node_modules/@scoped/skivvy-package-package/index.js': 'exports.tasks = { task: sinon.spy(function(config) { return "scoped"; }) }'
-			};
-			unmockFiles = mockFiles(files);
-
-			mockApi.stubs.taskConfig = function(options) {
-				return {
-					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
-				};
-			};
-
-			return run({
-				task: [
-					'task',
-					'task:target',
-					'package::task',
-					'package::task:target',
-					'@scoped/package::task',
-					'@scoped/package::task:target'
-				],
-				environment: 'environment'
-			})
-				.then(function(returnValue) {
-					expect(returnValue).to.eql(['local', 'local', 'external', 'external', 'scoped', 'scoped']);
-					var localTask = require('/project/skivvy_tasks/task.js');
-					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
-					var scopedTask = require('/project/node_modules/@scoped/skivvy-package-package').tasks.task;
-					expect(localTask).to.have.been.calledTwice;
-					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:default'
-					});
-					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:target'
-					});
-					expect(externalTask).to.have.been.calledTwice;
-					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:default'
-					});
-					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:target'
-					});
-					expect(scopedTask).to.have.been.calledTwice;
-					expect(scopedTask).to.have.been.calledWith({
-						id: 'environment:::@scoped/package::task:default'
-					});
-					expect(scopedTask).to.have.been.calledWith({
-						id: 'environment:::@scoped/package::task:target'
+						id: '@scoped/package::task:target'
 					});
 				});
 		});
@@ -993,7 +765,7 @@ describe('api.run()', function() {
 
 			mockApi.stubs.taskConfig = function(options) {
 				return {
-					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+					id: options.package + '::' + options.task + ':' + options.target
 				};
 			};
 
@@ -1001,8 +773,7 @@ describe('api.run()', function() {
 				task: 'composite',
 				config: {
 					override: true
-				},
-				environment: 'environment'
+				}
 			})
 				.then(function(returnValue) {
 					expect(returnValue).to.eql(['anonymous', 'anonymous', 'local', 'local', 'external', 'external', 'local', 'local', 'external', 'external']);
@@ -1012,7 +783,7 @@ describe('api.run()', function() {
 					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
 					expect(anonymousTask).to.have.been.calledOnce;
 					expect(anonymousTask).to.have.been.calledWith({
-						id: 'environment:::null::composite:default',
+						id: 'null::composite:default',
 						override: true
 					});
 					expect(anonymousConfiguredTask).to.have.been.calledOnce;
@@ -1021,32 +792,32 @@ describe('api.run()', function() {
 					});
 					expect(localTask.callCount).to.equal(4);
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:default'
+						id: 'null::task:default'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:custom'
+						id: 'null::task:custom'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:default',
+						id: 'null::task:default',
 						foo: 'bar'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:custom',
+						id: 'null::task:custom',
 						foo: 'bar'
 					});
 					expect(externalTask.callCount).to.equal(4);
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:default'
+						id: 'package::task:default'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:custom'
+						id: 'package::task:custom'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:default',
+						id: 'package::task:default',
 						foo: 'bar'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:custom',
+						id: 'package::task:custom',
 						foo: 'bar'
 					});
 				});
@@ -1069,7 +840,7 @@ describe('api.run()', function() {
 
 			mockApi.stubs.taskConfig = function(options) {
 				return {
-					id: options.environment + ':::' + options.package + '::' + options.task + ':' + options.target
+					id: options.package + '::' + options.task + ':' + options.target
 				};
 			};
 
@@ -1081,8 +852,7 @@ describe('api.run()', function() {
 				task: 'composite',
 				config: {
 					override: '<%= environment.id %> v<%= project.version %>'
-				},
-				environment: 'environment'
+				}
 			})
 				.then(function(returnValue) {
 					expect(returnValue).to.eql(['anonymous', 'anonymous', 'local', 'local', 'external', 'external', 'local', 'local', 'external', 'external']);
@@ -1092,7 +862,7 @@ describe('api.run()', function() {
 					var externalTask = require('/project/node_modules/@skivvy/skivvy-package-package').tasks.task;
 					expect(anonymousTask).to.have.been.calledOnce;
 					expect(anonymousTask).to.have.been.calledWith({
-						id: 'environment:::null::composite:default',
+						id: 'null::composite:default',
 						override: 'hello-world v1.0.1'
 					});
 					expect(anonymousConfiguredTask).to.have.been.calledOnce;
@@ -1101,32 +871,32 @@ describe('api.run()', function() {
 					});
 					expect(localTask.callCount).to.equal(4);
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:default'
+						id: 'null::task:default'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:custom'
+						id: 'null::task:custom'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:default',
+						id: 'null::task:default',
 						foo: 'bar'
 					});
 					expect(localTask).to.have.been.calledWith({
-						id: 'environment:::null::task:custom',
+						id: 'null::task:custom',
 						foo: 'bar'
 					});
 					expect(externalTask.callCount).to.equal(4);
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:default'
+						id: 'package::task:default'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:custom'
+						id: 'package::task:custom'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:default',
+						id: 'package::task:default',
 						foo: 'bar'
 					});
 					expect(externalTask).to.have.been.calledWith({
-						id: 'environment:::package::task:custom',
+						id: 'package::task:custom',
 						foo: 'bar'
 					});
 				});
