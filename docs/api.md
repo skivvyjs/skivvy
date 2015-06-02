@@ -264,7 +264,6 @@ Update installed packages
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name to update |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
 <a name="api.listPackages"></a>
@@ -304,7 +303,6 @@ List the installed packages and tasks
 
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
 <a name="api.updateEnvironmentConfig"></a>
@@ -320,7 +318,6 @@ Update the Skivvy project configuration
 | ----- | ---- | -------- | ------- | ----------- |
 | `updates` | `object` | Yes | N/A | Updates to merge into existing environment configuration |
 | `environment` | `string` | No | `"default"` | Which environment configuration to update |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
 <a name="api.updatePackageConfig"></a>
@@ -336,7 +333,6 @@ Update a package's configuration
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
 | `updates` | `object` | Yes | N/A | Updates to merge into existing package configuration |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
 <a name="api.updateTaskConfig"></a>
@@ -354,7 +350,6 @@ Update a task's configuration
 | `updates` | `object` | Yes | N/A | Updates to merge into existing task configuration |
 | `package` | `string` | No | `null` | Task package name, or `null` for local tasks |
 | `target` | `string` | No | `"default"` | Target to update |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
 <a name="api.run"></a>
@@ -371,7 +366,6 @@ Run a task
 | `task` | `string`,`function`,`array<string|function>` | Yes | N/A | Task name, task function, or array of task names/functions to run in series |
 | `environment` | `string` | No | `"default"` | Config environment in which to run the task |
 | `config` | `object` | No | `{}` | Run-time config overrides to merge into the task's config object |
-| `path` | `string` | No | `process.cwd()` | Path to the Skivvy project |
 
 
 <a name="api.on"></a>
