@@ -71,30 +71,30 @@ Tasks can be run in different environments to accommodate different build types.
 The `skivvy config set --package=[package]` command is used to set package-level configuration settings:
 
 ```bash
-# Update the "browser-sync" package configuration
-skivvy config set --package=browser-sync --config.port=8000 --config.directory=true
+# Update the "react-app" package configuration
+skivvy config set --package=react-app --config.source=src --config.destination=dist
 ```
 
 You can then view the updated configuration using the `skivvy config get` command:
 
 ```bash
-# Output the "browser-sync" package configuration
-skivvy config get --package=browser-sync
+# Output the "react-app" package configuration
+skivvy config get --package=react-app
 ```
 
 ...this will return the following JSON:
 
 ```json
 {
-	"port": 8000,
-	"directory": true
+	"source": "src",
+	"destination": "dist"
 }
 ```
 
 Package configuration does **not** automatically inherit the environment configuration. If you want to refer to environment configuration settings in your package configuration, you can achieve this by using placeholders in the package configuration, referencing the `environment` placeholder variable:
 
 ```bash
-skivvy config set --package=browser-sync --config.port="<%=environment.port%>" --config.directory="<%=environment.debug%>"
+skivvy config set --package=react-app --config.source="<%=environment.source%>" --config.destination="<%=environment.destination%>"
 ```
 
 
@@ -133,15 +133,15 @@ skivvy config get --task=greet
 The `skivvy config set --package=[package] --task=[task]` command is used to set task-level configuration settings for external tasks:
 
 ```bash
-# Update the "browser-sync" package's "serve" task configuration
-skivvy config set --package=browser-sync --task=serve --config.open=true
+# Update the "serve" package's "serve" task configuration
+skivvy config set --package=serve --task=serve --config.open=true
 ```
 
 You can then view the updated configuration using the `skivvy config get` command:
 
 ```bash
-# Output the "browser-sync" package's "serve" task configuration
-skivvy config get --package=browser-sync --task=serve
+# Output the "serve" package's "serve" task configuration
+skivvy config get --package=serve --task=serve
 ```
 
 ...this will return the following JSON:
@@ -155,7 +155,7 @@ skivvy config get --package=browser-sync --task=serve
 Task configuration does **not** automatically inherit package configuration or environment configuration. If you want to refer to package configuration or environment configuration settings in your task configuration, you can achieve this by using placeholders in the package configuration, referencing the `package` and `environment` placeholder variable:
 
 ```bash
-skivvy config set browser-sync --config.port="<%=package.port%>" --config.server="<%=environment.paths.destination%>" --config.directory="<%=package.debug%>"
+skivvy config set --package=serve --task=serve --config.port="<%=package.port%>" --config.server="<%=environment.paths.destination%>" --config.open="<%=package.debug%>"
 ```
 
 
@@ -200,14 +200,14 @@ For example, in version `1.0.3` of an npm package named `"my-project-name"`, thi
 You can reference the environment configuration when setting package configuration values and task configuration values, under the `environment` configuration variable:
 
 ```bash
-skivvy config set --package=browserify --config.directory="<%=environment.paths.source%>/**/*.js"
+skivvy config set --package=react-app --config.source="<%=environment.paths.source%>/app/index.js"
 ```
 
-For an environment configuration object whose `"paths"` setting was set to `{ "source": "src" }`, this would be equivalent to the following browserify package configuration:
+For an environment configuration object whose `"paths"` setting was set to `{ "source": "src" }`, this would be equivalent to the following `"react-app"` package configuration:
 
 ```bash
 {
-	"source": "src/**/*.js"
+	"source": "src/app/index.js"
 }
 ```
 
@@ -252,42 +252,42 @@ When it comes to running a task with `skivvy run [task]`, you can specify the `-
 
 Sometimes you might want to run the same task several different times during the same build, with different configuration each time. This is achievable by defining multiple **target** configurations within the same task.
 
-For example, say you have a generic `copy` task that copies files from one location to another. When building an HTML5 app, you might want to copy an `assets` folder into the output directory, as well as copying an `index.html` file into the output directory. You can use the same `copy` task to perform the copy operation, and tell it to run different targets in order to perform both tasks.
+For example, say you have a generic `copy-files` task that copies files from one location to another. When building an HTML5 app, you might want to copy an `assets` folder into the output directory, as well as copying an `index.html` file into the output directory. You can use the same `copy-files` task to perform the copy operation, and tell it to run different targets in order to perform both tasks.
 
 You can add custom task targets by adding a `--target=[target]` flag when setting task configuration:
 
 ```bash
-# Update the "assets" and "index" targets of the "copy" task configuration
-skivvy config set --task=copy --target=assets --config.source=./assets
-skivvy config set --task=copy --target=index --config.source=./index.html
+# Update the "assets" and "index" targets of the local "copy-files" task configuration
+skivvy config set --task=copy-files --target=assets --config.source=src/assets
+skivvy config set --task=copy-files --target=index --config.source=src/index.html
 ```
 
 You can view the updated configuration using the `skivvy config get` command:
 
 ```bash
-# Output the "assets" and "index" targets of the "copy" task configuration
-skivvy config get --task=copy --target=assets
-skivvy config get --task=copy --target=index
+# Output the "assets" and "index" targets of the local "copy-files" task configuration
+skivvy config get --task=copy-files --target=assets
+skivvy config get --task=copy-files --target=index
 ```
 
 ...this will return the following JSON:
 
 ```json
 {
-	"source": "./assets"
+	"source": "src/assets"
 }
 ```
 ```json
 {
-	"source": "./index.html"
+	"source": "src/index.html"
 }
 ```
 
 ...this also works for external tasks:
 
 ```bash
-skivvy config set --package=copy --task=copy --target=assets --config.source=./assets
-skivvy config set --package=copy --task=copy --target=index --config.source=./index.html
+skivvy config set --package=copy --task=copy --target=assets --config.source=src/assets
+skivvy config set --package=copy --task=copy --target=index --config.source=src/index.html
 ```
 
 See the section on [running tasks](02-running-tasks.md#running-tasks-with-different-targets) to see how to run tasks with a different target.
@@ -300,8 +300,8 @@ All tasks have a target named `"default"`, whose configuration will be used if t
 If you would prefer to use a different target as the default, you can pass the target name as the `--config` argument when configuring a task, as follows:
 
 ```bash
-# Set the "assets" target as the default for the "copy" task
-skivvy config set --task=copy --config=assets
+# Set the "assets" target as the default for the local "copy-files" task
+skivvy config set --task=copy-files --config=assets
 ```
 
 This will set the `"assets"` target as the default target for the `copy-files` package.
@@ -319,8 +319,8 @@ skivvy config set --package=copy --task=copy --config=assets
 You can configure a task to run multiple targets as the default, by specifying multiple `--config` arguments as follows:
 
 ```bash
-# Set the "assets" and "index" targets as the default for the "copy" task
-skivvy config set --task=copy --config=assets --config=index
+# Set the "assets" and "index" targets as the default for the local "copy-files" task
+skivvy config set --task=copy-files --config=assets --config=index
 ```
 
 This also works for external tasks:
