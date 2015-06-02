@@ -90,6 +90,7 @@ Get a Skivvy API instance for an existing Skivvy project
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
 | `path` | `string` | No | `process.cwd()` | Path to the Skivvy project folder |
+| `environment` | `string` | No | `"default"` | Skivvy configuration environment name |
 
 
 
@@ -214,7 +215,6 @@ Get the Skivvy environment configuration
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
-| `environment` | `string` | No | `"default"` | Which environment configuration to retrieve |
 
 
 <a name="api.getPackageConfig"></a>
@@ -230,7 +230,6 @@ Get a package's configuration
 | ----- | ---- | -------- | ------- | ----------- |
 | `package` | `string` | Yes | N/A | Package name |
 | `expand` | `boolean` | No | `false` | Whether to expand placeholder variables |
-| `environment` | `string` | No | `"default"` | Environment to use when expanding placeholder variables |
 
 -
 
@@ -330,7 +329,6 @@ Update the Skivvy project configuration
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `updates` | `object` | Yes | N/A | Updates to merge into existing environment configuration |
-| `environment` | `string` | No | `"default"` | Which environment configuration to update |
 
 
 <a name="api.updatePackageConfig"></a>
@@ -377,7 +375,6 @@ Run a task
 | Param | Type | Required | Default | Description |
 | ----- | ---- | -------- | ------- | ----------- |
 | `task` | `string`,`function`,`array<string|function>` | Yes | N/A | Task name, task function, or array of task names/functions to run in series |
-| `environment` | `string` | No | `"default"` | Config environment in which to run the task |
 | `config` | `object` | No | `{}` | Run-time config overrides to merge into the task's config object |
 
 -
