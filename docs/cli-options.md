@@ -23,7 +23,8 @@ Create a Skivvy project in the current directory
 
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="install"></a>
@@ -36,7 +37,8 @@ Add packages to the current project (see [adding tasks](guide/01-adding-tasks.md
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
 | `package` | Yes | N/A | Package(s) to install |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="uninstall"></a>
@@ -49,7 +51,8 @@ Remove packages from the current project
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
 | `package` | Yes | N/A | Package(s) to uninstall |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="update"></a>
@@ -64,7 +67,8 @@ If `package` is not specified, all packages will be updated.
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
 | `package` | No | N/A | Package(s) to update |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="list"></a>
@@ -77,7 +81,8 @@ List this project's installed tasks
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
 | `--quiet`, `-q` | No | `false` | Non-verbose output |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="config-get"></a>
@@ -91,11 +96,12 @@ If no `--task`, `--package` or `--env` is specified, the default environment con
 
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
-| `-t`, `--task` | No | `null` | Task name |
-| `-T`, `--target` | No | `null` | Target name for the specified task |
-| `-p`, `--package` | No | `null` | Task package |
-| `-e`, `--env` | No | `null` | Environment name |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--task`, `-t` | No | `null` | Task name |
+| `--target`, `-T` | No | `null` | Target name for the specified task |
+| `--package`, `-P` | No | `null` | Task package |
+| `--env`, `-e` | No | `null` | Environment name |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="config-set"></a>
@@ -135,12 +141,13 @@ The `--config` option can be used to express complex objects in a number of ways
 
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
-| `-c`, `--config` | Yes | N/A | Configuration updates |
-| `-t`, `--task` | No | `null` | Task to configure |
-| `-T`, `--target` | No | `null` | Target to configure for the specified task |
-| `-p`, `--package` | No | `null` | Task package to configure |
-| `-e`, `--env` | No | `null` | Environment to configure |
-| `--path`, `-P` | No | Current path | Path to Skivvy project |
+| `--config`, `-c` | Yes | N/A | Configuration updates |
+| `--task`, `-t` | No | `null` | Task to configure |
+| `--target`, `-T` | No | `null` | Target to configure for the specified task |
+| `--package`, `-p` | No | `null` | Task package to configure |
+| `--env`, `-e` | No | `null` | Environment to configure |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
 <a name="run"></a>
@@ -155,9 +162,10 @@ By default, the working directory is set to the project path. You can optionally
 | Option | Required | Default | Description |
 | ------ | -------- | ------- | ----------- |
 | `task` | Yes | N/A | Task(s) to run |
-| `-c`, `--config` | No |`null` | Task configuration overrides |
-| `-e`, `--env` | No | `null` | Environment name |
-| `-C`, `--cwd` | No | Current path | Custom working directory |
-| `-P`, `--path` | No | Current path | Path to Skivvy project |
+| `--config`, `-c` | No |`null` | Task configuration overrides |
+| `--env`, `-e` | No | `null` | Environment name |
+| `--cwd`, `-C` | No | Current path | Custom working directory |
+| `--path`, `-p` | No | Current path | Path to Skivvy project |
+| `--verbose`, `-v` | No | `false` | Verbose error output |
 
 
