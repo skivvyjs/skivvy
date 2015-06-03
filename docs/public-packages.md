@@ -9,3 +9,4 @@ The following Skivvy packages can be installed using `skivvy install <package>`:
 - [`mocha`](https://www.npmjs.com/package/@skivvy/skivvy-package-mocha) – Test JavaScript files using Mocha
 - [`serve`](https://www.npmjs.com/package/@skivvy/skivvy-package-serve) – Serve files using Browsersync
 - [`utils`](https://www.npmjs.com/package/@skivvy/skivvy-package-utils) – Create Skivvy tasks and packages
+- [`watch`](https://www.npmjs.com/package/@skivvy/skivvy-package-watch) – Watch files and folders for changes
