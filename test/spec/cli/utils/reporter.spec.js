@@ -208,34 +208,6 @@ describe('cli.utils.reporter()', function() {
 		});
 	});
 
-	it('should log and time unnamed task group events', function() {
-		var task = [];
-
-		testEventLog({
-			event: events.TASK_STARTED,
-			data: { task: task },
-			expected: [
-				{ type: 'info', message: 'Task group started' }
-			]
-		});
-
-		testEventLog({
-			event: events.TASK_FAILED,
-			data: { task: task, error: new Error(), elapsed: 100 },
-			expected: [
-				{ type: 'error', message: 'Task group failed (<time>100ms</time>)' }
-			]
-		});
-
-		testEventLog({
-			event: events.TASK_COMPLETED,
-			data: { task: task, result: null, elapsed: 100 },
-			expected: [
-				{ type: 'success', message: 'Task group completed (<time>100ms</time>)' }
-			]
-		});
-	});
-
 	it('should not log unnamed task events', function() {
 		var task = function() { };
 
