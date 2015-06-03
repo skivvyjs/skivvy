@@ -10,3 +10,8 @@ The following Skivvy packages can be installed using `skivvy install <package>`:
 - [`serve`](https://www.npmjs.com/package/@skivvy/skivvy-package-serve) – Serve files using Browsersync
 - [`utils`](https://www.npmjs.com/package/@skivvy/skivvy-package-utils) – Create Skivvy tasks and packages
 - [`watch`](https://www.npmjs.com/package/@skivvy/skivvy-package-watch) – Watch files and folders for changes
+
+
+# User-contributed packages
+
+[Sumbit a pull request](https://github.com/skivvyjs/skivvy/pulls) to see your package here!
