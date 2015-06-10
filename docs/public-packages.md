@@ -19,3 +19,4 @@ The following Skivvy packages can be installed using `skivvy install <package>`
 
 _[Sumbit a pull request](https://github.com/skivvyjs/skivvy/pulls) to see your package here!_
 
+- [`@timkendrick/react-app`](https://www.npmjs.com/package/@timkendrick/skivvy-package-react-app) – ESLint/Mocha/ES6/JSX/Browserify/Stylus app tasks
