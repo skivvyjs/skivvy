@@ -1,6 +1,8 @@
 # Public Skivvy packages
 
-The following Skivvy packages can be installed using `skivvy install <package>`:
+The following Skivvy packages can be installed using `skivvy install <package>`
+
+## Official packages
 
 - [`browserify`](https://www.npmjs.com/package/@skivvy/skivvy-package-browserify) – Compile JavaScript using Browserify
 - [`clean`](https://www.npmjs.com/package/@skivvy/skivvy-package-clean) – Delete files and folders
@@ -13,6 +15,7 @@ The following Skivvy packages can be installed using `skivvy install <package>`:
 - [`watch`](https://www.npmjs.com/package/@skivvy/skivvy-package-watch) – Watch files and folders for changes
 
 
-# User-contributed packages
+## User-contributed packages
 
-[Sumbit a pull request](https://github.com/skivvyjs/skivvy/pulls) to see your package here!
+_[Sumbit a pull request](https://github.com/skivvyjs/skivvy/pulls) to see your package here!_
+
