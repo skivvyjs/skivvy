@@ -61,7 +61,7 @@ function createApp(activeCommand) {
 function getCommand(commandName, commands) {
 	commandName = commandName || null;
 	return commands.filter(function(command) {
-		return command.name === commandName;
+		return (command.name === commandName) || (command.aliases.indexOf(commandName) !== -1);
 	})[0] || null;
 }
 
@@ -73,6 +73,7 @@ function getCommands() {
 	function createMainCommand(subCommands) {
 		var command = {
 			name: null,
+			aliases: [],
 			usage: '<command> [options]',
 			description: 'Commands:',
 			options: [],
@@ -138,6 +139,7 @@ function getCommands() {
 		var subCommands = [
 			{
 				name: 'init',
+				aliases: [],
 				usage: 'init',
 				description: 'Initialize a project',
 				options: [],
@@ -145,6 +147,9 @@ function getCommands() {
 			},
 			{
 				name: 'install',
+				aliases: [
+					'i'
+				],
 				usage: 'install <package> [package...] [options]',
 				description: 'Install a package',
 				options: [],
@@ -152,6 +157,10 @@ function getCommands() {
 			},
 			{
 				name: 'uninstall',
+				aliases: [
+					'rm',
+					'un'
+				],
 				usage: 'uninstall <package> [package...] [options]',
 				description: 'Uninstall a package',
 				options: [],
@@ -159,6 +168,9 @@ function getCommands() {
 			},
 			{
 				name: 'update',
+				aliases: [
+					'u'
+				],
 				usage: 'update <package> [package...] [options]',
 				description: 'Update a package',
 				options: [],
@@ -166,6 +178,10 @@ function getCommands() {
 			},
 			{
 				name: 'list',
+				aliases: [
+					'ls',
+					'l'
+				],
 				usage: 'list [options]',
 				description: 'List installed packages and tasks',
 				options: [
@@ -178,6 +194,10 @@ function getCommands() {
 			},
 			{
 				name: 'config',
+				aliases: [
+					'cfg',
+					'c'
+				],
 				usage: 'config <get|set> [options]',
 				description: 'Get/set environment/package/task configuration',
 				options: [
@@ -206,6 +226,9 @@ function getCommands() {
 			},
 			{
 				name: 'run',
+				aliases: [
+					'r'
+				],
 				usage: 'run <task> [task...] [options]',
 				description: 'Run a task',
 				options: [

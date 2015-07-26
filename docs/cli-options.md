@@ -32,6 +32,11 @@ Create a Skivvy project in the current directory
 
 Add packages to the current project (see [adding tasks](guide/01-adding-tasks.md))
 
+**Aliases:**
+
+- `skivvy i`
+
+
 **Options:**
 
 | Option | Required | Default | Description |
@@ -45,6 +50,12 @@ Add packages to the current project (see [adding tasks](guide/01-adding-tasks.md
 ### `skivvy uninstall <package>, [package...]`
 
 Remove packages from the current project
+
+**Aliases:**
+
+- `skivvy rm`
+- `skivvy un`
+
 
 **Options:**
 
@@ -62,6 +73,12 @@ Update package(s) within the current project
 
 If `package` is not specified, all packages will be updated.
 
+**Aliases:**
+
+- `skivvy u`
+- `skivvy up`
+
+
 **Options:**
 
 | Option | Required | Default | Description |
@@ -75,6 +92,12 @@ If `package` is not specified, all packages will be updated.
 ### `skivvy list`
 
 List this project's installed tasks
+
+**Aliases:**
+
+- `skivvy l`
+- `skivvy ls`
+
 
 **Options:**
 
@@ -91,6 +114,14 @@ List this project's installed tasks
 View project/package/task configuration (see [configuring tasks](guide/03-configuring-tasks.md))
 
 If no `--task`, `--package` or `--env` is specified, the default environment configuration will be used.
+
+**Aliases:**
+
+- `skivvy cfg get`
+- `skivvy cfg g`
+- `skivvy c get`
+- `skivvy c g`
+
 
 **Options:**
 
@@ -137,6 +168,13 @@ The `--config` option can be used to express complex objects in a number of ways
 	skivvy config set --task=greet --config="[\"hello\", \"goodbye\"]"
 	```
 
+**Aliases:**
+
+- `skivvy cfg set`
+- `skivvy cfg s`
+- `skivvy c set`
+- `skivvy c s`
+
 **Options:**
 
 | Option | Required | Default | Description |
@@ -156,6 +194,11 @@ The `--config` option can be used to express complex objects in a number of ways
 Run task(s) within the current project (see [running tasks](guide/02-running-tasks.md))
 
 By default, the working directory is set to the project path. You can optionally specify a custom working directory by passing the `--cwd` argument, in which case the `--path` argument is relative to the custom working directory.
+
+**Aliases:**
+
+- `skivvy r`
+
 
 **Options:**
 
