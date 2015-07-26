@@ -20,6 +20,7 @@ chai.use(sinonChai);
 describe('cli.run()', function() {
 	var MockApi;
 	var cliRun = rewire('../../../lib/cli/run');
+	var unmockFiles = null;
 
 	before(function() {
 		MockApi = mockApiFactory();
@@ -60,7 +61,6 @@ describe('cli.run()', function() {
 		unmockFiles = mockFiles(files);
 	});
 
-	var unmockFiles = null;
 	afterEach(function() {
 		if (unmockFiles) {
 			unmockFiles();
