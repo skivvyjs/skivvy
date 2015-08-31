@@ -1,8 +1,8 @@
 {
-	"rules": {
-		"no-unused-expressions": false
-	},
 	"env": {
 		"mocha": true
+	},
+	"rules": {
+		"no-unused-expressions": 0
 	}
 }

@@ -1,9 +1,6 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
 var mockFs = require('mock-fs');
-var errno = require('errno');
 var configCache = require('../../lib/helpers/configCache');
 
 var isMockFsActive = false;
@@ -14,7 +11,6 @@ module.exports = function(files) {
 
 	var originalPath = process.cwd();
 	process.chdir('/');
-	var restoreProcess = mockProcess();
 	var restoreRequire = mockRequire();
 	var restoreConfigCache = mockConfigCache();
 	mockFs(files);
@@ -24,38 +20,12 @@ module.exports = function(files) {
 		if (!isActive) { return; }
 		isActive = false;
 		mockFs.restore();
-		restoreProcess();
 		restoreRequire();
 		restoreConfigCache();
 		process.chdir(originalPath);
 		isMockFsActive = false;
 	};
 
-
-	function mockProcess() {
-		var currentPath = process.cwd();
-		var cwd = process.cwd;
-		var chdir = process.chdir;
-
-		process.cwd = function() {
-			return currentPath;
-		};
-
-		process.chdir = function(directory) {
-			var isValidPath = fs.statSync(directory).isDirectory();
-			if (!isValidPath) {
-				var errorType = errno.code.ENOTDIR;
-				var message = errorType.code + ', ' + errorType.description;
-				throw new errno.custom.FilesystemError(message, errorType);
-			}
-			currentPath = path.resolve(currentPath, directory);
-		};
-
-		return function restore() {
-			process.cwd = cwd;
-			process.chdir = chdir;
-		};
-	}
 
 	function mockRequire() {
 		var originalCache = {};
