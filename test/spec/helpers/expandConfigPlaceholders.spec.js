@@ -333,6 +333,27 @@ describe('helpers.expandConfigPlaceholders()', function() {
 		expect(actual).to.eql(expected);
 	});
 
+	it('should allow multiple interpolations in one expression', function() {
+		var input, expected, actual;
+
+		input = {
+			template: {
+				message: '<%= greeting %>, <%= user %>!',
+				stripped: '<%= greeting %><%= user %>'
+			},
+			context: {
+				greeting: 'Hello',
+				user: 'world'
+			}
+		};
+		expected = {
+			message: 'Hello, world!',
+			stripped: 'Helloworld'
+		};
+		actual = expandConfigPlaceholders(input.template, input.context);
+		expect(actual).to.eql(expected);
+	});
+
 	it('should expand nested values in interpolated strings', function() {
 		var input, expected, actual;
 
@@ -471,6 +492,60 @@ describe('helpers.expandConfigPlaceholders()', function() {
 		expect(actual.array).to.equal(testArray);
 		expect(actual.function).to.equal(testFunction);
 		expect(actual.instance).to.equal(testInstance);
+	});
+
+	it('should ignore whitespace around placeholder values', function() {
+		var input, expected, actual;
+
+		input = {
+			template: {
+				interpolation1: 'Hello, <%=user%>!',
+				interpolation2: 'Hello, <%=user %>!',
+				interpolation3: 'Hello, <%=user  %>!',
+				interpolation4: 'Hello, <%= user%>!',
+				interpolation5: 'Hello, <%= user %>!',
+				interpolation6: 'Hello, <%= user  %>!',
+				interpolation7: 'Hello, <%=  user%>!',
+				interpolation8: 'Hello, <%=  user %>!',
+				interpolation9: 'Hello, <%=  user  %>!',
+				value1: '<%=value%>',
+				value2: '<%=value %>',
+				value3: '<%=value  %>',
+				value4: '<%= value%>',
+				value5: '<%= value %>',
+				value6: '<%= value  %>',
+				value7: '<%=  value%>',
+				value8: '<%=  value %>',
+				value9: '<%=  value  %>'
+			},
+			context: {
+				user: 'world',
+				value: true
+			}
+		};
+		expected = {
+			interpolation1: 'Hello, world!',
+			interpolation2: 'Hello, world!',
+			interpolation3: 'Hello, world!',
+			interpolation4: 'Hello, world!',
+			interpolation5: 'Hello, world!',
+			interpolation6: 'Hello, world!',
+			interpolation7: 'Hello, world!',
+			interpolation8: 'Hello, world!',
+			interpolation9: 'Hello, world!',
+			value1: true,
+			value2: true,
+			value3: true,
+			value4: true,
+			value5: true,
+			value6: true,
+			value7: true,
+			value8: true,
+			value9: true
+
+		};
+		actual = expandConfigPlaceholders(input.template, input.context);
+		expect(actual).to.eql(expected);
 	});
 
 	it('should throw errors for invalid placeholders', function() {
